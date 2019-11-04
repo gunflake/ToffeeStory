@@ -1,4 +1,4 @@
 rootProject.name = 'toffeestory'
-include 'admin'
-include 'front'
+include 'backend'
+
 
