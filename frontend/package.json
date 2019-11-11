@@ -40,7 +40,12 @@
       "plugin:vue/essential",
       "@vue/standard"
     ],
-    "rules": {},
+    "rules": {
+      "indent": "off",
+      "vue/script-indent": ["warn", 2, {
+        "baseIndent": 1
+      }]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     },
