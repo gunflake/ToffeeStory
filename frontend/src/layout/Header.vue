@@ -26,13 +26,27 @@
         Upload
       </button>
       <!-- Login 상태에 따라 프로필 / 로그인 버튼  -->
-      <a href="#" class="ml-4">
-        <img src="@/assets/image/bell.png" class="w-10 h-10 rounded-full" />
-      </a>
-      <a href="#" rel="home" class="flex items-center mx-4">
-        <img src="@/assets/image/alt_profile.jpg" class="w-10 h-10 rounded-full" />
-        <span class="text-base pl-2">{{userId}}</span>
-      </a>
+      <div v-if="state == 1" class="flex">
+        <a href="#" class="ml-4">
+          <img src="@/assets/image/bell.png" class="w-10 h-10 rounded-full" />
+        </a>
+        <a href="#" rel="home" class="flex items-center mx-4">
+          <img src="@/assets/image/alt_profile.jpg" class="w-10 h-10 rounded-full" />
+          <span class="text-base pl-2">{{userId}}</span>
+        </a>
+      </div>
+      <div v-else>
+        <router-link to="/login">
+          <button class="ml-4 bg-transparent text-gray-600 hover:text-black font-semibold py-2 pl-6 pr-4 border-l border-gray-700 ml-8">
+            Login
+          </button>
+        </router-link>
+        <router-link to="/join">
+          <button class="ml-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
+            Join free
+          </button>
+        </router-link>
+      </div>
     </div>
   </nav>
 </template>
@@ -41,7 +55,7 @@
   export default {
     name: 'Header',
     props: {
-      login: Boolean,
+      state: Number,
       userId: String
     }
   }

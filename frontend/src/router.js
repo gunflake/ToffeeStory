@@ -27,6 +27,11 @@ const routes = [
     path: '/join',
     name: 'join',
     component: () => import('@/views/Join.vue')
+  },
+  {
+    path: '/find/password',
+    name: 'findPassword',
+    component: () => import('@/views/FindPassword.vue')
   }
 ]
 

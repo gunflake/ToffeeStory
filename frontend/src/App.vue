@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <Header login="true" userId="gunflake09"></Header>
+    <!-- state = 1 로그인, 0 = 로그아웃 -->
+    <Header state="0" userId="hmnam"></Header>
     <router-view/>
   </div>
 </template>
