@@ -2,10 +2,18 @@
   <div id="app">
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <router-link to="/login">Login</router-link>
+    <router-link to="/login">Login</router-link> |
+    <router-link to="/join">Join</router-link>
     <router-view/>
   </div>
 </template>
+
+<script>
+  import './assets/css/tailwind.css'
+
+  export default {
+  }
+</script>
 
 <style>
 #app {

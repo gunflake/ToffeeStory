@@ -1,26 +1,31 @@
 <template>
-  <div class="login">
+  <div class="join">
 <!--    <h2>{{info}}</h2>-->
     <div class="bg-grey-lighter min-h-screen flex flex-col">
       <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center px-2">
-        <div class="bg-white px-6 py-8 rounded text-black w-full">
-          <img src="@/assets/image/toffeeStory.png" class="pb-10">
-          <form method="POST">
-            <InputBox title="Email" type="email" name="email"/>
-            <InputBox title="Password" type="password" name="password" visible="true" url="/find/password" />
-            <button class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
+        <div class="bg-white px-6 pt-8 pb-2 rounded text-black w-full">
+          <img src="@/assets/image/toffeeStory.png">
+          <div class="text-base mb-6">
+            Already have an account?
+            <a class="no-underline border-b border-blue font-bold text-blue-700" href="/login">
               Login
+            </a>
+          </div>
+          <form action="/login">
+            <InputBox title="Full Name" type="text" name="fullName"/>
+            <InputBox title="Email" type="email" name="email"/>
+            <InputBox title="User Name" type="text" name="userName"/>
+            <InputBox title="Password" type="password" name="password"/>
+            <button class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
+              Join
             </button>
           </form>
-
         </div>
         <!-- 회원가입 페이지로 이동 -->
-        <div class="text-base">
-          Don't have an account?
-          <a class="no-underline border-b border-blue font-bold text-blue-700" href="/join">
-            Join
-          </a>
+        <div class="text-xs font-semibold">
+          By joining, you agree to the Terms and Privacy Policy.
         </div>
+
       </div>
     </div>
   </div>
