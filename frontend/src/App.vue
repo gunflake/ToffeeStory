@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/join">Join</router-link>
+    <Header login="true" userId="gunflake09"></Header>
     <router-view/>
   </div>
 </template>
 
 <script>
   import './assets/css/tailwind.css'
-
+  import Header from '@/layout/Header'
   export default {
+    components: {
+      Header
+    }
   }
 </script>
 
