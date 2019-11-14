@@ -30,10 +30,12 @@
         <a href="#" class="ml-4">
           <img src="@/assets/image/bell.png" class="w-10 h-10 rounded-full" />
         </a>
-        <a href="#" rel="home" class="flex items-center mx-4">
-          <img src="@/assets/image/alt_profile.jpg" class="w-10 h-10 rounded-full" />
-          <span class="text-base pl-2">{{userId}}</span>
-        </a>
+        <router-link to="/profile">
+          <a href="#" rel="home" class="flex items-center mx-4">
+            <img src="@/assets/image/alt_profile.jpg" class="w-10 h-10 rounded-full" />
+            <span class="text-base pl-2">{{userId}}</span>
+          </a>
+        </router-link>
       </div>
       <div v-else>
         <router-link to="/login">
