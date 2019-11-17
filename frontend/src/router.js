@@ -3,6 +3,11 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+const account = () => import('@/views/account/AccountSettings.vue')
+const editProfile = () => import('@/views/account/EditProfile.vue')
+const changePassword = () => import('@/views/account/ChangePassword.vue')
+const closeAccount = () => import('@/views/account/CloseAccount.vue')
+
 const routes = [
   {
     path: '/',
@@ -30,9 +35,15 @@ const routes = [
     component: () => import('@/views/Profile.vue')
   },
   {
-    path: '/accountSettings',
-    name: 'accountSettings',
-    component: () => import('@/views/AccountSettings.vue')
+    path: '/account',
+    name: 'account',
+    component: account,
+    children: [
+      { path: '', component: editProfile },
+      { path: 'editProfile', component: editProfile },
+      { path: 'changePassword', component: changePassword },
+      { path: 'closeAccount', component: closeAccount }
+    ]
   }
 ]
 
