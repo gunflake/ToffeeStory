@@ -19,14 +19,13 @@
 <script>
   import InputBox from '@/components/InputBox'
   export default {
-      name: 'editProfile',
-      components: {
-          InputBox
-      },
-      data () {
-          return {
-              info: null
-          }
+    components: {
+      'InputBox': InputBox
+    },
+    data () {
+      return {
+        info: null
       }
+    }
   }
 </script>

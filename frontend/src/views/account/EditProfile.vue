@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="flex">
-          <InputBox class="w-1/2 mx-3" title="  Instagram username" type="text" name="instagramUserName"/>
+          <InputBox class="w-1/2 mx-3" title="Instagram username" type="text" name="instagramUserName"/>
           <InputBox class="w-1/2 mx-3" title="Twitter username" type="text" name="twitterUserName"/>
         </div>
         <div class="block mx-3">
@@ -29,7 +29,7 @@
           </div>
           <textarea class="w-full h-24 resize-none border border-gray-700 rounded"></textarea>
           <!-- submit 버튼 -->
-          <button class="w-full bg-black text-white rounded py-2 mt-3">Update Account</button>
+          <button class="w-full bg-black text-white rounded py-2 my-3">Update Account</button>
         </div>
       </form>
     </div>
@@ -37,10 +37,10 @@
 </template>
 <script>
   import InputBox from '@/components/InputBox'
+
   export default {
-    name: 'editProfile',
     components: {
-      InputBox
+      'InputBox': InputBox
     },
     data () {
       return {

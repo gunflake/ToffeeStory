@@ -33,13 +33,13 @@
     <!-- 네비게이션 -->
     <nav class="bg-white px-8 pt-2 shadow-md">
       <div class="-mb-px flex justify-left">
-        <a class="no-underline text-teal-dark border-b-2 border-teal-dark uppercase tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           My Menu
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent uppercase tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           Likes
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent uppercase tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           Bookmarks
         </a>
       </div>
