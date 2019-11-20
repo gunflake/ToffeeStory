@@ -12,10 +12,10 @@
             </a>
           </div>
           <form action="/login">
-            <InputBox title="Full Name" type="text" name="fullName"/>
-            <InputBox title="Email" type="email" name="email"/>
-            <InputBox title="User Name" type="text" name="userName"/>
-            <InputBox title="Password" type="password" name="password"/>
+            <InputBox title="Full Name" type="text" name="fullName" id="fullName"/>
+            <InputBox title="Email" type="email" name="email" id="email"/>
+            <InputBox title="User Name" type="text" name="userName" id="userName"/>
+            <InputBox title="Password" type="password" name="password" id="password"/>
             <button class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
               Join
             </button>
