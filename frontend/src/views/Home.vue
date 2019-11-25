@@ -1,8 +1,22 @@
 <template>
   <div class="home">
     <div id="mainImg" class="bg-gray-400">
-      <carousel>
-        <img src="@/assets/image/main_img1.jpg" class="object-cover h-48 w-full" style="height: 400px;">
+      <carousel v-bind:autoplay="true" v-bind:loop="true" :perPage="1">
+        <slide>
+          <img src="@/assets/image/main_img1.jpg" class="object-cover h-48 w-full" style="height: 400px;">
+        </slide>
+        <slide>
+          <img src="@/assets/image/main_img2.jpg" class="object-cover h-48 w-full" style="height: 400px;">
+        </slide>
+        <slide>
+          <img src="@/assets/image/main_img3.jpg" class="object-cover h-48 w-full" style="height: 400px;">
+        </slide>
+        <slide>
+          <img src="@/assets/image/main_img4.jpg" class="object-cover h-48 w-full" style="height: 400px;">
+        </slide>
+        <slide>
+          <img src="@/assets/image/main_img5.jpg" class="object-cover h-48 w-full" style="height: 400px;">
+        </slide>
       </carousel>
     </div>
     <!-- search component -->
@@ -27,6 +41,8 @@
   import ToffeeList from '@/components/ToffeeList'
   export default {
     name: 'home',
-    components: { ToffeeList }
+    components: {
+      ToffeeList
+    }
   }
 </script>

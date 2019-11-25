@@ -6,6 +6,10 @@ Vue.use(VueCarousel)
 Vue.config.productionTip = false
 
 new Vue({
+  components: {
+    'carousel': VueCarousel.Carousel,
+    'slide': VueCarousel.Slide
+  },
   router,
   render: h => h(App)
 }).$mount('#app')
