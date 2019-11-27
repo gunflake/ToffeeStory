@@ -27,7 +27,6 @@
 </template>
 
 <script>
-
   // import axios from 'axios'
   import InputBox from '@/components/InputBox'
   export default {

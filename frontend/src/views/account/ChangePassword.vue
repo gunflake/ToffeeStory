@@ -17,14 +17,14 @@
 <script>
   import InputBox from '@/components/InputBox'
   export default {
-      name: 'editProfile',
-      components: {
-          InputBox
-      },
-      data () {
-          return {
-              info: null
-          }
+    name: 'editProfile',
+    components: {
+      InputBox
+    },
+    data () {
+      return {
+        info: null
       }
+    }
   }
 </script>

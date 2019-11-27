@@ -10,6 +10,3 @@
 </div>
 </template>
 <script src="../assets/js/toffeeList.js"></script>
-<script>
-
-</script>
