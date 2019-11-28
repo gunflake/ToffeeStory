@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="toffeeList">
     <div class="images-container">
       <div class="images-item" v-for="(image,index) of images" :key="index">
         <div class="images-card">
@@ -13,3 +13,6 @@
   </div>
 </template>
 <script src="../assets/js/toffeeList.js"></script>
+<style>
+  @import '../assets/css/image-scroll.css';
+</style>

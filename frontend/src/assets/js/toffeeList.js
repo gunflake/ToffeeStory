@@ -4,7 +4,7 @@ import axios from 'axios'
 
 Vue.use(ScrollLoader)
 console.log('test')
-export default {
+export var toffeeList = {
   name: 'ToffeeList',
   data () {
     return {
