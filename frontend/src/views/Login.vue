@@ -27,7 +27,6 @@
 </template>
 
 <script>
-  // import axios from 'axios'
   import InputBox from '@/components/InputBox'
   export default {
     name: 'login',
@@ -37,15 +36,14 @@
     data () {
       return {
         info: null,
-        visible: true
+        visible: true,
+        user: {
+          fullName: '',
+          userName: '',
+          email: '',
+          password: ''
+        }
       }
     }
-    // ,
-    // mounted () {
-    //   axios
-    //     .get('api/hello')
-    //     .then(response => (this.info = response.data))
-    // }
   }
-
 </script>
