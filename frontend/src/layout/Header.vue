@@ -22,11 +22,14 @@
     </div>
     <!-- User Information -->
     <div class="w-4/12 flex items-center justify-end">
-      <button class="bg-transparent text-gray-600 font-semibold border border-gray-600 hover:bg-white hover:border-black hover:text-black hover:border-transparent rounded py-2 px-4">
+      <!-- Upload 버튼 -->
+      <button id="show-modal" @click="showModal = true" class="bg-transparent text-gray-600 font-semibold border border-gray-600 hover:bg-white hover:border-black hover:text-black hover:border-transparent rounded py-2 px-4">
         Upload
       </button>
+      <!-- Image Upload Modal-->
+      <UploadModal v-if="showModal" @close="showModal = false"></UploadModal>
       <!-- Login 상태에 따라 프로필 / 로그인 버튼  -->
-      <div v-if="state == 1" class="flex">
+      <div v-if="state > 0" class="flex">
         <a href="#" class="ml-4">
           <img src="@/assets/image/bell.png" class="w-10 h-10 rounded-full" />
         </a>
@@ -54,11 +57,21 @@
 </template>
 <script>
   import '@/assets/css/unsplash.css'
+  import UploadModal from '@/components/UploadModal'
+
   export default {
     name: 'Header',
+    data: function () {
+      return {
+        showModal: false
+      }
+    },
     props: {
       state: Number,
       userId: String
+    },
+    components: {
+      UploadModal
     }
   }
 </script>

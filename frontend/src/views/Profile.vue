@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div id="profile" class="flex justify-center bg-white p-6 pb-20">
+    <!-- 프로필 -->
+    <div id="profile" class="flex justify-center bg-white py-20">
       <img class="h-40 w-40 rounded-full mr-10" src="https://randomuser.me/api/portraits/women/21.jpg">
       <div class="text-left max-w-md">
         <div class="flex items-center pb-3">
@@ -8,7 +9,7 @@
             <h2 class="font-bold text-3xl">CoffeeLover</h2>
           </div>
           <div class="pr-4">
-            <router-link to="/accountSettings">
+            <router-link to="/account">
               <button class="text-sm bg-transparent text-gray-700 font-medium hover:text-black py-1 px-4 border border-gray-400 hover:border-black rounded">Edit</button>
             </router-link>
           </div>
@@ -29,15 +30,16 @@
         </div>
       </div>
     </div>
+    <!-- 네비게이션 -->
     <nav class="bg-white px-8 pt-2 shadow-md">
       <div class="-mb-px flex justify-left">
-        <a class="no-underline text-teal-dark border-b-2 border-teal-dark uppercase tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           My Menu
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent uppercase tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           Likes
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent uppercase tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           Bookmarks
         </a>
       </div>

@@ -9,7 +9,7 @@
             Forgot your password?
           </div>
           <form action="/login">
-            <InputBox title="Email" type="email" name="email"/>
+            <InputBox title="Email" type="email" name="email" id="email"/>
             <button class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
               Send me reset password instructions
             </button>

@@ -1,5 +1,9 @@
 <template>
   <div id="toffeeList">
+    <div>
+      <button id="post-test" @click="showModal = true">test</button>
+      <Post v-if="showModal" @close="showModal = false"></Post>
+    </div>
     <div class="images-container">
       <div class="images-item" v-for="(image,index) of images" :key="index">
         <div class="images-card">

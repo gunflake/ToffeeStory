@@ -9,8 +9,8 @@
     <input
       v-bind:type="type"
       class="block border border-gray-700 w-full p-2 rounded mb-4"
-      v-bind:id="type"
-      name="email"/>
+      v-bind:id="id"
+      v-bind:name="name"/>
   </div>
 </template>
 
@@ -20,6 +20,8 @@
     props: {
       title: String,
       type: String,
+      id: String,
+      name: String,
       visible: Boolean,
       url: String
     }
