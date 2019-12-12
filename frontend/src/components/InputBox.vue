@@ -10,7 +10,10 @@
       v-bind:type="type"
       class="block border border-gray-700 w-full p-2 rounded mb-4"
       v-bind:id="id"
-      v-bind:name="name"/>
+      v-bind:name="name"
+      v-model="value"
+      v-on:keyup="sendValue"
+    />
   </div>
 </template>
 
@@ -24,6 +27,16 @@
       name: String,
       visible: Boolean,
       url: String
+    },
+    data () {
+      return {
+        value: ''
+      }
+    },
+    methods: {
+      sendValue () {
+        this.$emit('sendVal', this.value)
+      }
     }
   }
 </script>

@@ -24,6 +24,7 @@
           <label>
             <input type="email" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.email" />
           </label>
+<!--          <InputBox title="Email" type="email" name="email" id="email" @sendVal="updateEmail"/>-->
           <!-- User Name -->
           <div class="text-base pb-2 text-left">
             User Name
@@ -53,9 +54,13 @@
 </template>
 
 <script>
+  // import InputBox from '@/components/InputBox'
   import api from '@/backend-api'
   export default {
     name: 'login',
+    components: {
+      // InputBox
+    },
     data () {
       return {
         info: null,
@@ -68,10 +73,15 @@
       }
     },
     methods: {
+      updateEmail (email) {
+        this.user.email = email
+      },
       createAccount () {
         api.createAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
           this.response = response.data
           console.log(response.data)
+          // Login 페이지로 이동
+          this.$router.push('/login')
         })
           .catch(e => {
             this.errors.push(e)
