@@ -18,13 +18,13 @@
             <input type="text" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.fullName" />
           </label>
           <!-- Email -->
-          <div class="text-base pb-2 text-left">
-            Email
-          </div>
-          <label>
-            <input type="email" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.email" />
-          </label>
-<!--          <InputBox title="Email" type="email" name="email" id="email" @sendVal="updateEmail"/>-->
+<!--          <div class="text-base pb-2 text-left">-->
+<!--            Email-->
+<!--          </div>-->
+<!--          <label>-->
+<!--            <input type="email" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.email" />-->
+<!--          </label>-->
+          <InputBox title="Email" type="email" name="email" id="email" @sendVal="updateEmail"/>
           <!-- User Name -->
           <div class="text-base pb-2 text-left">
             User Name
@@ -54,12 +54,12 @@
 </template>
 
 <script>
-  // import InputBox from '@/components/InputBox'
+  import InputBox from '@/components/InputBox'
   import api from '@/backend-api'
   export default {
     name: 'login',
     components: {
-      // InputBox
+      InputBox
     },
     data () {
       return {
@@ -81,7 +81,7 @@
           this.response = response.data
           console.log(response.data)
           // Login 페이지로 이동
-          this.$router.push('/login')
+          // this.$router.push('/login')
         })
           .catch(e => {
             this.errors.push(e)

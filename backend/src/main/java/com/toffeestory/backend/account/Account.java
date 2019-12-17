@@ -5,6 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -15,15 +18,20 @@ public class Account {
     @GeneratedValue
     private Integer accountNo;
 
+    @NotNull
     @Column(length = 30)
     private String accountId;
 
+    @NotNull
+    @Size(min = 8)
     @Column(length = 255)
     private String accountPwd;
 
+    @NotNull
     @Column(length = 30)
     private String accountName;
 
+    @NotNull
     @Column(length = 100)
     private String email;
 
@@ -49,6 +57,15 @@ public class Account {
 
     @Override
     public String toString() {
+        return "Account{" +
+                "accountId='" + accountId + '\'' +
+                ", accountPwd='" + accountPwd + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    public String toStringCreateInfo(){
         return "Account{" +
                 "accountId='" + accountId + '\'' +
                 ", accountPwd='" + accountPwd + '\'' +
