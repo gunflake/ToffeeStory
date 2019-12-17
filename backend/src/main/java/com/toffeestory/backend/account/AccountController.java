@@ -4,12 +4,7 @@ import com.toffeestory.backend.exception.AccountNotValidException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +30,7 @@ public class AccountController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping(path = "/create")
-    public Account createMember(@RequestBody @Valid Account account, BindingResult bindingResult) {
+    public Account createMember(@RequestBody @Valid Account account, BindingResult bindingResult) throws Exception {
 
         if (bindingResult.hasErrors()) {
             List<ObjectError> errorLists = bindingResult.getAllErrors();
@@ -49,16 +44,5 @@ public class AccountController {
             account.setAccountPwd(bCryptPasswordEncoder.encode(account.getAccountPwd()));
             return accountRepository.save(account);
         }
-    }
-
-    @PostMapping(path = "/login")
-    public AuthenticationToken login(
-            @RequestBody Account account,
-            HttpSession session
-    ) {
-        String username = account.getAccountId();
-        String password = account.getAccountPwd();
-
-
     }
 }
