@@ -77,7 +77,7 @@
         this.user.email = email
       },
       createAccount () {
-        api.createAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
+        api.joinAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
           this.response = response.data
           console.log(response.data)
           // Login 페이지로 이동

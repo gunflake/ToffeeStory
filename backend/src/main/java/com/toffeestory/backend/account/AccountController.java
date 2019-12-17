@@ -1,9 +1,14 @@
 package com.toffeestory.backend.account;
 
 import com.toffeestory.backend.exception.AccountNotValidException;
+import com.toffeestory.backend.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -12,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/account")
@@ -29,8 +36,14 @@ public class AccountController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @PostMapping(path = "/create")
-    public Account createMember(@RequestBody @Valid Account account, BindingResult bindingResult) throws Exception {
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @PostMapping(path = "/join")
+    public Integer createMember(@RequestBody @Valid Account account, BindingResult bindingResult) throws Exception {
 
         if (bindingResult.hasErrors()) {
             List<ObjectError> errorLists = bindingResult.getAllErrors();
@@ -42,7 +55,32 @@ public class AccountController {
         } else {
 
             account.setAccountPwd(bCryptPasswordEncoder.encode(account.getAccountPwd()));
-            return accountRepository.save(account);
+
+            // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
+            @Valid Account save = accountRepository.save(account);
+
+            return save.getAccountNo();
+        }
+    }
+
+    @PostMapping(path = "/login")
+    public String loginMember(@RequestBody Account account, BindingResult bindingResult) throws Exception {
+        try {
+            String username = account.getAccountId();
+            String password = account.getAccountPwd();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            String token = jwtTokenProvider.createToken(username, this.accountRepository.findByAccountId(username).orElseThrow(() -> new UsernameNotFoundException("AccountId: " + username + "not found")).getRoles());
+
+            String result = "{" +
+                    "'username' : " + username +
+                    "'token' : " + token +
+                    "}";
+//            Map<Object, Object> model = new HashMap<>();
+//            model.put("username", username);
+//            model.put("token", token);
+            return result;
+        } catch (AuthenticationException e) {
+            throw new AccountNotValidException("Invalid username/password supplied");
         }
     }
 }
