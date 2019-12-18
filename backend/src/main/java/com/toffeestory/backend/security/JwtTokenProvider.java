@@ -1,5 +1,6 @@
 package com.toffeestory.backend.security;
 
+import com.toffeestory.backend.account.AccountService;
 import com.toffeestory.backend.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +26,8 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
     private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
 
-    private UserDetailsService userDetailsService;
+    @Autowired
+    private AccountService accountService;
 
     @PostConstruct
     protected void init() {
@@ -34,21 +35,23 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     }
 
     // Jwt 토큰 생성
-    public String createToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk);
+    public String createToken(String username, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", roles);
+
         Date now = new Date();
+        Date validity = new Date(now.getTime() + tokenValidMilisecond);
         return Jwts.builder()
                 .setClaims(claims) // 데이터
                 .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() + tokenValidMilisecond)) // set Expire Time
+                .setExpiration(validity) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
                 .compact();
     }
 
     // Jwt 토큰으로 인증 정보를 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token));
+        UserDetails userDetails = accountService.loadUserByUsername(this.getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -57,9 +60,13 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request의 Header에서 token 파싱 : "X-AUTH-TOKEN: jwt토큰"
+    // Request의 Header에서 token 파싱 : "Bearer: jwt토큰"
     public String resolveToken(HttpServletRequest req) {
-        return req.getHeader("X-AUTH-TOKEN");
+        String bearerToken = req.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7, bearerToken.length());
+        }
+        return null;
     }
 
     // Jwt 토큰의 유효성 + 만료일자 확인

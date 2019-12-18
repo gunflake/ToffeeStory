@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/account")
@@ -34,7 +32,7 @@ public class AccountController {
     private AccountRepository accountRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -54,7 +52,7 @@ public class AccountController {
             throw new AccountNotValidException("회원정보가 올바르지 않습니다.");
         } else {
 
-            account.setAccountPwd(bCryptPasswordEncoder.encode(account.getAccountPwd()));
+            account.setAccountPwd(passwordEncoder.encode(account.getAccountPwd()));
 
             // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
             @Valid Account save = accountRepository.save(account);
@@ -64,23 +62,16 @@ public class AccountController {
     }
 
     @PostMapping(path = "/login")
-    public String loginMember(@RequestBody Account account, BindingResult bindingResult) throws Exception {
+    public AccountToken loginMember(@RequestBody Account account, BindingResult bindingResult) throws Exception {
         try {
             String username = account.getAccountId();
             String password = account.getAccountPwd();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             String token = jwtTokenProvider.createToken(username, this.accountRepository.findByAccountId(username).orElseThrow(() -> new UsernameNotFoundException("AccountId: " + username + "not found")).getRoles());
 
-            String result = "{" +
-                    "'username' : " + username +
-                    "'token' : " + token +
-                    "}";
-//            Map<Object, Object> model = new HashMap<>();
-//            model.put("username", username);
-//            model.put("token", token);
-            return result;
+            return new AccountToken(username, token);
         } catch (AuthenticationException e) {
-            throw new AccountNotValidException("Invalid username/password supplied");
+            throw new AccountNotValidException("ID / PW를 다시 확인해주세요.");
         }
     }
 }
