@@ -12,7 +12,7 @@
       v-bind:id="id"
       v-bind:name="name"
       v-model="value"
-      v-on:keyup="sendValue"
+      @change="sendValue"
     />
   </div>
 </template>

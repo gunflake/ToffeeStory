@@ -10,39 +10,13 @@
               Login
             </a>
           </div>
-          <!-- Full Name -->
-          <div class="text-base pb-2 text-left">
-            Full Name
-          </div>
-          <label>
-            <input type="text" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.fullName" />
-          </label>
-          <!-- Email -->
-<!--          <div class="text-base pb-2 text-left">-->
-<!--            Email-->
-<!--          </div>-->
-<!--          <label>-->
-<!--            <input type="email" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.email" />-->
-<!--          </label>-->
+          <InputBox title="Full Name" type="text" name="fullName" id="fullName" @sendVal="updateFullName"/>
           <InputBox title="Email" type="email" name="email" id="email" @sendVal="updateEmail"/>
-          <!-- User Name -->
-          <div class="text-base pb-2 text-left">
-            User Name
-          </div>
-          <label>
-            <input type="text" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.userName" />
-          </label>
-          <!-- Password -->
-          <div class="text-base pb-2 text-left">
-            Password
-          </div>
-          <label>
-            <input type="password" class="block border border-gray-700 w-full p-2 rounded mb-4" v-model="user.password" />
-          </label>
+          <InputBox title="User Name" type="text" name="userName" id="userName" @sendVal="updateUserName"/>
+          <InputBox title="Password" type="password" name="password" id="password" @sendVal="updatePassword"/>
           <button @click="createAccount()" class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
             Join
           </button>
-
         </div>
         <!-- 회원가입 정책-->
         <div class="text-xs font-semibold">
@@ -73,18 +47,28 @@
       }
     },
     methods: {
-      updateEmail (email) {
-        this.user.email = email
+      updateFullName (val) {
+        this.user.fullName = val
+      },
+      updateEmail (val) {
+        this.user.email = val
+      },
+      updateUserName (val) {
+        this.user.userName = val
+      },
+      updatePassword (val) {
+        this.user.password = val
       },
       createAccount () {
         api.joinAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
-          this.response = response.data
-          console.log(response.data)
           // Login 페이지로 이동
-          // this.$router.push('/login')
+          if (response.data === this.user.userName) {
+            this.$router.push('/login')
+          }
         })
           .catch(e => {
-            this.errors.push(e)
+            console.log(e)
+            // this.errors.push(e)
           }
           )
       }
