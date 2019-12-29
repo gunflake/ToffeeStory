@@ -1,18 +1,20 @@
 package com.toffeestory.backend.account;
 
 import com.toffeestory.backend.exception.AccountNotValidException;
+import com.toffeestory.backend.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,10 +29,16 @@ public class AccountController {
     private AccountRepository accountRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private AccountService accountService;
 
-    @PostMapping(path = "/create")
-    public Account createMember(@RequestBody @Valid Account account, BindingResult bindingResult) throws Exception {
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @PostMapping(path = "/join")
+    public String createMember(@RequestBody @Valid Account account, BindingResult bindingResult) throws Exception {
 
         if (bindingResult.hasErrors()) {
             List<ObjectError> errorLists = bindingResult.getAllErrors();
@@ -41,8 +49,29 @@ public class AccountController {
             throw new AccountNotValidException("회원정보가 올바르지 않습니다.");
         } else {
 
-            account.setAccountPwd(bCryptPasswordEncoder.encode(account.getAccountPwd()));
-            return accountRepository.save(account);
+            // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
+            return accountService.saveAccount(account);
         }
+    }
+
+    @PostMapping(path = "/login")
+    public AccountToken loginMember(@RequestBody Account account, BindingResult bindingResult) throws Exception {
+        try {
+            String userEmail = account.getEmail();
+            String password = account.getAccountPwd();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
+
+            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userEmail + "not found"));
+            String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getRoles());
+
+            return new AccountToken(getAccount.getAccountId(), getAccount.getEmail(), token);
+        } catch (AuthenticationException e) {
+            throw new AccountNotValidException("ID / PW를 다시 확인해주세요.");
+        }
+    }
+
+    @GetMapping(path = "/auth")
+    public String checkAccount(@AuthenticationPrincipal UserDetails userDetails){
+        return userDetails.getUsername();
     }
 }

@@ -6,12 +6,24 @@ const AXIOS = axios.create({
 })
 
 export default {
-  createAccount (fullName, userName, email, password) {
-    return AXIOS.post(`/account/create`, {
+  joinAccount (fullName, userName, email, password) {
+    return AXIOS.post(`/account/join`, {
       'accountName': fullName,
       'accountId': userName,
       'email': email,
       'accountPwd': password
     })
+  },
+  loginAccount (email, password) {
+    return AXIOS.post(`/account/login`, {
+      'email': email,
+      'accountPwd': password
+    })
+  },
+  checkAccount (token) {
+    return AXIOS.get(`/account/auth`,
+      {
+        headers: { 'Authorization': 'bearer ' + token }
+      })
   }
 }
