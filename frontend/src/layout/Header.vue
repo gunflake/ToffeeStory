@@ -2,9 +2,7 @@
   <nav class="bg-white mx-4 flex" role="navigation">
     <!-- Logo -->
     <div class="w-1/12">
-      <a href="/" rel="home">
-        <img src="@/assets/image/toffeeStory.png" class="w-36 h-16" />
-      </a>
+        <img src="@/assets/image/toffeeStory.png" class="w-36 h-16" @click="goHome()" style="cursor: pointer"/>
     </div>
     <!-- Search -->
     <div class="w-7/12 _1g2pj _3PSbf ml-4">
@@ -76,6 +74,11 @@
     },
     computed: {
       ...mapGetters(['isLoggedIn', 'getUserName', 'getUserToken'])
+    },
+    methods: {
+      goHome () {
+        this.$router.push('/')
+      }
     }
   }
 </script>

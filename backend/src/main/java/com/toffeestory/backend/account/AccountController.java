@@ -11,8 +11,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +29,7 @@ public class AccountController {
     private AccountRepository accountRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private AccountService accountService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -51,12 +49,8 @@ public class AccountController {
             throw new AccountNotValidException("회원정보가 올바르지 않습니다.");
         } else {
 
-            account.setAccountPwd(passwordEncoder.encode(account.getAccountPwd()));
-
             // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
-            @Valid Account save = accountRepository.save(account);
-
-            return save.getAccountId();
+            return accountService.saveAccount(account);
         }
     }
 

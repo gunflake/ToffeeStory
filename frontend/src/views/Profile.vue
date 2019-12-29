@@ -46,25 +46,3 @@
     </nav>
   </div>
 </template>
-
-<script>
-  import api from '@/backend-api'
-  import { mapGetters } from 'vuex'
-
-  export default {
-    computed: {
-      ...mapGetters(['getUserToken'])
-    },
-    created () {
-      api.checkAccount(this.getUserToken).then(response => {
-        // Login 페이지로 이동
-        console.log(response.data)
-      })
-        .catch(e => {
-          console.log(e)
-          // this.$router.push('/login')
-        }
-        )
-    }
-  }
-</script>
