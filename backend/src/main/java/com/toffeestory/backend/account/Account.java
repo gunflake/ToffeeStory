@@ -97,7 +97,7 @@ public class Account implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.accountId;
+        return this.email;
     }
 
     @Override

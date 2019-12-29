@@ -73,7 +73,7 @@
       UploadModal
     },
     computed: {
-      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserToken'])
+      ...mapGetters(['isLoggedIn', 'getUserName'])
     },
     methods: {
       goHome () {

@@ -14,9 +14,9 @@ export default {
       'accountPwd': password
     })
   },
-  loginAccount (userName, password) {
+  loginAccount (email, password) {
     return AXIOS.post(`/account/login`, {
-      'accountId': userName,
+      'email': email,
       'accountPwd': password
     })
   },

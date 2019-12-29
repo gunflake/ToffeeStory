@@ -40,8 +40,6 @@
         info: null,
         visible: true,
         user: {
-          fullName: '',
-          userName: '',
           email: '',
           password: ''
         }
@@ -60,7 +58,7 @@
       },
       callLogin () {
         this.errors = []
-        this.loginProcess({ user: this.user.email, password: this.user.password })
+        this.loginProcess({ email: this.user.email, password: this.user.password })
           .then(() => {
             console.log('login success')
             this.$router.push('/')

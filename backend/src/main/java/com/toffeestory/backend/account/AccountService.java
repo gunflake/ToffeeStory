@@ -19,9 +19,9 @@ public class AccountService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.accountRepository.findByAccountId(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return this.accountRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("email: " + email + " not found"));
     }
 
     public String saveAccount(Account account){

@@ -57,12 +57,14 @@ public class AccountController {
     @PostMapping(path = "/login")
     public AccountToken loginMember(@RequestBody Account account, BindingResult bindingResult) throws Exception {
         try {
-            String username = account.getAccountId();
+            String userEmail = account.getEmail();
             String password = account.getAccountPwd();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            String token = jwtTokenProvider.createToken(username, this.accountRepository.findByAccountId(username).orElseThrow(() -> new UsernameNotFoundException("AccountId: " + username + "not found")).getRoles());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
 
-            return new AccountToken(username, token);
+            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userEmail + "not found"));
+            String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getRoles());
+
+            return new AccountToken(getAccount.getAccountId(), getAccount.getEmail(), token);
         } catch (AuthenticationException e) {
             throw new AccountNotValidException("ID / PW를 다시 확인해주세요.");
         }

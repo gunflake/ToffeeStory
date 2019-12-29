@@ -9,30 +9,33 @@ export default new Vuex.Store({
     loginSuccess: false,
     loginError: false,
     userName: null,
+    userEmail: null,
     userToken: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
     hasLoginErrored: state => state.loginError,
     getUserName: state => state.userName,
+    getUserEmail: state => state.userEmail,
     getUserToken: state => state.userToken
   },
   mutations: {
     login_success (state, payload) {
       state.loginSuccess = true
       state.userName = payload.userName
+      state.userEmail = payload.userEmail
       state.userToken = payload.userToken
     },
     login_error (state, payload) {
       state.loginError = true
-      state.userName = payload.userName
+      state.userEmail = payload.userEmail
     }
   },
   actions: {
-    loginProcess ({ commit }, { user, password }) {
+    loginProcess ({ commit }, { email, password }) {
       return new Promise((resolve, reject) => {
-        console.log("Accessing backend with user: '" + user)
-        api.loginAccount(user, password)
+        console.log("Accessing backend with userEmail: '" + email)
+        api.loginAccount(email, password)
           .then(response => {
             console.log("Response: '" + response.data + "' with Statuscode " + response.status)
             let userObj = response.data
@@ -41,6 +44,7 @@ export default new Vuex.Store({
               console.log('Login successful')
               commit('login_success', {
                 userName: userObj.username,
+                userEmail: userObj.email,
                 userToken: userObj.token
               })
             }
@@ -50,7 +54,7 @@ export default new Vuex.Store({
             console.log('Error: ' + error)
             // place the loginError state into our vuex store
             commit('login_error', {
-              userName: user
+              userEmail: email
             })
             // eslint-disable-next-line prefer-promise-reject-errors
             reject('Invalid credentials!')
