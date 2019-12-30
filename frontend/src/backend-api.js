@@ -20,10 +20,7 @@ export default {
       'accountPwd': password
     })
   },
-  checkAccount (token) {
-    return AXIOS.get(`/account/auth`,
-      {
-        headers: { 'Authorization': 'bearer ' + token }
-      })
+  getAccountInfo (token) {
+    return AXIOS.get('/account/auth', token)
   }
 }
