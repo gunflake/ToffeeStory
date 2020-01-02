@@ -2,9 +2,7 @@
   <nav class="bg-white mx-4 flex" role="navigation">
     <!-- Logo -->
     <div class="w-1/12">
-      <a href="/" rel="home">
-        <img src="@/assets/image/toffeeStory.png" class="w-36 h-16"/>
-      </a>
+        <img src="@/assets/image/toffeeStory.png" class="w-36 h-16" @click="goHome()" style="cursor: pointer"/>
     </div>
     <!-- Search -->
     <div class="w-7/12 _1g2pj _3PSbf ml-4">
@@ -54,14 +52,14 @@
       <!-- Image Upload Modal-->
       <UploadModal v-if="showModal" @close="showModal = false"></UploadModal>
       <!-- Login 상태에 따라 프로필 / 로그인 버튼  -->
-      <div v-if="state > 0" class="flex">
+      <div v-if="isLoggedIn" class="flex">
         <a href="#" class="ml-4">
           <img src="@/assets/image/bell.png" class="w-10 h-10 rounded-full"/>
         </a>
         <router-link to="/profile">
           <a href="#" rel="home" class="flex items-center mx-4">
-            <img src="@/assets/image/alt_profile.jpg" class="w-10 h-10 rounded-full"/>
-            <span class="text-base pl-2">{{userId}}</span>
+            <img src="@/assets/image/alt_profile.jpg" class="w-10 h-10 rounded-full" />
+            <span class="text-base pl-2">{{ getUserName }}</span>
           </a>
         </router-link>
       </div>
@@ -85,6 +83,7 @@
   import '@/assets/css/unsplash.css'
   import '@/assets/css/searchComplete.css'
   import UploadModal from '@/components/UploadModal'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'Header',
@@ -100,6 +99,14 @@
     },
     components: {
       UploadModal
+    },
+    computed: {
+      ...mapGetters(['isLoggedIn', 'getUserName'])
+    },
+    methods: {
+      goHome () {
+        this.$router.push('/')
+      }
     }
   }
 </script>
