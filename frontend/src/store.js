@@ -9,13 +9,17 @@ export default new Vuex.Store({
     loginSuccess: false,
     loginError: false,
     userName: null,
-    userEmail: null
+    userEmail: null,
+    alertState: false,
+    alertMessage: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
     hasLoginErrored: state => state.loginError,
     getUserName: state => state.userName,
-    getUserEmail: state => state.userEmail
+    getUserEmail: state => state.userEmail,
+    getAlertState: state => state.alertState,
+    getAlertMessage: state => state.alertMessage
   },
   mutations: {
     login_success (state, payload) {
@@ -31,6 +35,14 @@ export default new Vuex.Store({
       state.loginSuccess = false
       state.userName = null
       state.userEmail = null
+    },
+    alertInit (state) {
+      state.alertMessage = null
+      state.alertState = false
+    },
+    alertSetting (state, payload) {
+      state.alertMessage = payload.message
+      state.alertState = true
     }
   },
   actions: {
@@ -51,13 +63,40 @@ export default new Vuex.Store({
           })
           .catch(error => {
             console.log('Error: ' + error)
+            let messgae = error.response.data.message
 
             commit('login_error', {
               userEmail: email
             })
+            commit('alertSetting', {
+              message: messgae
+            })
 
             // eslint-disable-next-line prefer-promise-reject-errors
             reject('Invalid credentials!')
+          })
+      })
+    },
+    createProcess ({ commit, dispatch }, { fullName, userName, email, password }) {
+      return new Promise((resolve, reject) => {
+        api.joinAccount(fullName, userName, email, password)
+          .then(response => {
+            console.log("Response: '" + response.data + "' with Statuscode " + response.status)
+
+            if (response.status === 200 && response.data === userName) {
+              console.log('Create Account successful')
+            }
+            resolve(response)
+          })
+          .catch(error => {
+            console.log('Error: ' + error)
+            let messgae = error.response.data.message
+
+            commit('alertSetting', {
+              message: messgae
+            })
+            // eslint-disable-next-line prefer-promise-reject-errors
+            reject('Invalid Account Info!')
           })
       })
     },

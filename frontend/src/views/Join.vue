@@ -29,7 +29,8 @@
 
 <script>
   import InputBox from '@/components/InputBox'
-  import api from '@/backend-api'
+  import { mapActions } from 'vuex'
+
   export default {
     name: 'login',
     components: {
@@ -47,6 +48,7 @@
       }
     },
     methods: {
+      ...mapActions(['createProcess']),
       updateFullName (val) {
         this.user.fullName = val
       },
@@ -60,17 +62,17 @@
         this.user.password = val
       },
       createAccount () {
-        api.joinAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
-          // Login 페이지로 이동
-          if (response.data === this.user.userName) {
+        this.errors = []
+        this.createProcess({ fullName: this.user.fullName, userName: this.user.userName, email: this.user.email, password: this.user.password })
+          .then(() => {
+            console.log('Create Account success')
             this.$router.push('/login')
-          }
-        })
-          .catch(e => {
-            console.log(e)
-            // this.errors.push(e)
-          }
-          )
+          })
+          .catch(error => {
+            this.loginError = true
+            this.errors.push(error)
+            this.error = true
+          })
       }
     }
   }
