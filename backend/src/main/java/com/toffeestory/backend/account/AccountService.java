@@ -26,7 +26,7 @@ public class AccountService implements UserDetailsService {
 
     public String saveAccount(Account account){
         account.setAccountPwd(passwordEncoder.encode(account.getAccountPwd()));
-
+        account.setAuthority("ROLE_USER");
         // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
         @Valid Account save = accountRepository.save(account);
 

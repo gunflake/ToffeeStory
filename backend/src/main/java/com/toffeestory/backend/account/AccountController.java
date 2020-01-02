@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -62,7 +64,8 @@ public class AccountController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
 
             Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userEmail + "not found"));
-            String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getRoles());
+
+            String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getAuthorities().toString());
 
             return token;
         } catch (AuthenticationException e) {
