@@ -20,7 +20,7 @@
         </slide>
       </carousel>
     </div>
-    <!-- Search Toffee Tomponent-->
+    <!-- Search Toffee Component-->
     <!-- Sort Component -->
     <div id="">
       <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
@@ -46,3 +46,8 @@
     }
   }
 </script>
+<style>
+  .home {
+    overflow: hidden;
+  }
+</style>

@@ -20,20 +20,7 @@
               </div>
               <!-- star select space -->
               <div class="flex w-full mt-2">
-                <span class="star star_left" @mouseover="point = 0.5" v-bind:class="{ on: point >= 0.5}"></span>
-                <span class="star star_right" @mouseover="point = 1" v-bind:class="{ on: point >= 1 }"></span>
-
-                <span class="star star_left" @mouseover="point = 1.5" v-bind:class="{ on: point >= 1.5}"></span>
-                <span class="star star_right" @mouseover="point = 2" v-bind:class="{ on: point >= 2 }"></span>
-
-                <span class="star star_left" @mouseover="point = 2.5" v-bind:class="{ on: point >= 2.5}"></span>
-                <span class="star star_right" @mouseover="point = 3" v-bind:class="{ on: point >= 3 }"></span>
-
-                <span class="star star_left" @mouseover="point = 3.5" v-bind:class="{ on: point >= 3.5}"></span>
-                <span class="star star_right" @mouseover="point = 4" v-bind:class="{ on: point >= 4 }"></span>
-
-                <span class="star star_left" @mouseover="point = 4.5" v-bind:class="{ on: point >= 4.5}"></span>
-                <span class="star star_right" @mouseover="point = 5" v-bind:class="{ on: point >= 5 }"></span>
+                <star-rating :rating="1" :star-size="40" :show-rating="false" active-color="#003d24"></star-rating>
               </div>
               <!-- comment input space  -->
               <div class="w-full mt-2">
@@ -55,16 +42,13 @@
 </template>
 
 <script>
+  import VueStarRating from 'vue-star-rating'
+  import Vue from 'vue'
+  Vue.use(VueStarRating)
   export default {
-    data: function () {
-      return {
-        point: 0.5
-      }
-    },
-    methods: {
-      mouseOver: function () {
-        this.active = !this.active
-      }
+    name: 'UploadModal',
+    components: {
+      'star-rating': VueStarRating
     }
   }
 </script>
@@ -79,26 +63,5 @@
     height: 100%;
     background-color: rgba(0, 0, 0, .5);
     display: table;
-  }
-
-  .star {
-    display: inline-block;
-    width: 30px;
-    height: 60px;
-    cursor: pointer;
-  }
-
-  .star_left {
-    background: url(http://gahyun.wooga.kr/main/img/testImg/star.png) no-repeat 0 0;
-    background-size: 60px;
-  }
-
-  .star_right {
-    background: url(http://gahyun.wooga.kr/main/img/testImg/star.png) no-repeat -30px 0;
-    background-size: 60px;
-  }
-
-  .star.on {
-    background-image: url(http://gahyun.wooga.kr/main/img/testImg/star_on.png);
   }
 </style>

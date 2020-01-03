@@ -1,16 +1,12 @@
-import Vue from 'vue'
-import ScrollLoader from 'vue-scroll-loader'
 import axios from 'axios'
 import Post from '@/components/Post'
-
-Vue.use(ScrollLoader)
 
 export default {
   name: 'ToffeeList',
   components: {
     Post
   },
-  data () {
+  data: function () {
     return {
       showModal: false,
       loadMore: true,
