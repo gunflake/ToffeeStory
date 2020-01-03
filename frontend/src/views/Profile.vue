@@ -13,6 +13,9 @@
               <button class="text-sm bg-transparent text-gray-700 font-medium hover:text-black py-1 px-4 border border-gray-400 hover:border-black rounded">Edit</button>
             </router-link>
           </div>
+          <div class="pr-4">
+            <button class="text-sm bg-transparent text-gray-700 font-medium hover:text-black py-1 px-4 border border-gray-400 hover:border-black rounded" @click="logout()">Logout</button>
+          </div>
         </div>
         <div class="flex items-center pb-3">
           <div id="instagram" class="pr-4 text-sm text-gray-700">
@@ -46,3 +49,18 @@
     </nav>
   </div>
 </template>
+
+<script>
+  import { mapActions } from 'vuex'
+
+  export default {
+    name: 'profile',
+    methods: {
+      ...mapActions(['logoutProcess']),
+      logout () {
+        this.logoutProcess()
+        this.$router.push('/')
+      }
+    }
+  }
+</script>

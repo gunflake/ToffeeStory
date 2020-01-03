@@ -1,6 +1,5 @@
 <template>
   <div class="join">
-<!--    <h2>{{info}}</h2>-->
     <div class="bg-grey-lighter min-h-screen flex flex-col">
       <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center px-2">
         <div class="bg-white px-6 pt-8 pb-2 rounded text-black w-full">
@@ -11,30 +10,26 @@
               Login
             </a>
           </div>
-          <form action="/login">
-            <InputBox title="Full Name" type="text" name="fullName" id="fullName"/>
-            <InputBox title="Email" type="email" name="email" id="email"/>
-            <InputBox title="User Name" type="text" name="userName" id="userName"/>
-            <InputBox title="Password" type="password" name="password" id="password"/>
-            <button class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
-              Join
-            </button>
-          </form>
+          <InputBox title="Full Name" type="text" name="fullName" id="fullName" @sendVal="updateFullName"/>
+          <InputBox title="Email" type="email" name="email" id="email" @sendVal="updateEmail"/>
+          <InputBox title="User Name" type="text" name="userName" id="userName" @sendVal="updateUserName"/>
+          <InputBox title="Password" type="password" name="password" id="password" @sendVal="updatePassword"/>
+          <button @click="createAccount()" class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
+            Join
+          </button>
         </div>
         <!-- 회원가입 정책-->
         <div class="text-xs font-semibold">
           By joining, you agree to the Terms and Privacy Policy.
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
-  // import axios from 'axios'
   import InputBox from '@/components/InputBox'
+  import api from '@/backend-api'
   export default {
     name: 'login',
     components: {
@@ -42,15 +37,42 @@
     },
     data () {
       return {
-        info: null
+        info: null,
+        user: {
+          fullName: '',
+          userName: '',
+          email: '',
+          password: ''
+        }
+      }
+    },
+    methods: {
+      updateFullName (val) {
+        this.user.fullName = val
+      },
+      updateEmail (val) {
+        this.user.email = val
+      },
+      updateUserName (val) {
+        this.user.userName = val
+      },
+      updatePassword (val) {
+        this.user.password = val
+      },
+      createAccount () {
+        api.joinAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
+          // Login 페이지로 이동
+          if (response.data === this.user.userName) {
+            this.$router.push('/login')
+          }
+        })
+          .catch(e => {
+            console.log(e)
+            // this.errors.push(e)
+          }
+          )
       }
     }
-    // ,
-    // mounted () {
-    //   axios
-    //     .get('api/hello')
-    //     .then(response => (this.info = response.data))
-    // }
   }
 
 </script>
