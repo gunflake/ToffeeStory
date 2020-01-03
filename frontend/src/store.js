@@ -71,7 +71,9 @@ export default new Vuex.Store({
             commit('alertSetting', {
               message: messgae
             })
-
+            setTimeout(() => {
+              commit('alertInit')
+            }, 5000)
             // eslint-disable-next-line prefer-promise-reject-errors
             reject('Invalid credentials!')
           })
