@@ -92,6 +92,8 @@
         })
     },
     methods: {
+      updateAccount () {
+      }
     }
   }
 </script>

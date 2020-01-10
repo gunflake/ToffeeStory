@@ -21,8 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
-
-
     private static final Logger LOG = LoggerFactory.getLogger(AccountController.class);
 
     @Autowired
@@ -74,5 +72,19 @@ public class AccountController {
     public AccountInfo getAccountInfo(@AuthenticationPrincipal UserDetails userDetails){
         Account getAccount = accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
         return new AccountInfo(getAccount.getAccountId(), getAccount.getEmail());
+    }
+
+    // Edit Profile 내 정보 세팅용
+    @GetMapping(path = "/secured/getAccount")
+    public Account getAccount(@AuthenticationPrincipal UserDetails userDetails){
+        Account account = accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
+
+        return account;
+    }
+
+    // 회원 정보 업데이트
+    @PostMapping(path = "/secured/updateAccount")
+    public String updateAccount(@RequestBody Account account) {
+        return "";
     }
 }

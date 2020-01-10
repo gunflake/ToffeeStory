@@ -22,5 +22,8 @@ export default {
   },
   getAccountInfo (token) {
     return AXIOS.get('/account/auth', token)
+  },
+  getAccount (token) {
+    return AXIOS.get('/account/secured/getAccount', token)
   }
 }

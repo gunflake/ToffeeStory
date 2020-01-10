@@ -6,7 +6,7 @@
       <div class="text-left max-w-md">
         <div class="flex items-center pb-3">
           <div class="pr-4">
-            <h2 class="font-bold text-3xl">CoffeeLover</h2>
+            <h2 class="font-bold text-3xl">{{ userName }}</h2>
           </div>
           <div class="pr-4">
             <router-link to="/account">
@@ -18,18 +18,15 @@
           </div>
         </div>
         <div class="flex items-center pb-3">
-          <div id="instagram" class="pr-4 text-sm text-gray-700">
-            <a href="#">coffee_lover</a>
+          <div id="instagram" class="pr-4 text-sm text-gray-700 hover:text-black">
+            <a v-bind:href="instagramLink + instagram" target="_blank">{{ instagram }}</a>
           </div>
-          <div id="twitter" class="pr-4 text-sm text-gray-700">
-            <a href="#">coffee_lover</a>
+          <div id="twitter" class="pr-4 text-sm text-gray-700 hover:text-black">
+            <a v-bind:href="twitterLink + twitter" target="_blank">{{ twitter }}</a>
           </div>
         </div>
         <div class="flex items-center pb-3">
-          <div id="bio" class="pr-4 text-sm text-black">
-            혼자라고 느껴지던 낮과 쓸쓸하게 무너졌던 밤 그런 순간마다 날 일으켜 준 건 날 불러주던 너의 목소리
-            움츠러든 마음도 굳어버린 마음도 겨울이 지나면 늘 봄이 오듯이 난 나아갈 수 있어
-          </div>
+          <div id="bio" class="pr-4 text-sm text-black">{{ bio }}</div>
         </div>
       </div>
     </div>
@@ -52,9 +49,45 @@
 
 <script>
   import { mapActions } from 'vuex'
+  import api from '@/backend-api'
 
   export default {
     name: 'profile',
+    data () {
+      return {
+        userName: '',
+        instagram: '',
+        twitter: '',
+        bio: '',
+        instagramLink: 'https://www.instagram.com/',
+        twitterLink: 'https://www.twitter.com/',
+        errors: []
+      }
+    },
+    beforeCreate () {
+      let token = localStorage.getItem('token')
+
+      if (token == null) { return }
+
+      let config = {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      }
+
+      api.getAccount(config).then(response => {
+        if (response.status === 200) {
+          let account = response.data
+          this.userName = account.accountId
+          this.instagram = account.instagram
+          this.twitter = account.twitter
+          this.bio = account.bio
+        }
+      })
+        .catch(error => {
+          this.errors.push(error)
+        })
+    },
     methods: {
       ...mapActions(['logoutProcess']),
       logout () {
