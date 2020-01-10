@@ -1,6 +1,6 @@
-package com.toffeestory.backend.Post;
+package com.toffeestory.backend.post;
 
-import com.toffeestory.backend.Account.Account;
+import com.toffeestory.backend.account.Account;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
