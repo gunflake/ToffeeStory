@@ -62,7 +62,7 @@ public class AccountController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
 
             Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userEmail + "not found"));
-            String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getRoles());
+            String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getAuthorities().toString());
 
             return token;
         } catch (AuthenticationException e) {
