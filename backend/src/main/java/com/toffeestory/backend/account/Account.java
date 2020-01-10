@@ -62,8 +62,8 @@ public class Account implements UserDetails {
     @Column
     private Byte useStateCode;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    @Column(length = 20)
+    private String authority;
 
     @Override
     public String toString() {
@@ -87,7 +87,9 @@ public class Account implements UserDetails {
     // UserDetails 필수 구현부분
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
+        List<String> roles = new ArrayList<>();
+        roles.add(authority);
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
     }
 
     @Override
