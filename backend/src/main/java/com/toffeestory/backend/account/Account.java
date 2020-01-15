@@ -1,7 +1,10 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.post.Post;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,6 +57,7 @@ public class Account implements UserDetails {
     private String profilePic;
 
     @Temporal(TemporalType.DATE)
+    @CreationTimestamp
     private Date regDate;
 
     @Temporal(TemporalType.DATE)
@@ -64,6 +68,9 @@ public class Account implements UserDetails {
 
     @Column(length = 20)
     private String authority;
+
+    @OneToMany(mappedBy = "account")
+    private List<Post> post = new ArrayList<>();
 
     @Override
     public String toString() {
