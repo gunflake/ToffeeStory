@@ -5,13 +5,10 @@
         <div class="flex">
           <div class="w-1/2 mx-auto mt-8">
             <div class="bg-white p-6">
-              <div class="modal-header">
-                <slot name="header">
-                  <button class="modal-default-button" style="float:right;color:gray;" @click="$emit('close')">X</button>
-                </slot>
-              </div>
-              <br>
               <div class="modal-body">
+                <div class="flex justify-end">
+                  <button class="" @click="$emit('close')">X</button>
+                </div>
                 <!-- image drag & drop space -->
                 <div class="bg-gray-200 h-64 w-full">
                   <div class="text-center vertical-center text-xl">
@@ -37,8 +34,6 @@
                     <textarea class="w-full shadow-inner py-2 px-3 border-2" placeholder="내용을 입력해주세요." rows="4"/>
                   </label>
                 </div>
-              </div>
-              <div class="modal-footer">
                 <!-- cancel & publish button -->
                 <div class="flex w-full mt-2 justify-end">
                   <button @click="$emit('close')" class="ml-4 bg-gray-400 hover:bg-gray-500 text-black font-semibold py-2 px-4 rounded">Cancel</button>
@@ -105,7 +100,7 @@
     width: 1000px;
   }
   .modal-body {
-    height: 600px;
+    height: 100%;
     overflow-y: auto;
   }
 </style>
