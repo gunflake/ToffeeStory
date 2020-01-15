@@ -17,6 +17,8 @@
                   <div class="text-center vertical-center text-xl">
                     Drop your image here or click here to upload <br>
                     Maximum file size : 5MB
+                    <input type="file" @change="onFileSelected">
+                    <Button @click="uploadFile">upload</Button>
                   </div>
                 </div>
                 <!-- toffing select space -->
@@ -27,12 +29,12 @@
                 </div>
                 <!-- star select space -->
                 <div class="flex w-full mt-2">
-                  <star-rating :rating="1" :star-size="40" :show-rating="false" active-color="#003d24"></star-rating>
+                  <star-rating :rating="1" :star-size="40" :show-rating="false" active-color="#003d24"/>
                 </div>
                 <!-- comment input space  -->
                 <div class="w-full mt-2">
                   <label>
-                    <textarea class="w-full shadow-inner py-2 px-3 border-2" placeholder="내용을 입력해주세요." rows="4"></textarea>
+                    <textarea class="w-full shadow-inner py-2 px-3 border-2" placeholder="내용을 입력해주세요." rows="4"/>
                   </label>
                 </div>
               </div>
@@ -52,6 +54,7 @@
 </template>
 
 <script>
+  import api from '@/backend-api'
   import VueStarRating from 'vue-star-rating'
   import Vue from 'vue'
   Vue.use(VueStarRating)
@@ -59,8 +62,32 @@
     name: 'UploadModal',
     components: {
       'star-rating': VueStarRating
+    },
+    data () {
+      return {
+        selectedFile: null
+      }
+    },
+    methods: {
+      onFileSelected (event) {
+        this.selectedFile = event.target.files[0]
+      },
+      uploadFile () {
+        let token = {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+        let formData = new FormData()
+        formData.append('file', this.selectedFile)
+        // console.log(fd)
+        api.uploadImage(formData, token)
+      }
+
     }
   }
+
 </script>
 
 <style>
