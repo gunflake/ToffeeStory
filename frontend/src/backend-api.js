@@ -22,5 +22,8 @@ export default {
   },
   getAccountInfo (token) {
     return AXIOS.get('/account/auth', token)
+  },
+  uploadImage (data, token) {
+    return AXIOS.post(`/upload/image`, data, token)
   }
 }
