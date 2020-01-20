@@ -1,9 +1,6 @@
 package com.toffeestory.backend.post;
 
-import com.toffeestory.backend.account.Account;
-import com.toffeestory.backend.account.AccountController;
-import com.toffeestory.backend.exception.AccountNotValidException;
-import com.toffeestory.backend.exception.PostNotValidException;
+import com.toffeestory.backend.exception.InvalidPostException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +31,7 @@ public class PostController {
             for (ObjectError error : errorLists) {
                 LOG.error(error.toString());
             }
-            throw new PostNotValidException("Post 형식이 올바르지 않습니다.");
+            throw new InvalidPostException("Post 형식이 올바르지 않습니다.");
         }else{
             @Valid Post save = postRepository.save(post);
             return "Sucess";

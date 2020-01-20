@@ -7,7 +7,7 @@ const AXIOS = axios.create({
 
 export default {
   joinAccount (fullName, userName, email, password) {
-    return AXIOS.post(`/account/join`, {
+    return AXIOS.post(`/account`, {
       'accountName': fullName,
       'accountId': userName,
       'email': email,

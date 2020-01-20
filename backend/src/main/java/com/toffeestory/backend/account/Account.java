@@ -4,7 +4,6 @@ import com.toffeestory.backend.post.Post;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -89,6 +88,11 @@ public class Account implements UserDetails {
                 ", accountName='" + accountName + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public Account() {
+        this.authority = "ROLE_USER";
+        this.useStateCode = 1;
     }
 
     // UserDetails 필수 구현부분

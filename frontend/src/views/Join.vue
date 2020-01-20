@@ -62,13 +62,12 @@
       createAccount () {
         api.joinAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
           // Login 페이지로 이동
-          if (response.data === this.user.userName) {
+          if (response.status === 201) {
             this.$router.push('/login')
           }
         })
           .catch(e => {
             console.log(e)
-            // this.errors.push(e)
           }
           )
       }
