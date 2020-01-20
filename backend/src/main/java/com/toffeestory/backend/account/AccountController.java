@@ -73,16 +73,16 @@ public class AccountController {
             String password = account.getAccountPwd();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
 
-            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userEmail + "not found"));
+            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("ID / PW 입력 정보를 다시 확인해주세요."));
             String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getAuthorities().toString());
 
             return token;
         } catch (AuthenticationException e) {
-            throw new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요.");
+            throw new UsernameNotFoundException("ID / PW 입력 정보를 다시 확인해주세요.");
         }
     }
 
-    @GetMapping(path = "/auth")
+    @GetMapping(path = "/me")
     public AccountInfo getAccountInfo(@AuthenticationPrincipal UserDetails userDetails){
         Account getAccount = accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
         return new AccountInfo(getAccount.getAccountId(), getAccount.getEmail());
