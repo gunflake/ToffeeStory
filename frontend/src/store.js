@@ -113,6 +113,8 @@ export default new Vuex.Store({
         }
       }
 
+      console.log(config)
+
       api.getAccountInfo(config).then(response => {
         if (response.status === 200) {
           let userObj = response.data
@@ -121,15 +123,26 @@ export default new Vuex.Store({
             userName: userObj.username,
             userEmail: userObj.email
           })
+        } else {
+          localStorage.clear()
         }
       })
       .catch(error => {
         console.log('Error: ' + error)
+        localStorage.clear()
       })
     },
     logoutProcess ({ commit }) {
       commit('logout')
       localStorage.clear()
+    },
+    getMemberToken () {
+      let config = {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+      return config
     }
   }
 })

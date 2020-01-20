@@ -24,12 +24,10 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("email: " + email + " not found"));
     }
 
-    public String saveAccount(Account account){
+    public Account saveAccount(Account account){
         account.setAccountPwd(passwordEncoder.encode(account.getAccountPwd()));
-
         // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
-        @Valid Account save = accountRepository.save(account);
 
-        return save.getAccountId();
+        return accountRepository.save(account);
     }
 }

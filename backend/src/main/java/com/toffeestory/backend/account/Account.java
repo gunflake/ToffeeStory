@@ -1,7 +1,9 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.post.Post;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,6 +56,7 @@ public class Account implements UserDetails {
     private String profilePic;
 
     @Temporal(TemporalType.DATE)
+    @CreationTimestamp
     private Date regDate;
 
     @Temporal(TemporalType.DATE)
@@ -62,8 +65,11 @@ public class Account implements UserDetails {
     @Column
     private Byte useStateCode;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    @Column(length = 20)
+    private String authority;
+
+    @OneToMany(mappedBy = "account")
+    private List<Post> post = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -84,10 +90,17 @@ public class Account implements UserDetails {
                 '}';
     }
 
+    public Account() {
+        this.authority = "ROLE_USER";
+        this.useStateCode = 1;
+    }
+
     // UserDetails 필수 구현부분
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
+        List<String> roles = new ArrayList<>();
+        roles.add(authority);
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
     }
 
     @Override

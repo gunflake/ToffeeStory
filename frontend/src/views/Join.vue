@@ -64,9 +64,11 @@
       createAccount () {
         this.errors = []
         this.createProcess({ fullName: this.user.fullName, userName: this.user.userName, email: this.user.email, password: this.user.password })
-          .then(() => {
-            console.log('Create Account success')
-            this.$router.push('/login')
+          .then(response => {
+			// Login 페이지로 이동
+            if (response.status === 201) {
+              this.$router.push('/login')
+            }
           })
           .catch(error => {
             this.loginError = true

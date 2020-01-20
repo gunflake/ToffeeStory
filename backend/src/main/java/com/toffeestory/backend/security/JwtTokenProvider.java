@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +37,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     }
 
     // Jwt 토큰 생성
-    public String createToken(String username, List<String> roles) {
+    public String createToken(String username, String roles) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", roles);
 
