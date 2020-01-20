@@ -21,6 +21,9 @@ import static java.util.stream.Collectors.toList;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UC_account_email", columnNames = { "email"})
+})
 public class Account implements UserDetails {
     @Id
     @GeneratedValue

@@ -52,7 +52,7 @@ public class AccountController {
             for (ObjectError error : errorLists) {
                 log.error(error.toString());
             }
-            throw new InvalidAccountException("회원정보가 올바르지 않습니다.");
+            throw new InvalidAccountException("회원정보가 올바르지 않습니다. 확인 후 다시 입력해주세요.");
         } else {
             // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
             Account saveAccount = accountService.saveAccount(account);
@@ -78,7 +78,7 @@ public class AccountController {
 
             return token;
         } catch (AuthenticationException e) {
-            throw new InvalidAccountException("ID / PW를 다시 확인해주세요.");
+            throw new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요.");
         }
     }
 

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -22,6 +24,17 @@ public class AccountRepositoryTest {
         account.setAccountPwd("qwer1234");
         account.setAccountName("Vincent Nam");
         accountRepository.save(account);
+
+        Account account1 = new Account();
+        account1.setEmail("gunflake09@gmail.com");
+        account1.setAccountId("gunflake09");
+        account1.setAccountPwd("qwer1234");
+        account1.setAccountName("Vincent Nam");
+
+        accountRepository.save(account1);
+
+
+
     }
 
     @Test

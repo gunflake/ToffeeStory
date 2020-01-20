@@ -63,13 +63,13 @@ export default new Vuex.Store({
           })
           .catch(error => {
             console.log('Error: ' + error)
-            let messgae = error.response.data.message
+            let message = error.response.data.message
 
             commit('login_error', {
               userEmail: email
             })
             commit('alertSetting', {
-              message: messgae
+              message: message
             })
             setTimeout(() => {
               commit('alertInit')
@@ -83,22 +83,19 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         api.joinAccount(fullName, userName, email, password)
           .then(response => {
-            console.log("Response: '" + response.data + "' with Statuscode " + response.status)
-
-            if (response.status === 200 && response.data === userName) {
-              console.log('Create Account successful')
-            }
             resolve(response)
           })
           .catch(error => {
-            console.log('Error: ' + error)
-            let messgae = error.response.data.message
+            let message = error.response.data.message
 
             commit('alertSetting', {
-              message: messgae
+              message: message
             })
+            setTimeout(() => {
+              commit('alertInit')
+            }, 5000)
             // eslint-disable-next-line prefer-promise-reject-errors
-            reject('Invalid Account Info!')
+            reject()
           })
       })
     },
