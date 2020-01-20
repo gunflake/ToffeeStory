@@ -25,5 +25,8 @@ export default {
   },
   uploadImage (data, token) {
     return AXIOS.post(`/image`, data, token)
+  },
+  createPost (data, token) {
+    return AXIOS.post(`/post`, data, token)
   }
 }

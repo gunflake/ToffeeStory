@@ -33,4 +33,16 @@ public class RestExceptionHandler {
         return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, message));
     }
 
+    @ExceptionHandler(value = {InvalidImageException.class})
+    public ResponseEntity invalidImage(InvalidImageException ex, WebRequest request){
+        log.error("handling InvalidImageException...");
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {InvalidJwtAuthenticationException.class})
+    public ResponseEntity invalidJwtAuthentication(InvalidJwtAuthenticationException ex, WebRequest request){
+        log.error("handling InvalidJwtAuthenticationException...");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestApiError(HttpStatus.UNAUTHORIZED, "로그인 세션이 만료되었습니다. 다시 로그인 해주세요."));
+    }
+
 }

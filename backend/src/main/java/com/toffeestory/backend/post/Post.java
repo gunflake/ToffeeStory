@@ -52,7 +52,7 @@ public class Post {
             this.account.getPost().remove(this);
         }
         this.account = account;
-        account.getPost().add(this);
+        this.account.getPost().add(this);
     }
 
     // Post 생성시 likeCount, UserStateCode 기본값 세팅

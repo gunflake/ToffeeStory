@@ -23,12 +23,12 @@
           </div>
           <!-- star select space -->
           <div class="flex w-full mt-2">
-            <star-rating :rating="1" :star-size="40" :show-rating="false" active-color="#003d24"/>
+            <star-rating v-bind:increment="0.5" :rating="1" :star-size="40" :show-rating="false" active-color="#003d24" @rating-selected="setCurrentRating($event)"/>
           </div>
           <!-- comment input space  -->
           <div class="w-full mt-2">
             <label>
-              <textarea class="w-full shadow-inner py-2 px-3 border-2" placeholder="내용을 입력해주세요." rows="4"/>
+              <textarea v-model="content" class="w-full shadow-inner py-2 px-3 border-2" placeholder="내용을 입력해주세요." rows="4"/>
             </label>
           </div>
           <!-- cancel & publish button -->
@@ -36,7 +36,7 @@
             <button @click="$emit('close')"
                     class="ml-4 bg-gray-400 hover:bg-gray-500 text-black font-semibold py-2 px-4 rounded">Cancel
             </button>
-            <button @click="$emit('close')"
+            <button @click="createPost"
                     class="ml-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">Upload
             </button>
           </div>
@@ -58,7 +58,9 @@
     },
     data () {
       return {
-        selectedFile: null
+        selectedFile: null,
+        rating: 1,
+        content: ''
       }
     },
     methods: {
@@ -76,8 +78,24 @@
         formData.append('file', this.selectedFile)
         // console.log(fd)
         api.uploadImage(formData, token)
+      },
+      setCurrentRating (rating) {
+        this.rating = rating
+      },
+      createPost () {
+        let token = {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+        let formData = new FormData()
+        formData.append('file', this.selectedFile)
+        formData.append('content', this.content)
+        formData.append('score', this.rating)
+        console.log(formData)
+        api.createPost(formData, token)
       }
-
     }
   }
 

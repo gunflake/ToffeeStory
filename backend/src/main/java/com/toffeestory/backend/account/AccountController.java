@@ -4,6 +4,7 @@ import com.toffeestory.backend.exception.InvalidAccountException;
 import com.toffeestory.backend.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
 @RestController
@@ -73,18 +75,17 @@ public class AccountController {
             String password = account.getAccountPwd();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
 
-            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("ID / PW 입력 정보를 다시 확인해주세요."));
+            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요."));
             String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getAuthorities().toString());
 
             return token;
         } catch (AuthenticationException e) {
-            throw new UsernameNotFoundException("ID / PW 입력 정보를 다시 확인해주세요.");
+            throw new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요.");
         }
     }
 
     @GetMapping(path = "/me")
-    public AccountInfo getAccountInfo(@AuthenticationPrincipal UserDetails userDetails){
-        Account getAccount = accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
-        return new AccountInfo(getAccount.getAccountId(), getAccount.getEmail());
+    public ResponseEntity<AccountInfo> getAccountInfo(@AuthenticationPrincipal Account account){
+        return ok(new AccountInfo(account.getAccountId(), account.getEmail()));
     }
 }
