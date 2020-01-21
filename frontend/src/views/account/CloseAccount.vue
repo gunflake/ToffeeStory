@@ -2,7 +2,7 @@
   <div>
     <h3 class="mb-4 text-xl text-black font-bold">Close Account</h3>
     <!-- 입력 폼 -->
-    <div class="w-full mx-3">
+    <div class="w-full">
       <div class="text-base mb-4">
         <span class="text-red-500 font-bold">Warning!  </span>
         <span class="text-black">Closing your account is irreversible.</span>

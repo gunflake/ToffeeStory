@@ -77,14 +77,43 @@ public class AccountController {
     // Edit Profile 내 정보 세팅용
     @GetMapping(path = "/secured/getAccount")
     public Account getAccount(@AuthenticationPrincipal UserDetails userDetails){
-        Account account = accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
-
-        return account;
+        return accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
     }
 
-    // 회원 정보 업데이트
+    // TODO : 수정하는건 PUT으로
+    // 계정 정보 업데이트
     @PostMapping(path = "/secured/updateAccount")
-    public String updateAccount(@RequestBody Account account) {
-        return "";
+    public Integer updateAccount(@RequestBody @Valid Account account) {
+        // TODO : username(accountId) 중복 검사 로직 추가
+        account = accountService.updateAccount(account);
+
+        return account.getAccountNo();
+    }
+
+    // 현재 비밀번호 검사
+    @PostMapping(path = "/secured/checkCurrentPassword")
+    public Integer checkCurrentPassword(@RequestBody Account account) {
+        // TODO : 토큰에서 정보 어떻게 가져올까~~~~~ --> @AuthenticationPrincipal, @RequestBody
+        // 리턴시 코드, 메세지 묶어서 보내기? -> Account 객체에 필드 추가
+        try {
+            String userEmail = account.getEmail();
+            String password = account.getAccountPwd();
+            System.out.println("현재 비밀번호 " + userEmail + password);
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
+
+            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userEmail + "not found"));
+
+            return getAccount.getAccountNo();
+        } catch (AuthenticationException e) {
+            return 0;
+        }
+    }
+
+    // 비밀번호 업데이트
+    @PostMapping(path = "/secured/changePassword")
+    public Integer updatePassword(@RequestBody Account account) {
+        account = accountService.updatePassword(account);
+
+        return account.getAccountNo();
     }
 }

@@ -65,6 +65,9 @@ public class Account implements UserDetails {
     @Column(length = 20)
     private String authority;
 
+    @Transient
+    private String accountNewPwd;
+
     @Override
     public String toString() {
         return "Account{" +

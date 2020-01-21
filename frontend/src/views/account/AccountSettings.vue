@@ -1,5 +1,5 @@
 <template>
-  <div class="flex py-20">
+  <div class="flex py-20 px-20">
     <!-- 계정관리 사이드바 -->
     <aside class="sidebar w-1/4 bg-white w-64 my-2 mx-6">
       <ul class="list-reset mr-10">
