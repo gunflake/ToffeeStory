@@ -222,7 +222,7 @@ public class AccountController {
     // ... 코드 생략
 
     @PostMapping(path = "/login")
-    public String loginMember(@RequestBody Account account, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<String> loginMember(@RequestBody Account account, BindingResult bindingResult) throws Exception {
         try {
             String userEmail = account.getEmail();
             String password = account.getAccountPwd();
@@ -231,7 +231,7 @@ public class AccountController {
             Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요."));
             String token = jwtTokenProvider.createToken(getAccount.getEmail(), getAccount.getAuthorities().toString());
 
-            return token;
+            return ok(token);
         } catch (AuthenticationException e) {
             throw new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요.");
         }
