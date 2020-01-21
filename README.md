@@ -16,19 +16,7 @@
     - Server Port : 8080
     
 ## 기술 스택
-- BackEnd
-    - SpringBoot
-    - Java (JDK 12)
-    - JPA
-    - MYSQL 
-    - Spring Security
-    
-- FrontEnd
-    - Vue-Cli
-
-- Common
-    - AWS EC2
-    - AWS RDS
+> Vue, Vuex, Vue-Cli, Java, Spring boot, JPA, Spring Security, JWT, Tailwind css, Git, Gradle, MySQL, AWS EC2, AWS RDS
 
 ## AWS 접속 방법
 > AWS 접속하기 위해서는 AWS 계정에서 자신의 IP를 변경 후 접속해야 한다.
@@ -83,7 +71,7 @@ public class JwtTokenFilter extends GenericFilterBean {
 }
 ```
 
-JwtTokenProvider 클래스를 생성하여 JWT 토큰 생성, 토큰 검증, 인증 정보 조회 등 기능을 추가
+JwtTokenProvider 클래스를 생성하여 JWT 토큰 생성, 토큰 검증, 인증 정보 조회 등 기능을 추가
 
 ```JAVA
 public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
@@ -215,6 +203,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 로그인 요청시 JWT 토큰 생성 관련 로직
 아이디 / 비밀번호가 일치하면 토큰을 생성해서 반환한다.
 
+AccountController.java
 ```JAVA
 @Slf4j
 @RestController
@@ -254,6 +243,7 @@ public class AccountController {
 
 Front Login 페이지에서 로그인을 성공적으로 했을 때, JWT Token 값을 리턴 받게 되고, 해당 Token 값을 LocalStorage에 저장한다. 그 후 LocalStorage에 있는 토큰 값을 `/api/account/me` 로 요청하여 해당 토큰이 유효하면 로그인 된 상태로 설정하고, 실패 시 기존에 있는 토큰 값을 폐기하고 다시 로그인을 통해 Jwt Token 값을 받아야한다.  
 
+FrontEnd store.js
 ```javascript
 // 생략 ...
 Vue.use(Vuex)
@@ -344,7 +334,7 @@ export default new Vuex.Store({
 
 위와 같이 구현한 이유는 Vuex로 로그인 상태를 관리하는데, SPA 특성상 새로고침을 하게 될 경우 로그인 정보를 잃게 된다. 따라서, JWT Token 값을 LoacalStorage에 보관해서 페이지 새로고침이 발생할 경우 페이지가 생성되기전에 `getMemberInfo(JWT Token 값으로 인증 확인)` 메서드를 호출하여 회원 상태를 확인한다.  
 
-Main.js 파일
+FrontEnd Main.js
 ```javascript
 new Vue({
   components: {
@@ -362,6 +352,8 @@ new Vue({
 ```
 
 `/api/account/me` 요청이 들어올 경우 JWT 토큰 유효성 확인 
+
+AccountController.java
 ```JAVA
 @GetMapping(path = "/me")
     public ResponseEntity<AccountInfo> getAccountInfo(@AuthenticationPrincipal Account account){
@@ -374,7 +366,7 @@ new Vue({
 
 RestApiError 클래스를 통해 JSON 형태로 에러 코드 및 메세지를 담아 응답한다.
 
-RestApiError 클래스
+RestApiError.java
 ```JAVA
 public class RestApiError {
 
@@ -392,7 +384,7 @@ public class RestApiError {
 }
 ```
 
-RestExceptionHandler 클래스
+RestExceptionHandler.java
 ```JAVA
 // 유효하지 않은 사용자 계정, 이미지 업로드, 제약 조건 에러 등등 에러가 들어왔을 떄 핸들링 ...
 
