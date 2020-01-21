@@ -119,3 +119,30 @@
     transform: translateY(-50%);
 }
 
+.bg-alert{
+    background-color: #7d7d7d;
+}
+
+.alert-show{
+    animation: alert-show 2s;
+    animation-duration: 0.8s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes alert-show{
+    from   {max-height: 0;}
+    to     {max-height: 4rem;}
+}
+
+.alert-hide{
+    animation: alert-hide 2s;
+    animation-duration: 0.8s;
+    animation-timing-function: ease-in-out;
+    overflow-y: hidden;
+}
+
+/* Standard syntax */
+@keyframes alert-hide {
+    from {max-height: 4rem;}
+    to   {max-height: 0;}
+}

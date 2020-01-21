@@ -1,21 +1,20 @@
 <template>
   <div id="app">
+    <!-- FindPassword Alert -->
+    <Alert/>
     <!-- state = 1 로그인, 0 = 로그아웃 -->
-    <Header :state="state" userId="hmnam"></Header>
+    <Header/>
     <router-view/>
   </div>
 </template>
 
 <script>
   import Header from '@/layout/Header'
+  import Alert from '@/components/Alert'
   export default {
-    data: function () {
-      return {
-        state: 0
-      }
-    },
     components: {
-      Header
+      Header,
+      Alert
     }
   }
 </script>
