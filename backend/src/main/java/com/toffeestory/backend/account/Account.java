@@ -71,7 +71,7 @@ public class Account implements UserDetails {
     @Column(length = 20)
     private String authority;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "account")
     private List<Post> post = new ArrayList<>();
 
     @Override

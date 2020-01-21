@@ -48,13 +48,9 @@ export default new Vuex.Store({
   actions: {
     loginProcess ({ commit, dispatch }, { email, password }) {
       return new Promise((resolve, reject) => {
-        console.log("Accessing backend with userEmail: '" + email)
         api.loginAccount(email, password)
           .then(response => {
-            console.log("Response: '" + response.data + "' with Statuscode " + response.status)
-
             if (response.status === 200) {
-              console.log('Login successful')
               localStorage.setItem('token', response.data)
 
               dispatch('getMemberInfo')
@@ -62,7 +58,6 @@ export default new Vuex.Store({
             resolve(response)
           })
           .catch(error => {
-            console.log('Error: ' + error)
             let message = error.response.data.message
 
             commit('login_error', {
@@ -75,7 +70,7 @@ export default new Vuex.Store({
               commit('alertInit')
             }, 5000)
             // eslint-disable-next-line prefer-promise-reject-errors
-            reject('Invalid credentials!')
+            reject(message)
           })
       })
     },
@@ -109,8 +104,6 @@ export default new Vuex.Store({
           'Authorization': 'Bearer ' + token
         }
       }
-
-      console.log(config)
 
       api.getAccountInfo(config).then(response => {
         if (response.status === 200) {

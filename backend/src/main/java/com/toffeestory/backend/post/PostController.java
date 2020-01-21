@@ -44,6 +44,8 @@ public class PostController {
             throw new InvalidImageException("이미지 업로드에 실패했습니다.");
         }
 
+        account.setPost(postRepository.findAllByAccount(account));
+
         Post post = new Post();
         post.setScore(score);
         post.setContent(content);
