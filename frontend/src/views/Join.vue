@@ -44,11 +44,15 @@
           userName: '',
           email: '',
           password: ''
+        },
+        alert: {
+          message: '',
+          type: ''
         }
       }
     },
     methods: {
-      ...mapActions(['createProcess']),
+      ...mapActions(['createProcess', 'settingAlertMsg']),
       updateFullName (val) {
         this.user.fullName = val
       },
@@ -64,14 +68,16 @@
       createAccount () {
         this.errors = []
         this.createProcess({ fullName: this.user.fullName, userName: this.user.userName, email: this.user.email, password: this.user.password })
-          .then(response => {
-            // Login 페이지로 이동
-            if (response.status === 201) {
-              this.$router.push('/login')
-            }
+          .then(message => {
+            this.alert.message = message
+            this.alert.type = 'green'
+            this.settingAlertMsg(this.alert)
+            this.$router.push('/login')
           })
-          .catch(() => {
-            console.log('error')
+          .catch(message => {
+            this.alert.message = message
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
           })
       }
     }
