@@ -81,6 +81,15 @@ export default new Vuex.Store({
     },
     getMemberInfo ({ commit, dispatch }) {
       let token = localStorage.getItem('token')
+      let userName = localStorage.getItem('username')
+      let userEmail = localStorage.getItem('userEmail')
+
+      if (userName != null && userEmail != null) {
+        commit('login_success', {
+          userName: userName,
+          userEmail: userEmail
+        })
+      }
 
       if (token == null) { return }
 
@@ -93,7 +102,8 @@ export default new Vuex.Store({
       api.getAccountInfo(config).then(response => {
         if (response.status === 200) {
           let userObj = response.data
-
+          localStorage.setItem('username', userObj.username)
+          localStorage.setItem('userEmail', userObj.email)
           commit('login_success', {
             userName: userObj.username,
             userEmail: userObj.email
