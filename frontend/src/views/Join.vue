@@ -1,6 +1,6 @@
 <template>
   <div class="join">
-    <div class="bg-grey-lighter min-h-screen flex flex-col">
+    <div class="bg-grey-lighter flex flex-col">
       <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center px-2">
         <div class="bg-white px-6 pt-8 pb-2 rounded text-black w-full">
           <img src="@/assets/image/toffeeStory.png">
@@ -46,8 +46,8 @@
           password: ''
         },
         alert: {
-          message: '',
-          type: ''
+          message: null,
+          type: null
         }
       }
     },
