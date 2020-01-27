@@ -45,7 +45,7 @@
     <!-- User Information -->
     <div class="w-4/12 flex items-center justify-end">
       <!-- Upload 버튼 -->
-      <button id="show-modal" @click="showModal = true"
+      <button id="show-modal" @click="showUpload"
               class="bg-transparent text-gray-600 font-semibold border border-gray-600 hover:bg-white hover:border-black hover:text-black hover:border-transparent rounded py-2 px-4">
         Upload
       </button>
@@ -83,14 +83,18 @@
   import '@/assets/css/unsplash.css'
   import '@/assets/css/searchComplete.css'
   import UploadModal from '@/components/UploadModal'
-  import { mapGetters } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'Header',
     data: function () {
       return {
         showModal: false,
-        searchTag: ''
+        searchTag: '',
+        alert: {
+          message: null,
+          type: null
+        }
       }
     },
     props: {
@@ -104,8 +108,19 @@
       ...mapGetters(['isLoggedIn', 'getUserName'])
     },
     methods: {
+      ...mapActions(['settingAlertMsg']),
       goHome () {
         this.$router.push('/')
+      },
+      showUpload () {
+        if (!this.isLoggedIn) {
+          this.alert.message = '글을 등록하기 위해서는 로그인이 필요합니다.'
+          this.alert.type = 'gray'
+          this.settingAlertMsg(this.alert)
+          this.$router.push('/login')
+        } else {
+          this.showModal = true
+        }
       }
     }
   }
