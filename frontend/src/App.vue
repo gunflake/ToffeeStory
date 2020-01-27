@@ -2,7 +2,6 @@
   <div id="app">
     <!-- FindPassword Alert -->
     <Alert/>
-    <!-- state = 1 로그인, 0 = 로그아웃 -->
     <Header/>
     <router-view/>
   </div>

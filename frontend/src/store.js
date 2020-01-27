@@ -11,7 +11,8 @@ export default new Vuex.Store({
     userName: null,
     userEmail: null,
     alertState: false,
-    alertMessage: null
+    alertMessage: null,
+    alertType: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
@@ -19,7 +20,8 @@ export default new Vuex.Store({
     getUserName: state => state.userName,
     getUserEmail: state => state.userEmail,
     getAlertState: state => state.alertState,
-    getAlertMessage: state => state.alertMessage
+    getAlertMessage: state => state.alertMessage,
+    getAlertType: state => state.alertType
   },
   mutations: {
     login_success (state, payload) {
@@ -38,10 +40,12 @@ export default new Vuex.Store({
     },
     alertInit (state) {
       state.alertMessage = null
+      state.alertType = null
       state.alertState = false
     },
     alertSetting (state, payload) {
       state.alertMessage = payload.message
+      state.alertType = payload.type
       state.alertState = true
     }
   },
@@ -52,24 +56,12 @@ export default new Vuex.Store({
           .then(response => {
             if (response.status === 200) {
               localStorage.setItem('token', response.data)
-
               dispatch('getMemberInfo')
             }
             resolve(response)
           })
           .catch(error => {
             let message = error.response.data.message
-
-            commit('login_error', {
-              userEmail: email
-            })
-            commit('alertSetting', {
-              message: message
-            })
-            setTimeout(() => {
-              commit('alertInit')
-            }, 5000)
-            // eslint-disable-next-line prefer-promise-reject-errors
             reject(message)
           })
       })
@@ -78,23 +70,16 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         api.joinAccount(fullName, userName, email, password)
           .then(response => {
-            resolve(response)
+            let message = '회원가입이 되었습니다.'
+            resolve(message)
           })
           .catch(error => {
             let message = error.response.data.message
-
-            commit('alertSetting', {
-              message: message
-            })
-            setTimeout(() => {
-              commit('alertInit')
-            }, 5000)
-            // eslint-disable-next-line prefer-promise-reject-errors
-            reject()
+            reject(message)
           })
       })
     },
-    getMemberInfo ({ commit }) {
+    getMemberInfo ({ commit, dispatch }) {
       let token = localStorage.getItem('token')
 
       if (token == null) { return }
@@ -117,10 +102,23 @@ export default new Vuex.Store({
           localStorage.clear()
         }
       })
-      .catch(error => {
-        console.log('Error: ' + error)
+      .catch(() => {
         localStorage.clear()
+        let message = '로그인 기간이 만료되었습니다.'
+        let data = {}
+        data.message = message
+        data.type = 'gray'
+        dispatch('settingAlertMsg', data)
       })
+    },
+    settingAlertMsg ({ commit }, { message, type }) {
+      commit('alertSetting', {
+        message: message,
+        type: type
+      })
+      setTimeout(() => {
+        commit('alertInit')
+      }, 5000)
     },
     logoutProcess ({ commit }) {
       commit('logout')
