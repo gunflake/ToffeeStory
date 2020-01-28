@@ -191,9 +191,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Spring Security에서 세션을 만들거나 사용하지 않음
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/api/account/**").permitAll() // '/api/account/**' 관련 요청만 인증 없이 조회 가능
+                    .antMatchers("/api/accounts/**").permitAll() // '/api/accounts/**' 관련 요청만 인증 없이 조회 가능
                     //.antMatchers("/api/secure/**").hasRole("USER") // 기본적으로 ROLE_* < 로 검색한다. 따라서 ROLE_ 을 붙여서 권한을 등록해줘야함
-                    .anyRequest().authenticated() // '/api/account/**' 을 제외한 모든 요청에 인증이 필요함
+                    .anyRequest().authenticated() // '/api/accounts/**' 을 제외한 모든 요청에 인증이 필요함
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider)); // Jwt 인증 방식 적용
     }
@@ -207,7 +207,7 @@ AccountController.java
 ```JAVA
 @Slf4j
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/accounts")
 public class AccountController {
 
     @Autowired
@@ -241,7 +241,7 @@ public class AccountController {
 }
 ```
 
-Front Login 페이지에서 로그인을 성공적으로 했을 때, JWT Token 값을 리턴 받게 되고, 해당 Token 값을 LocalStorage에 저장한다. 그 후 LocalStorage에 있는 토큰 값을 `/api/account/me` 로 요청하여 해당 토큰이 유효하면 로그인 된 상태로 설정하고, 실패 시 기존에 있는 토큰 값을 폐기하고 다시 로그인을 통해 Jwt Token 값을 받아야한다.  
+Front Login 페이지에서 로그인을 성공적으로 했을 때, JWT Token 값을 리턴 받게 되고, 해당 Token 값을 LocalStorage에 저장한다. 그 후 LocalStorage에 있는 토큰 값을 `/api/accounts/me` 로 요청하여 해당 토큰이 유효하면 로그인 된 상태로 설정하고, 실패 시 기존에 있는 토큰 값을 폐기하고 다시 로그인을 통해 Jwt Token 값을 받아야한다.  
 
 FrontEnd store.js
 ```javascript
@@ -351,7 +351,7 @@ new Vue({
 }).$mount('#app')
 ```
 
-`/api/account/me` 요청이 들어올 경우 JWT 토큰 유효성 확인 
+`/api/accounts/me` 요청이 들어올 경우 JWT 토큰 유효성 확인 
 
 AccountController.java
 ```JAVA
