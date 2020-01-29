@@ -37,6 +37,8 @@ public class PostController {
 
         log.info(multipartFile.getOriginalFilename());
 
+        // TODO : image 파일이 아닌거는 예외처리 던질 수 있도록 처리하기, 글 내용 유효성 검사 추가하기
+
         Path fileNameAndPath = Paths.get("./images/",multipartFile.getOriginalFilename());
         try{
             Files.write(fileNameAndPath, multipartFile.getBytes());

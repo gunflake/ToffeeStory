@@ -7,12 +7,25 @@
             <button class="" @click="$emit('close')">X</button>
           </div>
           <!-- image drag & drop space -->
-          <div id="imageBox" class="bg-gray-200 h-auto w-full" v-on:dragover="dragOverHandler($event)" v-on:drop="dropHandler($event)">
-            <div class="text-center vertical-center text-xl">
-              Drop your image here or click here to upload <br>
-              Maximum file size : 5MB
+          <input type="file" id="selected" @change="onFileSelected" class="hidden">
+          <label for="selected">
+            <div id="imageBox" class="bg-gray-200 h-auto w-full" v-on:dragover="dragOverHandler($event)"
+                 v-on:dragleave="dragLeaveHandler($event)" v-on:drop="dropHandler($event)">
+              <div class="p-20">
+                <div class="flex mb-6">
+                  <svg class="flex-1 items-center h-16 w-16 fill-current" xmlns="http://www.w3.org/2000/svg" width="50"
+                       height="43" viewBox="0 0 50 43">
+                    <path
+                      d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z"></path>
+                  </svg>
+                </div>
+                <div class="text-xl text-center">
+                  Drop your image here or click here to upload <br>
+                  Maximum file size : 5MB
+                </div>
+              </div>
             </div>
-          </div>
+          </label>
           <!-- toffing select space -->
           <div class="bg-blue-100 h-64 w-full mt-8">
             <div class="text-center vertical-center text-xl">
@@ -48,6 +61,7 @@
   import api from '@/backend-api'
   import VueStarRating from 'vue-star-rating'
   import Vue from 'vue'
+  import { mapActions } from 'vuex'
   Vue.use(VueStarRating)
   export default {
     name: 'UploadModal',
@@ -58,29 +72,23 @@
       return {
         selectedFile: null,
         rating: 1,
-        content: ''
+        content: '',
+        alert: {
+          message: null,
+          type: null
+        }
       }
     },
     methods: {
-      onFileSelected (event) {
-        this.selectedFile = event.target.files[0]
-      },
-      uploadFile () {
-        let token = {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-        let formData = new FormData()
-        formData.append('file', this.selectedFile)
-        // console.log(fd)
-        api.uploadImage(formData, token)
-      },
+      ...mapActions(['settingAlertMsg']),
       setCurrentRating (rating) {
         this.rating = rating
       },
       // Image Upload 기능 함수 Start
+      onFileSelected (event) {
+        this.selectedFile = event.target.files[0]
+        this.previewImage(this.selectedFile)
+      },
       previewImage (data) {
         let reader = new FileReader()
         reader.onload = (function (file) {
@@ -94,24 +102,30 @@
             imgForm.setAttribute('class', 'w-full h-auto')
 
             let box = document.getElementById('imageBox')
+            box.innerHTML = ''
             box.appendChild(imgForm)
           }
         })(data)
         // console.log('dataURL: ' + reader.readAsDataURL(data));
         reader.readAsDataURL(data)
       },
+      dragLeaveHandler (event) {
+        event.preventDefault()
+        let imageBox = document.getElementById('imageBox')
+        imageBox.setAttribute('class', 'bg-gray-200 h-auto w-full')
+      },
       dragOverHandler (event) {
         event.preventDefault()
+        let imageBox = document.getElementById('imageBox')
+        imageBox.setAttribute('class', 'bg-gray-400 h-auto w-full')
       },
       dropHandler (ev) {
         ev.preventDefault()
-        console.log('File(s) dropped')
-
-        document.getElementById('imageBox').innerHTML = ''
 
         if (ev.dataTransfer.items) {
           if (ev.dataTransfer.items[0].kind === 'file') {
             let file = ev.dataTransfer.items[0].getAsFile()
+            this.selectedFile = file
             this.previewImage(file)
           }
         } else {
@@ -132,8 +146,19 @@
         formData.append('file', this.selectedFile)
         formData.append('content', this.content)
         formData.append('score', this.rating)
-        console.log(formData)
         api.createPost(formData, token)
+          .then(response => {
+            this.alert.message = '글이 등록되었습니다.'
+            this.alert.type = 'green'
+            this.settingAlertMsg(this.alert)
+            this.$emit('close')
+          })
+          .catch(() => {
+            this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
+            this.$emit('close')
+          })
       }
     }
   }

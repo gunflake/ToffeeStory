@@ -23,9 +23,6 @@ export default {
   getAccountInfo (token) {
     return AXIOS.get('/accounts/me', token)
   },
-  uploadImage (data, token) {
-    return AXIOS.post(`/image`, data, token)
-  },
   createPost (data, token) {
     return AXIOS.post(`/post`, data, token)
   }
