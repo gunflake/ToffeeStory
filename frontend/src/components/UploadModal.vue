@@ -93,8 +93,6 @@
         let reader = new FileReader()
         reader.onload = (function (file) {
           return function (ev) {
-            console.log('ev: ')
-            console.dir(ev)
 
             let imgForm = document.createElement('img')
             imgForm.setAttribute('id', 'selectedImage')
@@ -106,7 +104,6 @@
             box.appendChild(imgForm)
           }
         })(data)
-        // console.log('dataURL: ' + reader.readAsDataURL(data));
         reader.readAsDataURL(data)
       },
       dragLeaveHandler (event) {
@@ -130,7 +127,9 @@
           }
         } else {
           for (let i = 0; i < ev.dataTransfer.files.length; i++) {
-            console.log(ev.dataTransfer.files[i])
+            let file = ev.dataTransfer.files[i]
+            this.selectedFile = file
+            this.previewImage(file)
           }
         }
       },
