@@ -7,12 +7,10 @@
             <button class="" @click="$emit('close')">X</button>
           </div>
           <!-- image drag & drop space -->
-          <div class="bg-gray-200 h-64 w-full">
+          <div id="imageBox" class="bg-gray-200 h-auto w-full" v-on:dragover="dragOverHandler($event)" v-on:drop="dropHandler($event)">
             <div class="text-center vertical-center text-xl">
               Drop your image here or click here to upload <br>
               Maximum file size : 5MB
-              <input type="file" @change="onFileSelected">
-              <Button @click="uploadFile">upload</Button>
             </div>
           </div>
           <!-- toffing select space -->
@@ -82,6 +80,47 @@
       setCurrentRating (rating) {
         this.rating = rating
       },
+      // Image Upload 기능 함수 Start
+      previewImage (data) {
+        let reader = new FileReader()
+        reader.onload = (function (file) {
+          return function (ev) {
+            console.log('ev: ')
+            console.dir(ev)
+
+            let imgForm = document.createElement('img')
+            imgForm.setAttribute('id', 'selectedImage')
+            imgForm.setAttribute('src', ev.target.result)
+            imgForm.setAttribute('class', 'w-full h-auto')
+
+            let box = document.getElementById('imageBox')
+            box.appendChild(imgForm)
+          }
+        })(data)
+        // console.log('dataURL: ' + reader.readAsDataURL(data));
+        reader.readAsDataURL(data)
+      },
+      dragOverHandler (event) {
+        event.preventDefault()
+      },
+      dropHandler (ev) {
+        ev.preventDefault()
+        console.log('File(s) dropped')
+
+        document.getElementById('imageBox').innerHTML = ''
+
+        if (ev.dataTransfer.items) {
+          if (ev.dataTransfer.items[0].kind === 'file') {
+            let file = ev.dataTransfer.items[0].getAsFile()
+            this.previewImage(file)
+          }
+        } else {
+          for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+            console.log(ev.dataTransfer.files[i])
+          }
+        }
+      },
+      // Image Upload 기능 함수 End
       createPost () {
         let token = {
           headers: {
