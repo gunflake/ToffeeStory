@@ -7,7 +7,7 @@ const AXIOS = axios.create({
 
 export default {
   joinAccount (fullName, userName, email, password) {
-    return AXIOS.post(`/account`, {
+    return AXIOS.post(`/accounts`, {
       'accountName': fullName,
       'accountId': userName,
       'email': email,
@@ -15,16 +15,13 @@ export default {
     })
   },
   loginAccount (email, password) {
-    return AXIOS.post(`/account/login`, {
+    return AXIOS.post(`/accounts/login`, {
       'email': email,
       'accountPwd': password
     })
   },
   getAccountInfo (token) {
-    return AXIOS.get('/account/me', token)
-  },
-  uploadImage (data, token) {
-    return AXIOS.post(`/image`, data, token)
+    return AXIOS.get('/accounts/me', token)
   },
   createPost (data, token) {
     return AXIOS.post(`/post`, data, token)

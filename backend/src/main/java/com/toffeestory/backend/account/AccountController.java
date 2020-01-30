@@ -4,14 +4,11 @@ import com.toffeestory.backend.exception.InvalidAccountException;
 import com.toffeestory.backend.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +22,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/accounts")
 public class AccountController {
 
     @Autowired
@@ -61,7 +58,7 @@ public class AccountController {
             return created(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
-                            .path("/api/account/{id}")
+                            .path("/api/accounts/{id}")
                             .buildAndExpand(saveAccount.getAccountNo())
                             .toUri())
                     .build();
