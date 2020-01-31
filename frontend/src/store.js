@@ -9,13 +9,19 @@ export default new Vuex.Store({
     loginSuccess: false,
     loginError: false,
     userName: null,
-    userEmail: null
+    userEmail: null,
+    alertState: false,
+    alertMessage: null,
+    alertType: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
     hasLoginErrored: state => state.loginError,
     getUserName: state => state.userName,
-    getUserEmail: state => state.userEmail
+    getUserEmail: state => state.userEmail,
+    getAlertState: state => state.alertState,
+    getAlertMessage: state => state.alertMessage,
+    getAlertType: state => state.alertType
   },
   mutations: {
     login_success (state, payload) {
@@ -31,38 +37,59 @@ export default new Vuex.Store({
       state.loginSuccess = false
       state.userName = null
       state.userEmail = null
+    },
+    alertInit (state) {
+      state.alertMessage = null
+      state.alertType = null
+      state.alertState = false
+    },
+    alertSetting (state, payload) {
+      state.alertMessage = payload.message
+      state.alertType = payload.type
+      state.alertState = true
     }
   },
   actions: {
     loginProcess ({ commit, dispatch }, { email, password }) {
       return new Promise((resolve, reject) => {
-        console.log("Accessing backend with userEmail: '" + email)
         api.loginAccount(email, password)
           .then(response => {
-            console.log("Response: '" + response.data + "' with Statuscode " + response.status)
-
             if (response.status === 200) {
-              console.log('Login successful')
               localStorage.setItem('token', response.data)
-
               dispatch('getMemberInfo')
             }
             resolve(response)
           })
           .catch(error => {
-            console.log('Error: ' + error)
-
-            commit('login_error', {
-              userEmail: email
-            })
-
-            // eslint-disable-next-line prefer-promise-reject-errors
-            reject('Invalid credentials!')
+            let message = error.response.data.message
+            reject(message)
           })
       })
     },
-    getMemberInfo ({ commit }) {
+    createProcess ({ commit, dispatch }, { fullName, userName, email, password }) {
+      return new Promise((resolve, reject) => {
+        api.joinAccount(fullName, userName, email, password)
+          .then(response => {
+            let message = '회원가입이 되었습니다.'
+            resolve(message)
+          })
+          .catch(error => {
+            let message = error.response.data.message
+            reject(message)
+          })
+      })
+    },
+    getMemberInfo ({ commit, dispatch }) {
       let token = localStorage.getItem('token')
+      let userName = localStorage.getItem('username')
+      let userEmail = localStorage.getItem('userEmail')
+
+      if (userName != null && userEmail != null) {
+        commit('login_success', {
+          userName: userName,
+          userEmail: userEmail
+        })
+      }
 
       if (token == null) { return }
 
@@ -75,20 +102,45 @@ export default new Vuex.Store({
       api.getAccountInfo(config).then(response => {
         if (response.status === 200) {
           let userObj = response.data
-
+          localStorage.setItem('username', userObj.username)
+          localStorage.setItem('userEmail', userObj.email)
           commit('login_success', {
             userName: userObj.username,
             userEmail: userObj.email
           })
+        } else {
+          localStorage.clear()
         }
       })
-      .catch(error => {
-        console.log('Error: ' + error)
+      .catch(() => {
+        localStorage.clear()
+        let message = '로그인 기간이 만료되었습니다.'
+        let data = {}
+        data.message = message
+        data.type = 'gray'
+        dispatch('settingAlertMsg', data)
       })
+    },
+    settingAlertMsg ({ commit }, { message, type }) {
+      commit('alertSetting', {
+        message: message,
+        type: type
+      })
+      setTimeout(() => {
+        commit('alertInit')
+      }, 5000)
     },
     logoutProcess ({ commit }) {
       commit('logout')
       localStorage.clear()
+    },
+    getMemberToken () {
+      let config = {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+      return config
     }
   }
 })

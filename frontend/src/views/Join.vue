@@ -1,6 +1,6 @@
 <template>
   <div class="join">
-    <div class="bg-grey-lighter min-h-screen flex flex-col">
+    <div class="bg-grey-lighter flex flex-col">
       <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center px-2">
         <div class="bg-white px-6 pt-8 pb-2 rounded text-black w-full">
           <img src="@/assets/image/toffeeStory.png">
@@ -29,7 +29,8 @@
 
 <script>
   import InputBox from '@/components/InputBox'
-  import api from '@/backend-api'
+  import { mapActions } from 'vuex'
+
   export default {
     name: 'login',
     components: {
@@ -43,10 +44,15 @@
           userName: '',
           email: '',
           password: ''
+        },
+        alert: {
+          message: null,
+          type: null
         }
       }
     },
     methods: {
+      ...mapActions(['createProcess', 'settingAlertMsg']),
       updateFullName (val) {
         this.user.fullName = val
       },
@@ -60,17 +66,19 @@
         this.user.password = val
       },
       createAccount () {
-        api.joinAccount(this.user.fullName, this.user.userName, this.user.email, this.user.password).then(response => {
-          // Login 페이지로 이동
-          if (response.data === this.user.userName) {
+        this.errors = []
+        this.createProcess({ fullName: this.user.fullName, userName: this.user.userName, email: this.user.email, password: this.user.password })
+          .then(message => {
+            this.alert.message = message
+            this.alert.type = 'green'
+            this.settingAlertMsg(this.alert)
             this.$router.push('/login')
-          }
-        })
-          .catch(e => {
-            console.log(e)
-            // this.errors.push(e)
-          }
-          )
+          })
+          .catch(message => {
+            this.alert.message = message
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
+          })
       }
     }
   }

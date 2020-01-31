@@ -1,7 +1,6 @@
 <template>
   <div class="login">
-<!--    <h2>{{info}}</h2>-->
-    <div class="bg-grey-lighter min-h-screen flex flex-col">
+    <div class="bg-grey-lighter flex flex-col">
       <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center px-2">
         <div class="bg-white px-6 py-8 rounded text-black w-full">
           <img src="@/assets/image/toffeeStory.png" class="pb-10">
@@ -34,14 +33,15 @@
     },
     data () {
       return {
-        loginError: false,
-        error: false,
-        errors: [],
         info: null,
         visible: true,
         user: {
           email: '',
           password: ''
+        },
+        alert: {
+          message: null,
+          type: null
         }
       }
     },
@@ -49,7 +49,7 @@
       ...mapGetters(['isLoggedIn'])
     },
     methods: {
-      ...mapActions(['loginProcess']),
+      ...mapActions(['loginProcess', 'settingAlertMsg']),
       updateEmail (val) {
         this.user.email = val
       },
@@ -57,16 +57,14 @@
         this.user.password = val
       },
       callLogin () {
-        this.errors = []
         this.loginProcess({ email: this.user.email, password: this.user.password })
           .then(() => {
-            console.log('login success')
             this.$router.push('/')
           })
-          .catch(error => {
-            this.loginError = true
-            this.errors.push(error)
-            this.error = true
+          .catch(message => {
+            this.alert.message = message
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
           })
       }
     }

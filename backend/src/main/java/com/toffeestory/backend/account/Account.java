@@ -1,7 +1,9 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.post.Post;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ import static java.util.stream.Collectors.toList;
 @Entity
 @Getter
 @Setter
+        @UniqueConstraint(name = "UC_account_email", columnNames = { "email"})
 public class Account implements UserDetails {
     @Id
     @GeneratedValue
@@ -54,6 +57,7 @@ public class Account implements UserDetails {
     private String profilePic;
 
     @Temporal(TemporalType.DATE)
+    @CreationTimestamp
     private Date regDate;
 
     @Temporal(TemporalType.DATE)
@@ -64,6 +68,9 @@ public class Account implements UserDetails {
 
     @Column(length = 20)
     private String authority;
+
+    @OneToMany(mappedBy = "account")
+    private List<Post> post = new ArrayList<>();
 
     @Transient
     private String accountNewPwd;
@@ -91,6 +98,11 @@ public class Account implements UserDetails {
                 ", accountName='" + accountName + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public Account() {
+        this.authority = "ROLE_USER";
+        this.useStateCode = 1;
     }
 
     // UserDetails 필수 구현부분

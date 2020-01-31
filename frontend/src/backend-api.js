@@ -2,12 +2,12 @@ import axios from 'axios'
 
 const AXIOS = axios.create({
   baseURL: `/api`,
-  timeout: 1000
+  timeout: 10000
 })
 
 export default {
   joinAccount (fullName, userName, email, password) {
-    return AXIOS.post(`/account/join`, {
+    return AXIOS.post(`/accounts`, {
       'accountName': fullName,
       'accountId': userName,
       'email': email,
@@ -15,13 +15,16 @@ export default {
     })
   },
   loginAccount (email, password) {
-    return AXIOS.post(`/account/login`, {
+    return AXIOS.post(`/accounts/login`, {
       'email': email,
       'accountPwd': password
     })
   },
   getAccountInfo (token) {
-    return AXIOS.get('/account/auth', token)
+    return AXIOS.get('/accounts/me', token)
+  },
+  createPost (data, token) {
+    return AXIOS.post(`/post`, data, token)
   },
   getAccount (token) {
     return AXIOS.get('/account/secured/getAccount', token)

@@ -23,7 +23,6 @@ public class SampleData implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         createAccountHM();
-
     }
 
     private void createAccountHM() {
@@ -32,7 +31,6 @@ public class SampleData implements ApplicationRunner {
         account.setAccountId("gunflake09");
         account.setAccountPwd("qwer1234");
         account.setAccountName("Vincent Nam");
-
         accountService.saveAccount(account);
     }
 }

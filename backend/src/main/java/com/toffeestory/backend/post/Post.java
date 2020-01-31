@@ -1,23 +1,30 @@
 package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Entity;
+import java.util.Date;
 
 @Entity
-@Table(name = "Post")
+@Getter
+@Setter
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer postNo;
 
     @ManyToOne
-    @JoinColumn(name = "AccountNo")
-    private Account AccountNo;
+    @JoinColumn(name = "accountNo")
+    private Account account;
 
     @Column(nullable = false)
     private String postPic;
 
+    @Lob
     @Column(nullable = false)
     private String content;
 
@@ -30,12 +37,27 @@ public class Post {
     @Column(nullable = false)
     private Short price;
 
-    @Column(nullable = false)
-    private Timestamp regDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date regDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updDate;
 
     @Column
-    private Timestamp updDate;
+    private Byte useStateCode;
 
-    @Column
-    private Boolean useStateCode;
+    public void setAccount(Account account) {
+        if(this.account != null){
+            this.account.getPost().remove(this);
+        }
+        this.account = account;
+        this.account.getPost().add(this);
+    }
+
+    // Post 생성시 likeCount, UserStateCode 기본값 세팅
+    public Post() {
+        this.likeCount = 0;
+        this.useStateCode = 1;
+    }
 }
