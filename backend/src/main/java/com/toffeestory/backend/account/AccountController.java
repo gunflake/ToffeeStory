@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -92,28 +93,33 @@ public class AccountController {
 
     // 현재 비밀번호 검사
     @PostMapping(path = "/secured/checkCurrentPassword")
-    public Integer checkCurrentPassword(@RequestBody Account account) {
-        // TODO : 토큰에서 정보 어떻게 가져올까~~~~~ --> @AuthenticationPrincipal, @RequestBody
-        // 리턴시 코드, 메세지 묶어서 보내기? -> Account 객체에 필드 추가
-        try {
-            String userEmail = account.getEmail();
-            String password = account.getAccountPwd();
-            System.out.println("현재 비밀번호 " + userEmail + password);
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
-
-            Account getAccount = accountRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userEmail + "not found"));
-
-            return getAccount.getAccountNo();
-        } catch (AuthenticationException e) {
-            return 0;
+    public Account checkCurrentPassword(@AuthenticationPrincipal Account account, @RequestParam("accountPwd") String requestPwd) {
+        if (accountService.checkCurrentPassword(account.getAccountPwd(), requestPwd)) {
+            account.setResponseCode(0); // 성공
+        } else {
+            account.setResponseCode(1); // 실패
+            account.setResponseMsg("Current Password is invalid");
         }
+
+        return account;
     }
 
     // 비밀번호 업데이트
-    @PostMapping(path = "/secured/changePassword")
-    public Integer updatePassword(@RequestBody Account account) {
+    @PutMapping(path = "/secured/changePassword")
+    public Account updatePassword(@AuthenticationPrincipal Account account, @RequestParam("accountNewPwd") String acocuntNewPwd) {
+        account.setAccountNewPwd(acocuntNewPwd);
         account = accountService.updatePassword(account);
+        account.setResponseCode(0);
 
-        return account.getAccountNo();
+        return account;
+    }
+
+    // 계정 삭제
+    @PostMapping(path = "/secured/deleteAccount")
+    public Account deleteAccount(@AuthenticationPrincipal Account account) {
+        accountRepository.delete(account);
+        account.setResponseCode(0);
+
+        return account;
     }
 }

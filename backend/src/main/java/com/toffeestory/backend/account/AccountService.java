@@ -48,11 +48,9 @@ public class AccountService implements UserDetailsService {
         return accountRepository.save(accountFromDb);
     }
 
-    // 현재 비밀번호 확인
-    public Boolean checkCurrentPassword(Account account) {
-        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new AccountNotValidException(account.getAccountNo()+"를 찾을 수 없습니다"));;
-
-        if (passwordEncoder.encode(account.getAccountPwd()) == accountFromDb.getAccountPwd()) {
+    // 현재 비밀번호 일치 여부 확인
+    public Boolean checkCurrentPassword(String currentPassword, String requestPwd) {
+        if (passwordEncoder.matches(requestPwd, currentPassword)) {
             return true;
         } else {
             return false;

@@ -21,20 +21,18 @@
             <div class="text-base pb-2 text-left">Email</div>
             <input type="text" name="email" v-model="account.email" class="block border border-gray-700 w-full p-2 rounded mb-4 bg-gray-200" disabled/>
           </div>
-          <div class="input-with-error">
-            <div class="text-base pb-2 text-left">User Name</div>
-            <input type="text" name="userName" v-model="account.accountId" class="block border border-gray-700 w-full p-2 rounded mb-4"/>
-          </div>
+          <input-with-error type="text" title="User Name" id="userName" v-on:inputVal="checkUserName"
+                            :errorMsg="userNameMsg" :visible="userNameMsgVisible" :value="account.accountId"></input-with-error>
         </div>
       </div>
       <div class="flex">
-        <div class="inputBox w-1/2 mr-6">
-          <div class="text-base pb-2 text-left">Instagram User Name</div>
-          <input type="text" name="instagram" v-model="account.instagram" class="block border border-gray-700 w-full p-2 rounded mb-4"/>
+        <div class="w-1/2 mr-6">
+          <input-with-error type="text" title="Instagram User Name" id="instagram" v-on:inputVal="validSNS"
+                            :errorMsg="instagramMsg" :visible="instagramMsgVisible" :value="account.instagram"></input-with-error>
         </div>
-        <div class="inputBox w-1/2">
-          <div class="text-base pb-2 text-left">Twitter User Name</div>
-          <input type="text" name="twitter" v-model="account.twitter" class="block border border-gray-700 w-full p-2 rounded mb-4"/>
+        <div class="w-1/2">
+          <input-with-error type="text" title="Twitter User Name" id="twitter" v-on:inputVal="validSNS"
+                            :errorMsg="twitterMsg" :visible="twitterMsgVisible" :value="account.twitter"></input-with-error>
         </div>
       </div>
       <div class="block">
@@ -49,8 +47,13 @@
 <script>
   import api from '@/backend-api'
   import axios from 'axios'
+  import InputWithError from '@/components/InputWithError'
 
   export default {
+    name: 'editProfile',
+    components: {
+      InputWithError
+    },
     data () {
       return {
         account: {
@@ -63,6 +66,12 @@
           bio: '',
           accountPwd: ''
         },
+        userNameMsg: '',
+        instagramMsg: '',
+        twitterMsg: '',
+        userNameMsgVisible: false,
+        instagramMsgVisible: false,
+        twitterMsgVisible: false,
         errors: []
       }
     },
@@ -95,6 +104,12 @@
         })
     },
     methods: {
+      checkUserName () {
+        // 중복검사
+      },
+      validSNS () {
+        // 양식검사
+      },
       updateAccount () {
         let token = localStorage.getItem('token')
 
@@ -109,7 +124,7 @@
         axios.post(`/api/account/secured/updateAccount`, this.account, config)
           .then(response => {
             if (response.data === this.account.accountNo) {
-              // Alert
+              alert('Success')
             }
           }).catch(e => {
             console.log(e)

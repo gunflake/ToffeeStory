@@ -68,6 +68,12 @@ public class Account implements UserDetails {
     @Transient
     private String accountNewPwd;
 
+    @Transient
+    private Integer responseCode;
+
+    @Transient
+    private String responseMsg;
+
     @Override
     public String toString() {
         return "Account{" +
