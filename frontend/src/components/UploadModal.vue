@@ -93,7 +93,6 @@
         let reader = new FileReader()
         reader.onload = (function (file) {
           return function (ev) {
-
             let imgForm = document.createElement('img')
             imgForm.setAttribute('id', 'selectedImage')
             imgForm.setAttribute('src', ev.target.result)
