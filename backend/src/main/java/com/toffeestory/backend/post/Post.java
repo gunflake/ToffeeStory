@@ -1,19 +1,20 @@
 package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
-@Table(name = "Post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer postNo;
 
-    @ManyToOne
-    @JoinColumn(name = "AccountNo")
-    private Account AccountNo;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "accountNo")
+    private Account account;
 
     @Column(nullable = false)
     private String postPic;
@@ -25,17 +26,84 @@ public class Post {
     private Float score;
 
     @Column(nullable = false)
-    private Integer likeCount;
+    private Integer likeCnt;
 
     @Column(nullable = false)
     private Short price;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date regDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updDate;
+
     @Column(nullable = false)
-    private Timestamp regDate;
+    private Byte useStateCode;
 
-    @Column
-    private Timestamp updDate;
+    public void setAccount(Account account) {
+        this.account = account;
 
-    @Column
-    private Boolean useStateCode;
+        if(!account.getPosts().contains(this)) {
+            account.getPosts().add(this);
+        }
+    }
+
+    public Integer getPostNo() {
+        return postNo;
+    }
+
+    public void setPostNo(Integer postNo) {
+        this.postNo = postNo;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public String getPostPic() {
+        return postPic;
+    }
+
+    public void setPostPic(String postPic) {
+        this.postPic = postPic;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Float getScore() {
+        return score;
+    }
+
+    public void setScore(Float score) {
+        this.score = score;
+    }
+
+    public Integer getLikeCnt() {
+        return likeCnt;
+    }
+
+    public void setLikeCnt(Integer likeCnt) {
+        this.likeCnt = likeCnt;
+    }
+
+    public Short getPrice() {
+        return price;
+    }
+
+    public void setPrice(Short price) {
+        this.price = price;
+    }
+
+    // Post 생성시 likeCount, UserStateCode 기본값 세팅
+    public Post() {
+        this.likeCnt = 0;
+        this.useStateCode = 1;
+    }
 }

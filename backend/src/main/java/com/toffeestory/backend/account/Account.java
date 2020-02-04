@@ -1,5 +1,6 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.post.Post;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,10 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -64,6 +62,9 @@ public class Account implements UserDetails {
 
     @Column(length = 20)
     private String authority;
+
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+    private List<Post> posts;
 
     @Override
     public String toString() {
