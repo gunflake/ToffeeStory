@@ -7,20 +7,18 @@
         <span class="text-red-500 font-bold">Warning!  </span>
         <span class="text-black">Closing your account is irreversible.</span>
       </div>
-      <form action="/">
-        <!-- 비밀번호 입력 -->
-        <input-with-error type="password" title="Current Password" id="currentPwd" v-on:inputVal="checkCurrentPwd"
-                          :errorMsg="currentPwdMsg" :visible="currentPwdMsgVisible" :value="account.accountPwd"></input-with-error>
-        <!-- submit 버튼 -->
-        <button @click="closeAccount" class="w-full bg-red-500 text-white rounded py-2 mt-3">Delete Account</button>
-      </form>
+      <input-with-error type="password" title="Current Password" id="currentPwd"
+                        v-on:inputEvent="checkCurrentPwd" v-on:enterEvent="closeAccount" v-model="account.accountPwd"
+                        :errorMsg="currentPwdMsg" :visible="currentPwdMsgVisible"></input-with-error>
+      <!-- submit 버튼 -->
+      <button @click="closeAccount" class="w-full bg-red-500 text-white rounded py-2 mt-3">Delete Account</button>
     </div>
   </div>
 </template>
 <script>
   import axios from 'axios'
-  import { mapActions } from 'vuex'
   import InputWithError from '@/components/InputWithError'
+  import { mapActions } from 'vuex'
 
   export default {
     name: 'closeAccount',
@@ -34,11 +32,15 @@
         },
         errors: [],
         currentPwdMsg: '',
-        currentPwdMsgVisible: false
+        currentPwdMsgVisible: false,
+        alert: {
+          message: null,
+          type: null
+        }
       }
     },
     methods: {
-      ...mapActions(['logoutProcess']),
+      ...mapActions(['settingAlertMsg', 'logoutProcess']),
       checkCurrentPwd (value) {
         this.account.accountPwd = value
 
@@ -47,14 +49,16 @@
 
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + token
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           }
         }
 
         let formData = new FormData()
         formData.append('accountPwd', value)
 
-        axios.post(`/api/account/secured/checkCurrentPassword`, formData, config)
+        axios.put(`/api/accounts/secured/checkCurrentPassword`, formData, config)
           .then(response => {
             if (response.data.responseCode === 0) {
               this.currentPwdMsgVisible = false
@@ -68,14 +72,20 @@
       },
       closeAccount () {
         if (this.account.accountPwd === '') {
-          alert('Please enter all the information')
+          this.alert = {
+            message: 'Please enter password.',
+            type: 'red'
+          }
+          this.settingAlertMsg(this.alert)
         } else if (this.currentPwdMsgVisible) {
-          alert('Please check your input again')
+          this.alert = {
+            message: 'Please check your input again.',
+            type: 'red'
+          }
+          this.settingAlertMsg(this.alert)
         } else if (confirm('Are you sure? This action cannot be undone.')) {
           let token = localStorage.getItem('token')
-          if (token == null) {
-            return
-          }
+          if (token == null) { return }
 
           let formData = new FormData()
           formData.append('accountPwd', this.account.accountPwd)
@@ -86,18 +96,22 @@
             }
           }
 
-          axios.put(`/api/account/secured/closeAccount`, formData, config)
+          axios.post(`/api/accounts/secured/deleteAccount`, formData, config)
             .then(response => {
               if (response.data.responseCode === 0) {
-                alert('Success')
-                this.logoutProcess()
+                this.alert = {
+                  message: 'Your account has been closed. We\'re here for you always :)',
+                  type: 'green'
+                }
                 this.$router.push('/')
+                this.settingAlertMsg(this.alert)
+                this.logoutProcess()
               } else {
                 alert('Fail')
               }
             }).catch(e => {
-            console.log(e)
-          })
+              console.log(e)
+            })
         }
       }
     }

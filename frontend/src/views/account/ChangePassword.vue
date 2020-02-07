@@ -3,13 +3,15 @@
     <h3 class="mb-4 text-xl text-black font-bold">Change Password</h3>
     <!-- 입력 폼 -->
     <div class="w-full">
-      <!-- 비밀번호 입력 -->
-      <input-with-error type="password" title="Current Password" id="currentPwd" v-on:inputVal="checkCurrentPwd"
-                        :errorMsg="currentPwdMsg" :visible="currentPwdMsgVisible" :value="account.accountPwd"></input-with-error>
-      <input-with-error type="password" title="New Password" id="newPwd" v-on:inputVal="validPwd"
-                        :errorMsg="newPwdMsg" :visible="newPwdMsgVisible" :value="account.accountNewPwd"></input-with-error>
-      <input-with-error type="password" title="Password Confirm" id="confirmPwd" v-on:inputVal="confirmPwd"
-                        :errorMsg="confirmPwdMsg" :visible="confirmPwdMsgVisible" :value="account.accountConfirmPwd"></input-with-error>
+      <input-with-error type="password" title="Current Password" id="currentPwd"
+                        v-on:inputEvent="checkCurrentPwd" v-on:enterEvent="changePwd" v-model="account.accountPwd"
+                        :errorMsg="currentPwdMsg" :visible="currentPwdMsgVisible"></input-with-error>
+      <input-with-error type="password" title="New Password" id="newPwd"
+                        v-on:inputEvent="validPwd" v-on:enterEvent="changePwd" v-model="account.accountNewPwd"
+                        :errorMsg="newPwdMsg" :visible="newPwdMsgVisible"></input-with-error>
+      <input-with-error type="password" title="Password Confirm" id="confirmPwd"
+                        v-on:inputEvent="confirmPwd" v-on:enterEvent="changePwd" v-model="account.accountConfirmPwd"
+                        :errorMsg="confirmPwdMsg" :visible="confirmPwdMsgVisible"></input-with-error>
       <!-- submit 버튼 -->
       <button @click="changePwd" class="w-full bg-black text-white rounded py-2 mt-3">Change Password</button>
     </div>
@@ -18,6 +20,7 @@
 <script>
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
+  import { mapActions } from 'vuex'
 
   export default {
     name: 'changePassword',
@@ -37,10 +40,15 @@
         confirmPwdMsg: '',
         currentPwdMsgVisible: false,
         newPwdMsgVisible: false,
-        confirmPwdMsgVisible: false
+        confirmPwdMsgVisible: false,
+        alert: {
+          message: null,
+          type: null
+        }
       }
     },
     methods: {
+      ...mapActions(['settingAlertMsg']),
       checkCurrentPwd (value) {
         this.account.accountPwd = value
 
@@ -56,7 +64,7 @@
         let formData = new FormData()
         formData.append('accountPwd', value)
 
-        axios.post(`/api/account/secured/checkCurrentPassword`, formData, config)
+        axios.post(`/api/accounts/secured/checkCurrentPassword`, formData, config)
           .then(response => {
             if (response.data.responseCode === 0) {
               this.currentPwdMsgVisible = false
@@ -92,9 +100,17 @@
       },
       changePwd () {
         if (this.account.accountPwd === '' || this.account.accountNewPwd === '' || this.account.accountConfirmPwd === '') {
-          alert('Please enter all the information')
+          this.alert = {
+            message: 'Please enter all the information.',
+            type: 'red'
+          }
+          this.settingAlertMsg(this.alert)
         } else if (this.currentPwdMsgVisible || this.newPwdMsgVisible || this.confirmPwdMsgVisible) {
-          alert('Please check your input again')
+          this.alert = {
+            message: 'Please check your input again.',
+            type: 'red'
+          }
+          this.settingAlertMsg(this.alert)
         } else if (confirm('Are you sure?')) {
           let token = localStorage.getItem('token')
           if (token == null) { return }
@@ -108,17 +124,18 @@
             }
           }
 
-          axios.put(`/api/account/secured/changePassword`, formData, config)
-            .then(response => {
-              if (response.data.responseCode === 0) {
-                alert('Success')
-                this.$router.push('/account')
-              } else {
-                alert('Fail')
+          axios.patch(`/api/accounts/secured/changePassword`, formData, config).then(response => {
+            if (response.data.responseCode === 0) {
+              this.alert = {
+                message: 'Your password has been changed successfully!',
+                type: 'green'
               }
-            }).catch(e => {
-              console.log(e)
-            })
+              this.settingAlertMsg(this.alert)
+              this.$router.push('/accounts')
+            }
+          }).catch(e => {
+            console.log(e)
+          })
         }
       }
     }

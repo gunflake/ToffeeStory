@@ -27,6 +27,6 @@ export default {
     return AXIOS.post(`/post`, data, token)
   },
   getAccount (token) {
-    return AXIOS.get('/account/secured/getAccount', token)
+    return AXIOS.get('/accounts/secured/getAccount', token)
   }
 }

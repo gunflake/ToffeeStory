@@ -9,7 +9,7 @@
             <h2 class="font-bold text-3xl">{{ userName }}</h2>
           </div>
           <div class="pr-4">
-            <router-link to="/account">
+            <router-link to="/accounts">
               <button class="text-sm bg-transparent text-gray-700 font-medium hover:text-black py-1 px-4 border border-gray-400 hover:border-black rounded">Edit</button>
             </router-link>
           </div>

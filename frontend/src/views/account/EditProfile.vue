@@ -13,33 +13,30 @@
         </div>
         <!-- 회원 정보 -->
         <div class="w-2/3">
-          <div class="input-with-error">
-            <div class="text-base pb-2 text-left">Full Name</div>
-            <input type="text" name="fullName" v-model="account.accountName" class="block border border-gray-700 w-full p-2 rounded mb-4 bg-gray-200" disabled/>
-          </div>
-          <div class="input-with-error">
-            <div class="text-base pb-2 text-left">Email</div>
-            <input type="text" name="email" v-model="account.email" class="block border border-gray-700 w-full p-2 rounded mb-4 bg-gray-200" disabled/>
-          </div>
-          <input-with-error type="text" title="User Name" id="userName" v-on:inputVal="checkUserName"
-                            :errorMsg="userNameMsg" :visible="userNameMsgVisible" :value="account.accountId"></input-with-error>
+          <input-with-error type="text" title="Full Name" id="fullName" minlength="2" maxlength="30"
+                            v-on:inputEvent="validFullName" v-model="account.accountName"
+                            :errorMsg="fullNameMsg" :visible="fullNameMsgVisible"></input-with-error>
+          <input-with-error type="text" title="Email" id="email" v-model="account.email" :disabled="true"></input-with-error>
+          <input-with-error type="text" title="User Name" id="userName" minlength="2" maxlength="30"
+                            v-on:inputEvent="checkUserName" v-model="account.accountId"
+                            :errorMsg="userNameMsg" :visible="userNameMsgVisible" ></input-with-error>
         </div>
       </div>
       <div class="flex">
         <div class="w-1/2 mr-6">
-          <input-with-error type="text" title="Instagram User Name" id="instagram" v-on:inputVal="validSNS"
-                            :errorMsg="instagramMsg" :visible="instagramMsgVisible" :value="account.instagram"></input-with-error>
+          <input-with-error type="text" title="Instagram User Name" id="instagram" maxlength="30"
+                            v-model="account.instagram" :errorMsg="instagramMsg" :visible="instagramMsgVisible"></input-with-error>
         </div>
         <div class="w-1/2">
-          <input-with-error type="text" title="Twitter User Name" id="twitter" v-on:inputVal="validSNS"
-                            :errorMsg="twitterMsg" :visible="twitterMsgVisible" :value="account.twitter"></input-with-error>
+          <input-with-error type="text" title="Twitter User Name" id="twitter" maxlength="30"
+                            v-model="account.twitter" :errorMsg="twitterMsg" :visible="twitterMsgVisible"></input-with-error>
         </div>
       </div>
       <div class="block">
         <div class="text-base pb-2">Bio</div>
-        <textarea name="bio" v-model="account.bio" class="w-full h-24 resize-none border border-gray-700 rounded"></textarea>
+        <textarea name="bio" v-model="account.bio" class="w-full h-24 resize-none border border-gray-700 rounded" maxlength="255"></textarea>
         <!-- submit 버튼 -->
-        <button role="button" @click="updateAccount()" class="w-full bg-black text-white rounded py-2 my-3">Update Account</button>
+        <button @click="updateAccount" class="w-full bg-black text-white rounded py-2 my-3">Update Account</button>
       </div>
     </div>
   </div>
@@ -48,6 +45,7 @@
   import api from '@/backend-api'
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
+  import { mapActions } from 'vuex'
 
   export default {
     name: 'editProfile',
@@ -56,79 +54,131 @@
     },
     data () {
       return {
-        account: {
-          accountNo: '',
-          accountName: '',
-          email: '',
-          accountId: '',
-          instagram: '',
-          twitter: '',
-          bio: '',
-          accountPwd: ''
-        },
+        account: [],
+        fullNameMsg: '',
         userNameMsg: '',
         instagramMsg: '',
         twitterMsg: '',
+        fullNameMsgVisible: false,
         userNameMsgVisible: false,
         instagramMsgVisible: false,
         twitterMsgVisible: false,
-        errors: []
+        errors: [],
+        alert: {
+          message: null,
+          type: null
+        }
       }
     },
-    beforeCreate () {
+    mounted () {
       let token = localStorage.getItem('token')
-
       if (token == null) { return }
 
       let config = {
         headers: {
-          'Authorization': 'Bearer ' + token
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'multipart/form-data'
         }
       }
 
       api.getAccount(config).then(response => {
         if (response.status === 200) {
-          let account = response.data
-          this.account.accountName = account.accountName
-          this.account.email = account.email
-          this.account.accountId = account.accountId
-          this.account.instagram = account.instagram
-          this.account.twitter = account.twitter
-          this.account.bio = account.bio
-          this.account.accountPwd = account.accountPwd
-          this.account.accountNo = account.accountNo
+          this.account = response.data
         }
+      }).catch(error => {
+        this.errors.push(error)
       })
-        .catch(error => {
-          this.errors.push(error)
-        })
     },
     methods: {
-      checkUserName () {
-        // 중복검사
-      },
-      validSNS () {
-        // 양식검사
-      },
-      updateAccount () {
-        let token = localStorage.getItem('token')
+      ...mapActions(['settingAlertMsg']),
+      validFullName (value) {
+        this.account.accountName = value
 
-        if (token == null) { return }
+        let regex = /^[가-힣a-zA-Z\s]{2,30}$/
 
-        let config = {
-          headers: {
-            'Authorization': 'Bearer ' + token
-          }
+        if (regex.test(value)) {
+          this.fullNameMsgVisible = false
+        } else {
+          this.fullNameMsg = 'Full Name is invalid (2 - 30 characters)' // TODO : 메세지 상수화
+          this.fullNameMsgVisible = true
         }
+      },
+      checkUserName (value) {
+        this.account.accountId = value
 
-        axios.post(`/api/account/secured/updateAccount`, this.account, config)
-          .then(response => {
-            if (response.data === this.account.accountNo) {
-              alert('Success')
+        let regex = /^[가-힣a-zA-Z0-9_]{2,30}$/
+
+        if (!regex.test(value)) {
+          this.userNameMsg = 'User Name is invalid (2 - 30 characters)' // TODO : 메세지 상수화
+          this.userNameMsgVisible = true
+        } else {
+          let token = localStorage.getItem('token')
+          if (token == null) { return }
+
+          let config = {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          }
+
+          let formData = new FormData()
+          formData.append('accountId', value)
+
+          axios.post(`/api/accounts/secured/checkAccountId`, formData, config).then(response => {
+            if (response.data.responseCode === 0) {
+              this.userNameMsgVisible = false
+            } else {
+              this.userNameMsg = response.data.responseMsg
+              this.userNameMsgVisible = true
             }
           }).catch(e => {
             console.log(e)
           })
+        }
+      },
+      updateAccount () {
+        if (this.account.accountName === '' || this.account.accountId === '') {
+          this.alert = {
+            message: 'Full Name and User Name are required.',
+            type: 'red'
+          }
+          this.settingAlertMsg(this.alert)
+        } else if (this.fullNameMsgVisible || this.userNameMsgVisible || this.instagramMsgVisible || this.twitterMsgVisible) {
+          this.alert = {
+            message: 'Please check your input again.',
+            type: 'red'
+          }
+          this.settingAlertMsg(this.alert)
+        } else if (confirm('Are you sure?')) {
+          let token = localStorage.getItem('token')
+          if (token == null) { return }
+
+          let formData = new FormData()
+          formData.append('accountName', this.account.accountName)
+          formData.append('accountId', this.account.accountId)
+          formData.append('instagram', this.account.instagram)
+          formData.append('twitter', this.account.twitter)
+          formData.append('bio', this.account.bio)
+
+          let config = {
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            }
+          }
+
+          axios.put(`/api/accounts/secured/updateAccount`, formData, config).then(response => {
+            if (response.data.responseCode === 0) {
+              this.alert = {
+                message: 'Your account has been changed successfully!',
+                type: 'green'
+              }
+              this.settingAlertMsg(this.alert)
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        }
       }
     }
   }

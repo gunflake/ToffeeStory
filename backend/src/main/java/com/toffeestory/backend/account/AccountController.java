@@ -95,14 +95,28 @@ public class AccountController {
         return accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
     }
 
+    // 아이디 검사
+    @PostMapping(path = "/secured/checkAccountId")
+    public Account checkAccountId(@AuthenticationPrincipal Account account, @RequestParam("accountId") String requestAccountId) {
+        if (accountService.checkAccountId(account.getAccountId(), requestAccountId)) {
+            account.setResponseCode(0); // 성공
+        } else {
+            account.setResponseCode(1); // 실패
+            account.setResponseMsg("You can not use this User Name");
+        }
+
+        return account;
+    }
+
     // TODO : 수정하는건 PUT으로
     // 계정 정보 업데이트
-    @PostMapping(path = "/secured/updateAccount")
-    public Integer updateAccount(@RequestBody @Valid Account account) {
-        // TODO : username(accountId) 중복 검사 로직 추가
-        account = accountService.updateAccount(account);
+    @PutMapping(path = "/secured/updateAccount")
+    public Account updateAccount(@AuthenticationPrincipal Account account, @RequestBody Account requestAccount) {
+        System.out.println("계정 업데이트 : " + requestAccount.toString());
+        account = accountService.updateAccount(account, requestAccount);
+        account.setResponseCode(0);
 
-        return account.getAccountNo();
+        return account;
     }
 
     // 현재 비밀번호 검사
@@ -119,7 +133,7 @@ public class AccountController {
     }
 
     // 비밀번호 업데이트
-    @PutMapping(path = "/secured/changePassword")
+    @PatchMapping(path = "/secured/changePassword")
     public Account updatePassword(@AuthenticationPrincipal Account account, @RequestParam("accountNewPwd") String acocuntNewPwd) {
         account.setAccountNewPwd(acocuntNewPwd);
         account = accountService.updatePassword(account);

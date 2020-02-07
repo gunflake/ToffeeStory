@@ -1,18 +1,13 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.exception.NotFoundAccountException;
 import lombok.extern.slf4j.Slf4j;
-import com.toffeestory.backend.exception.AccountNotValidException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 
 @Slf4j
 @Service
@@ -37,14 +32,24 @@ public class AccountService implements UserDetailsService {
         return accountRepository.save(account);
     }
 
-    // 계정 정보 업데이트
-    public Account updateAccount(Account account) {
-        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new AccountNotValidException(account.getAccountNo()+"를 찾을 수 없습니다"));;
+    // 아이디 검사
+    public boolean checkAccountId(String accountId, String requestAccountId) {
+        if (accountId.equals(requestAccountId) || accountId == requestAccountId || accountRepository.findByAccountId(requestAccountId).orElse(null) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        accountFromDb.setAccountName(account.getAccountName());
-        accountFromDb.setInstagram(account.getInstagram());
-        accountFromDb.setTwitter(account.getTwitter());
-        accountFromDb.setBio(account.getBio());
+    // 계정 정보 업데이트
+    public Account updateAccount(Account account, Account requestAccount) {
+        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
+
+        accountFromDb.setAccountName(requestAccount.getAccountName());
+        accountFromDb.setAccountId(requestAccount.getAccountId());
+        accountFromDb.setInstagram(requestAccount.getInstagram());
+        accountFromDb.setTwitter(requestAccount.getTwitter());
+        accountFromDb.setBio(requestAccount.getBio());
 
         return accountRepository.save(accountFromDb);
     }
@@ -60,7 +65,7 @@ public class AccountService implements UserDetailsService {
 
     // 비밀번호 업데이트
     public Account updatePassword(Account account) {
-        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new AccountNotValidException(account.getAccountNo()+"를 찾을 수 없습니다"));;
+        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
 
         accountFromDb.setAccountPwd(passwordEncoder.encode(account.getAccountNewPwd()));
 

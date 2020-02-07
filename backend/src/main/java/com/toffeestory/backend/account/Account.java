@@ -1,5 +1,6 @@
 package com.toffeestory.backend.account;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.toffeestory.backend.post.Post;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,9 @@ import static java.util.stream.Collectors.toList;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints = {
         @UniqueConstraint(name = "UC_account_email", columnNames = { "email"})
+})
 public class Account implements UserDetails {
     @Id
     @GeneratedValue
@@ -70,6 +73,7 @@ public class Account implements UserDetails {
     private String authority;
 
     @OneToMany(mappedBy = "account")
+    @JsonBackReference
     private List<Post> post = new ArrayList<>();
 
     @Transient
