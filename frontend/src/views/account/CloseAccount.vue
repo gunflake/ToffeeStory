@@ -58,15 +58,14 @@
         let formData = new FormData()
         formData.append('accountPwd', value)
 
-        axios.put(`/api/accounts/secured/checkCurrentPassword`, formData, config)
-          .then(response => {
-            if (response.data.responseCode === 0) {
-              this.currentPwdMsgVisible = false
-            } else {
-              this.currentPwdMsg = response.data.responseMsg
-              this.currentPwdMsgVisible = true
-            }
-          }).catch(e => {
+        axios.put(`/api/accounts/secured/checkCurrentPassword`, formData, config).then(response => {
+          if (response.data.responseCode === 0) {
+            this.currentPwdMsgVisible = false
+          } else {
+            this.currentPwdMsg = response.data.responseMsg
+            this.currentPwdMsgVisible = true
+          }
+        }).catch(e => {
           console.log(e)
         })
       },
@@ -96,22 +95,21 @@
             }
           }
 
-          axios.post(`/api/accounts/secured/deleteAccount`, formData, config)
-            .then(response => {
-              if (response.data.responseCode === 0) {
-                this.alert = {
-                  message: 'Your account has been closed. We\'re here for you always :)',
-                  type: 'green'
-                }
-                this.$router.push('/')
-                this.settingAlertMsg(this.alert)
-                this.logoutProcess()
-              } else {
-                alert('Fail')
+          axios.post(`/api/accounts/secured/deleteAccount`, formData, config).then(response => {
+            if (response.data.responseCode === 0) {
+              this.alert = {
+                message: 'Your account has been closed. We\'re here for you always :)',
+                type: 'green'
               }
-            }).catch(e => {
-              console.log(e)
-            })
+              this.$router.push('/')
+              this.settingAlertMsg(this.alert)
+              this.logoutProcess()
+            } else {
+              alert('Fail')
+            }
+          }).catch(e => {
+            console.log(e)
+          })
         }
       }
     }

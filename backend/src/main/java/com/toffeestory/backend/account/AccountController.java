@@ -108,7 +108,6 @@ public class AccountController {
         return account;
     }
 
-    // TODO : 수정하는건 PUT으로
     // 계정 정보 업데이트
     @PutMapping(path = "/secured/updateAccount")
     public Account updateAccount(@AuthenticationPrincipal Account account, @RequestBody Account requestAccount) {

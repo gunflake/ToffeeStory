@@ -83,7 +83,14 @@
 
       api.getAccount(config).then(response => {
         if (response.status === 200) {
-          this.account = response.data
+          this.account = {
+            accountName: response.data.accountName,
+            email: response.data.email,
+            accountId: response.data.accountId,
+            instagram: response.data.instagram,
+            twitter: response.data.twitter,
+            bio: response.data.bio
+          }
         }
       }).catch(error => {
         this.errors.push(error)
@@ -153,21 +160,13 @@
           let token = localStorage.getItem('token')
           if (token == null) { return }
 
-          let formData = new FormData()
-          formData.append('accountName', this.account.accountName)
-          formData.append('accountId', this.account.accountId)
-          formData.append('instagram', this.account.instagram)
-          formData.append('twitter', this.account.twitter)
-          formData.append('bio', this.account.bio)
-
           let config = {
             headers: {
-              'Authorization': 'Bearer ' + token,
-              'Content-Type': 'application/json'
+              'Authorization': 'Bearer ' + token
             }
           }
 
-          axios.put(`/api/accounts/secured/updateAccount`, formData, config).then(response => {
+          axios.put(`/api/accounts/secured/updateAccount`, this.account, config).then(response => {
             if (response.data.responseCode === 0) {
               this.alert = {
                 message: 'Your account has been changed successfully!',
