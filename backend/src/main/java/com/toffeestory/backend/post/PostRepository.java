@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Transactional
     Optional<Post> findByPostNo(Integer postNo);
-
+    //Post findByPostNo(Integer postNo);
     List<Post> findAllByAccount(Account account);
+
+
 }

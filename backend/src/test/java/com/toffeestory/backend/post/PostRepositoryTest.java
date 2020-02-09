@@ -10,6 +10,7 @@ import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @DataJpaTest
 class PostRepositoryTest {
@@ -42,22 +43,6 @@ class PostRepositoryTest {
         em.persist(account);
     }
 
-    @Test
-    void testPost() {
-        account = new Account();
-        account.setEmail("gunflake09@gmail.com");
-        account.setAccountId("gunflake09");
-        account.setAccountPwd("qwer1234");
-        account.setAccountName("Vincent Nam");
-
-        if(account.getPosts() == null){
-            System.out.println("null 값");
-        }
-
-
-
-    }
-
     @BeforeEach
     void createPost() {
         Post post = new Post();
@@ -82,6 +67,11 @@ class PostRepositoryTest {
     }
     @Test
     void findByPostNo() {
-        Post findPost = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        List<Post> findPost = postRepository.findAll();
+        System.out.println("----------------");
+        for (int i = 0; i < findPost.size(); i++) {
+            System.out.println(findPost.get(i).getPostPic());
+        }
+        System.out.println("----------------");
     }
 }

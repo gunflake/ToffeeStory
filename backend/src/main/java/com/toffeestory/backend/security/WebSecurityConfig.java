@@ -39,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                     .antMatchers("/api/account/**").permitAll() // allow every URI, that begins with '/api/user/'
+                    .antMatchers("/api/posts/**").permitAll() // allow every URI, that begins with '/api/user/'
                     //.antMatchers("/api/secure/**").hasRole("USER") // 기본적으로 ROLE_* < 로 검색한다. 따라서 ROLE_ 을 붙여서 권한을 등록해줘야함
                     .anyRequest().authenticated() // protect all other requests
                 .and()
