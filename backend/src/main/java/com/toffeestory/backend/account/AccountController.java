@@ -1,6 +1,9 @@
 package com.toffeestory.backend.account;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toffeestory.backend.exception.InvalidAccountException;
+import com.toffeestory.backend.exception.InvalidImageException;
+import com.toffeestory.backend.exception.NotFoundAccountException;
 import com.toffeestory.backend.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.created;
@@ -89,9 +97,15 @@ public class AccountController {
         return ok(new AccountInfo(account.getAccountId(), account.getEmail()));
     }
 
+    // Profile 페이지 세팅
+    @GetMapping(path = "/{username}")
+    public ResponseEntity<Account> getProfile(@PathVariable("username") String accountId) {
+        return ok(accountRepository.findByAccountId(accountId).orElseThrow(() -> new NotFoundAccountException("존재하지 않는 아이디")));
+    }
+
     // Edit Profile 내 정보 세팅용
     @GetMapping(path = "/secured/getAccount")
-    public Account getAccount(@AuthenticationPrincipal UserDetails userDetails){
+    public Account getAccount(@AuthenticationPrincipal UserDetails userDetails) {
         return accountRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("UserEmail: " + userDetails.getUsername() + "not found"));
     }
 
@@ -111,9 +125,36 @@ public class AccountController {
     // 계정 정보 업데이트
     @PutMapping(path = "/secured/updateAccount")
     public Account updateAccount(@AuthenticationPrincipal Account account, @RequestBody Account requestAccount) {
-        System.out.println("계정 업데이트 : " + requestAccount.toString());
-        account = accountService.updateAccount(account, requestAccount);
-        account.setResponseCode(0);
+        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
+
+        accountFromDb.setAccountName(requestAccount.getAccountName());
+        accountFromDb.setAccountId(requestAccount.getAccountId());
+        accountFromDb.setInstagram(requestAccount.getInstagram());
+        accountFromDb.setTwitter(requestAccount.getTwitter());
+        accountFromDb.setBio(requestAccount.getBio());
+        accountFromDb.setResponseCode(0);
+
+        return accountRepository.save(accountFromDb);
+    }
+
+    // 프로필 사진 업데이트
+    @PostMapping(path = "/secured/updateProfilePic")
+    public Account updateAccount(@AuthenticationPrincipal Account account, @RequestPart("file") MultipartFile profilePic) throws IOException {
+        if (profilePic != null) {
+            Path fileNameAndPath = Paths.get("./images/", profilePic.getOriginalFilename());
+
+            try {
+                // 파일 저장
+                Files.write(fileNameAndPath, profilePic.getBytes());
+
+                // 계정 업데이트
+                Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
+                accountFromDb.setProfilePic(fileNameAndPath.toString());
+                accountRepository.save(accountFromDb);
+            } catch (IOException e) {
+                throw new InvalidImageException("이미지 업로드에 실패했습니다.");
+            }
+        }
 
         return account;
     }

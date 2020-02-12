@@ -41,19 +41,6 @@ public class AccountService implements UserDetailsService {
         }
     }
 
-    // 계정 정보 업데이트
-    public Account updateAccount(Account account, Account requestAccount) {
-        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
-
-        accountFromDb.setAccountName(requestAccount.getAccountName());
-        accountFromDb.setAccountId(requestAccount.getAccountId());
-        accountFromDb.setInstagram(requestAccount.getInstagram());
-        accountFromDb.setTwitter(requestAccount.getTwitter());
-        accountFromDb.setBio(requestAccount.getBio());
-
-        return accountRepository.save(accountFromDb);
-    }
-
     // 현재 비밀번호 일치 여부 확인
     public Boolean checkCurrentPassword(String currentPassword, String requestPwd) {
         if (passwordEncoder.matches(requestPwd, currentPassword)) {

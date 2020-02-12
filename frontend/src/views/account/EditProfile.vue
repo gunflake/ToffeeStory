@@ -7,8 +7,11 @@
         <!-- 프로필 이미지 -->
         <div class="w-1/3 flex justify-center">
           <div class="block">
-            <img class="h-40 w-40 rounded-full mb-4" src="https://randomuser.me/api/portraits/women/21.jpg">
-            <a>Change Profile Image</a>
+            <img id="selectedImg" class="h-40 w-40 rounded-full mb-4" style="object-fit: cover" :src="account.profilePic">
+            <input id="inputProfileImg" type="file" accept="image/*" class="hidden" @change="onFileSelected">
+            <label for="inputProfileImg">
+              <p class="hover:text-blue-500">Change Profile Image</p>
+            </label>
           </div>
         </div>
         <!-- 회원 정보 -->
@@ -54,6 +57,7 @@
     },
     data () {
       return {
+        selectedFile: null,
         account: [],
         fullNameMsg: '',
         userNameMsg: '',
@@ -71,19 +75,16 @@
       }
     },
     mounted () {
-      let token = localStorage.getItem('token')
-      if (token == null) { return }
-
       let config = {
         headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'multipart/form-data'
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
         }
       }
 
       api.getAccount(config).then(response => {
         if (response.status === 200) {
           this.account = {
+            profilePic: response.data.profilePic,
             accountName: response.data.accountName,
             email: response.data.email,
             accountId: response.data.accountId,
@@ -98,6 +99,53 @@
     },
     methods: {
       ...mapActions(['settingAlertMsg']),
+      onFileSelected (event) {
+        let maxsize = 5 * 1024 * 1024 // 최대용량 5MB
+        this.selectedFile = event.target.files[0]
+
+        if (this.selectedFile.size > maxsize) {
+          this.alert = {
+            message: 'Profile image must be less than 1MB. Try reducing the size of image.',
+            type: 'red'
+          }
+          this.settingAlertMsg(this.alert)
+        } else {
+          // preview
+          let reader = new FileReader()
+          reader.onload = (function (file) {
+            return function (event) {
+              let selectedImg = document.getElementById('selectedImg')
+              selectedImg.setAttribute('src', event.target.result)
+            }
+          })(this.selectedFile)
+          reader.readAsDataURL(this.selectedFile)
+
+          // update
+          let token = localStorage.getItem('token')
+          if (token == null) { return }
+
+          let config = {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          }
+
+          let formData = new FormData()
+          formData.append('file', this.selectedFile)
+
+          axios.post(`/api/accounts/secured/updateProfilePic`, formData, config).then(response => {
+            if (response.status === 200) {
+              this.alert = {
+                message: 'Profile image updated',
+                type: 'green'
+              }
+              this.settingAlertMsg(this.alert)
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        }
+      },
       validFullName (value) {
         this.account.accountName = value
 
@@ -182,3 +230,8 @@
     }
   }
 </script>
+<style>
+  textarea:focus {
+    outline: none;
+  }
+</style>
