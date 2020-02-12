@@ -24,6 +24,6 @@ export default {
     return AXIOS.get('/accounts/me', token)
   },
   createPost (data, token) {
-    return AXIOS.post(`/post`, data, token)
+    return AXIOS.post(`/posts`, data, token)
   }
 }

@@ -1,6 +1,7 @@
 package com.toffeestory.backend.account;
 
 import com.toffeestory.backend.post.Post;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;

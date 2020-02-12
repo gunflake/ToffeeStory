@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -23,7 +20,7 @@ import static org.springframework.http.ResponseEntity.created;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
@@ -33,7 +30,7 @@ public class PostController {
     public ResponseEntity enrollPost(@RequestParam("file") MultipartFile multipartFile,
                                      @RequestParam("content") String content,
                                      @RequestParam("score") float score,
-                                     @AuthenticationPrincipal Account account) throws Exception{
+                                     @AuthenticationPrincipal Account account) throws Exception {
 
         log.info(multipartFile.getOriginalFilename());
 
@@ -60,9 +57,19 @@ public class PostController {
         return created(
                 ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/api/post/{postNo}")
+                .path("/api/posts/{postNo}")
                 .buildAndExpand(save.getPostNo())
                 .toUri()).build();
+    }
+
+    @PutMapping("/{postNo}")
+    public ResponseEntity updatePost(@PathVariable("postNo") int postNo,
+                                     @RequestParam("file") MultipartFile multipartFile,
+                                     @RequestParam("content") String content,
+                                     @RequestParam("score") float score,
+                                     @AuthenticationPrincipal Account account) throws Exception{
+
+        return null;
     }
 
 }
