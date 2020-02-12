@@ -1,10 +1,14 @@
 package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
+import com.toffeestory.backend.toffee.Product;
+import com.toffeestory.backend.toffee.Topping;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Post {
@@ -41,12 +45,26 @@ public class Post {
     @Column(nullable = false)
     private Byte useStateCode;
 
+    @Transient
+    private List<Product> products = new ArrayList<>();
+
+    @Transient
+    private List<Topping> toppings = new ArrayList<>();
+
     public void setAccount(Account account) {
         this.account = account;
 
         if(!account.getPosts().contains(this)) {
             account.getPosts().add(this);
         }
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public void setToppings(List<Topping> toppings) {
+        this.toppings = toppings;
     }
 
     public Integer getPostNo() {
