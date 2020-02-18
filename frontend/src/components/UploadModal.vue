@@ -34,7 +34,7 @@
           </div>
           <!-- star select space -->
           <div class="flex w-full mt-2">
-            <star-rating v-bind:increment="0.5" :rating="1" :star-size="40" :show-rating="false" active-color="#003d24" @rating-selected="setCurrentRating($event)"/>
+            <star-rating v-bind:increment="0.5" :rating=rating :star-size="40" :show-rating="false" active-color="#003d24" @rating-selected="setCurrentRating($event)"/>
           </div>
           <!-- comment input space  -->
           <div class="w-full mt-2">
@@ -61,18 +61,46 @@
   import api from '@/backend-api'
   import VueStarRating from 'vue-star-rating'
   import Vue from 'vue'
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   Vue.use(VueStarRating)
   export default {
     name: 'UploadModal',
     components: {
       'star-rating': VueStarRating
     },
+    props: {
+      postNo: {
+        type: Number,
+        default: 0
+      }
+    },
+    computed: {
+      ...mapGetters(['getToken'])
+    },
+    created () {
+      if (this.postNo === 0) {
+        api.getPostInfo(this.postNo, this.getToken)
+          .then(response => {
+            console.log(response)
+            this.rating = response.data.score
+            this.content = response.data.content
+            this.price = response.data.price
+            // let src = response.data.postPic
+            // console.log(src)
+            let header = response.headers
+            console.log(header['content-disposition'])
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+    },
     data () {
       return {
         selectedFile: null,
         rating: 1,
         content: '',
+        price: 0,
         alert: {
           message: null,
           type: null
@@ -134,17 +162,11 @@
       },
       // Image Upload 기능 함수 End
       createPost () {
-        let token = {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            'Content-Type': 'multipart/form-data'
-          }
-        }
         let formData = new FormData()
         formData.append('file', this.selectedFile)
         formData.append('content', this.content)
         formData.append('score', this.rating)
-        api.createPost(formData, token)
+        api.createPost(formData, this.getToken)
           .then(response => {
             this.alert.message = '글이 등록되었습니다.'
             this.alert.type = 'green'

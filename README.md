@@ -319,14 +319,6 @@ export default new Vuex.Store({
     logoutProcess ({ commit }) {
       commit('logout')
       localStorage.clear()
-    },
-    getMemberToken () {
-      let config = {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-      return config
     }
   }
 })

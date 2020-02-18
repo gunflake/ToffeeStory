@@ -2,21 +2,28 @@ package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.exception.InvalidImageException;
+import com.toffeestory.backend.exception.NotFoundPostException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Principal;
 
 import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
 @RestController
@@ -60,6 +67,24 @@ public class PostController {
                 .path("/api/posts/{postNo}")
                 .buildAndExpand(save.getPostNo())
                 .toUri()).build();
+    }
+
+    @GetMapping(path = "/{postNo}")
+    public ResponseEntity getPost(@PathVariable("postNo") int postNo,
+                                  @AuthenticationPrincipal Account account) throws Exception{
+
+
+        Post post = postRepository.findByAccount(account).orElseThrow(() -> new NotFoundPostException(0));
+        log.info(post.getPostPic());
+        File file = new File("./images/"+post.getPostPic());
+        post.setFile(file);
+        Resource resource = new FileUrlResource(post.getPostPic());
+
+        return ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .header("Content-Disposition","attachment; filename=\"" + file.getName() + "\"" )
+                .body(resource);
+
     }
 
     @PutMapping("/{postNo}")
