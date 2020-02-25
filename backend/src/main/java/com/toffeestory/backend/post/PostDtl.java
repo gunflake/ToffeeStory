@@ -3,7 +3,7 @@ package com.toffeestory.backend.post;
 import javax.persistence.*;
 
 @Entity
-public class PostToppingDtl {
+public class PostDtl {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer seqNo;
@@ -12,10 +12,13 @@ public class PostToppingDtl {
     private Integer postNo;
 
     @Column(nullable = false)
-    private Integer productNo;
+    private Byte flag;
 
     @Column(nullable = false)
-    private Integer toppingNo;
+    private Integer key;
+
+    @Column(nullable = false, length = 20)
+    private String tagName;
 
     @Column(nullable = false, length = 20)
     private String value;
@@ -39,31 +42,18 @@ public class PostToppingDtl {
         this.postNo = postNo;
     }
 
-    public Integer getProductNo() {
-        return productNo;
-    }
-
-    public void setProductNo(Integer productNo) {
-        this.productNo = productNo;
-    }
-
-    public Integer getToppingNo() {
-        return toppingNo;
-    }
-
-    public void setToppingNo(Integer toppingNo) {
-        this.toppingNo = toppingNo;
-    }
-
     public String getValue() {
         return value;
     }
 
+    public String getTagName() {
+        return tagName;
+    }
     public void setValue(String value) {
         this.value = value;
     }
 
-    public PostToppingDtl() {
+    public PostDtl() {
         this.useState = 1;
     }
 }

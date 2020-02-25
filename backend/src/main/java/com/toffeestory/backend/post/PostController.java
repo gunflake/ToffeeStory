@@ -2,19 +2,14 @@ package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountRepository;
-import com.toffeestory.backend.toffee.Product;
-import com.toffeestory.backend.toffee.ProductRepository;
-import com.toffeestory.backend.toffee.Topping;
-import com.toffeestory.backend.toffee.ToppingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/posts")
 public class PostController {
     @Autowired
@@ -24,23 +19,23 @@ public class PostController {
     AccountRepository accountRepository;
 
     @Autowired
-    PostToppingDtlRepository postToppingDtlRepository;
+    PostDtlRepository postDtlRepository;
 
     @Autowired
     InterestPostRepository interestPostRepository;
 
-    @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    ToppingRepository toppingRepository;
-
     /*-------------------------------
-       -select Post List
+       -select Post List (new / best / hot)
      -------------------------------*/
-    @GetMapping(path = "/post")
-    public List<Post> initPage() {
-        return postRepository.findAll();
+    @GetMapping(path = "")
+    public List<Post> initPage(@RequestParam("flag") Integer flag) {
+        if(flag == 0){                      // New
+            return postRepository.findAll();
+        } else if(flag == 1) {              // Best
+            return postRepository.findAllByOrderByScoreDesc();
+        } else {                            // Hot
+            return postRepository.findAllByOrderByLikeCntDesc();
+        }
     }
 
     /*-------------------------------
@@ -49,18 +44,15 @@ public class PostController {
     @GetMapping(path = "/{postNo}")
     public Post selectPost(@PathVariable("postNo") Integer postNo) {
         Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
-        List<Product> products = new ArrayList<>();
-        List<Topping> toppings = new ArrayList<>();
+        List<String> tagNames = new ArrayList<>();
 
-        List<PostToppingDtl> postToppingDtls = postToppingDtlRepository.findByPostNo(postNo);
+        List<PostDtl> postDtls = postDtlRepository.findByPostNo(postNo);
 
-        for (int i = 0; i < postToppingDtls.size(); i++) {
-            products.add(productRepository.findByProductNo(postToppingDtls.get(i).getProductNo()).orElseThrow(() -> new RuntimeException()));
-            toppings.add(toppingRepository.findByToppingNo(postToppingDtls.get(i).getToppingNo()).orElseThrow(() -> new RuntimeException()));
+        for (int i = 0; i < postDtls.size(); i++) {
+            tagNames.add(postDtls.get(i).getTagName());
         }
 
-        post.setProducts(products);
-        post.setToppings(toppings);
+        post.setTags(tagNames);
 
         return post;
     }
@@ -73,14 +65,11 @@ public class PostController {
         List<Post> posts = new ArrayList<>();
 
         //해당 게시글이 가지고 있는 토핑, 상품 조회
-        List<PostToppingDtl> postToppingDtls = postToppingDtlRepository.findByPostNo(postNo);
+        List<PostDtl> postDtls = postDtlRepository.findByPostNo(postNo);
 
-        for (int i = 0; i < postToppingDtls.size(); i++) {
-            int productNo = postToppingDtls.get(i).getProductNo();
-            int toppingNo = postToppingDtls.get(i).getToppingNo();
-
+        for (int i = 0; i < postDtls.size(); i++) {
             // 토핑, 상품을 가지고 있는 게시글 넘버 가져옴
-            List<PostToppingDtl> setPostNo = postToppingDtlRepository.findByProductNoOrToppingNo(productNo, toppingNo);
+            List<PostDtl> setPostNo = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
 
             for (int j = 0; j < setPostNo.size(); j++) {
                 int getPostNo = setPostNo.get(i).getPostNo();
@@ -98,15 +87,15 @@ public class PostController {
        - select Tag
      -------------------------------*/
     @GetMapping("/{tagName}")
-    public List<Post> tagPostList(@PathVariable("tagName") Integer tagName) {
-        List<Post> post = new ArrayList<>();
-        List<Integer> postNo = postToppingDtlRepository.findPostNoByProductNoOrToppingNo(tagName);
+    public List<Post> tagPostList(@PathVariable("tagName") String tagName) {
+        List<Post> posts = new ArrayList<>();
+        List<PostDtl> postNo = postDtlRepository.findByTagName(tagName);
 
         for (int i = 0; i < postNo.size(); i++) {
-            post.add(postRepository.findByPostNo(postNo.get(i)).orElseThrow(() -> new RuntimeException()));
+            posts.add(postRepository.findByPostNo(postNo.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
         }
 
-        return post;
+        return posts;
     }
 
     /*-------------------------------

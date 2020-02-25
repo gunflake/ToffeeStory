@@ -46,10 +46,7 @@ public class Post {
     private Byte useStateCode;
 
     @Transient
-    private List<Product> products = new ArrayList<>();
-
-    @Transient
-    private List<Topping> toppings = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 
     public void setAccount(Account account) {
         this.account = account;
@@ -59,12 +56,8 @@ public class Post {
         }
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public void setToppings(List<Topping> toppings) {
-        this.toppings = toppings;
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public Integer getPostNo() {

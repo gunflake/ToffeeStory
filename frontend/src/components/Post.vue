@@ -80,9 +80,11 @@
 <script>
   import VueStarRating from 'vue-star-rating'
   import axios from 'axios'
+  import api from '@/backend-api'
 
   export default {
     name: 'Post',
+    props: ['postNo'],
     components: {
       'star-rating': VueStarRating
     },
@@ -93,10 +95,26 @@
         page: 1,
         pageSize: 9,
         images: [],
-        masksHide: []
+        user: {
+
+        },
+        post: {
+
+        }
       }
     },
     methods: {
+      getPostInfo (postNo) {
+          api.getPostInfo(postNo).then(response => {
+              console.log(response)
+          })
+            .catch(e => {
+                console.log(e)
+            })
+      },
+      getRelatedPostList (postNo) {
+
+      },
       getImagesInfo () {
         axios.get('https://api.unsplash.com/photos', {
           params: {

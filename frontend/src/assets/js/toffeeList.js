@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Post from '@/components/Post'
+import api from '@/backend-api'
 
 export default {
   name: 'ToffeeList',
@@ -13,10 +14,19 @@ export default {
       page: 1,
       pageSize: 9,
       images: [],
-      masksHide: []
+      posts: []
     }
   },
   methods: {
+    getPosts () {
+      api.getPostList().then(response => {
+        console.log(response.data)
+        this.posts = response.data
+      })
+        .catch(e => {
+          console.log(e)
+        })
+    },
     getImagesInfo () {
       axios.get('https://api.unsplash.com/photos', {
         params: {
@@ -33,12 +43,18 @@ export default {
         })
     }
   },
+  computed: {
+    postNo: function () {
+      return this.posts.postNo
+    }
+  },
   watch: {
     page (n) {
       n > 30 && (this.loadMore = false)
     }
   },
   mounted () {
+    this.getPosts()
     this.getImagesInfo()
   }
 }

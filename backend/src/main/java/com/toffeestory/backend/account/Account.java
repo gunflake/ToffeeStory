@@ -1,5 +1,6 @@
 package com.toffeestory.backend.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.toffeestory.backend.post.Post;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties("posts")
 public class Account implements UserDetails {
     @Id
     @GeneratedValue

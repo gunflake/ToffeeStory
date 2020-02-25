@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const AXIOS = axios.create({
   baseURL: `/api`,
-  timeout: 1000
+  timeout: 10000
 })
 
 export default {
@@ -22,5 +22,18 @@ export default {
   },
   getAccountInfo (token) {
     return AXIOS.get('/account/auth', token)
+  },
+  getPostList (flag) {
+    return AXIOS.get('/posts/', {
+      params: {
+        'flag': flag
+      }
+    })
+  },
+  getPostInfo (postNo) {
+    return AXIOS.get('/posts/' + postNo)
+  },
+  getRelatedPostList (postNo) {
+    return AXIOS.get('posts/' + postNo + '/relatedPost')
   }
 }

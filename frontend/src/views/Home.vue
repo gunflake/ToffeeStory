@@ -21,24 +21,13 @@
       </carousel>
     </div>
     <!-- Search Toffee Component-->
-    <!-- Sort Component -->
-    <div id="">
-      <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
-        <ol class="list-reset flex text-grey-dark">
-          <li><a href="#" class="text-blue font-bold">NEW</a></li>
-          <li><span class="mx-2">|</span></li>
-          <li><a href="#" class="text-blue font-bold">BEST</a></li>
-          <li><span class="mx-2">|</span></li>
-          <li><a href="#" class="text-blue font-bold">HOT</a></li>
-        </ol>
-      </nav>
-    </div>
     <!-- Toffee List Component-->
     <ToffeeList></ToffeeList>
   </div>
 </template>
 <script>
   import ToffeeList from '@/components/ToffeeList'
+
   export default {
     name: 'home',
     components: {
