@@ -71,24 +71,22 @@
     props: {
       postNo: {
         type: Number,
-        default: 0
+        default: 1
       }
     },
     computed: {
       ...mapGetters(['getToken'])
     },
     created () {
-      if (this.postNo === 0) {
+      if (this.postNo === 1) {
         api.getPostInfo(this.postNo, this.getToken)
           .then(response => {
-            console.log(response)
             this.rating = response.data.score
             this.content = response.data.content
             this.price = response.data.price
-            // let src = response.data.postPic
-            // console.log(src)
-            let header = response.headers
-            console.log(header['content-disposition'])
+            this.src = 'http://localhost:8098/api/images/' + response.data.postPic
+            this.previewModifyImage(this.src)
+            this.mode = 'modify'
           })
           .catch(error => {
             console.log(error)
@@ -101,6 +99,8 @@
         rating: 1,
         content: '',
         price: 0,
+        src: null,
+        mode: 'create',
         alert: {
           message: null,
           type: null
@@ -132,6 +132,16 @@
           }
         })(data)
         reader.readAsDataURL(data)
+      },
+      previewModifyImage (src) {
+        let imgForm = document.createElement('img')
+        imgForm.setAttribute('id', 'selectedImage')
+        imgForm.setAttribute('src', src)
+        imgForm.setAttribute('class', 'w-full h-auto')
+
+        let box = document.getElementById('imageBox')
+        box.innerHTML = ''
+        box.appendChild(imgForm)
       },
       dragLeaveHandler (event) {
         event.preventDefault()
@@ -166,19 +176,41 @@
         formData.append('file', this.selectedFile)
         formData.append('content', this.content)
         formData.append('score', this.rating)
-        api.createPost(formData, this.getToken)
-          .then(response => {
-            this.alert.message = '글이 등록되었습니다.'
-            this.alert.type = 'green'
-            this.settingAlertMsg(this.alert)
-            this.$emit('close')
-          })
-          .catch(() => {
-            this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
-            this.alert.type = 'red'
-            this.settingAlertMsg(this.alert)
-            this.$emit('close')
-          })
+
+        if (this.mode === 'create') {
+          api.createPost(formData, this.getToken)
+            .then(response => {
+              this.alert.message = '글이 등록되었습니다.'
+              this.alert.type = 'green'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+            .catch(() => {
+              this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+              this.alert.type = 'red'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+        } else if (this.mode === 'modify') {
+          api.modifyPost(this.postNo, formData, this.getToken)
+            .then(response => {
+              this.alert.message = '글이 수정되었습니다.'
+              this.alert.type = 'green'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+            .catch(() => {
+              this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+              this.alert.type = 'red'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+        } else {
+          this.alert.message = '글 등록에 실패했습니다. 다시 시도해주세요.'
+          this.alert.type = 'red'
+          this.settingAlertMsg(this.alert)
+          this.$emit('close')
+        }
       }
     }
   }

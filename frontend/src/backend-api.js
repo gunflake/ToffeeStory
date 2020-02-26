@@ -26,6 +26,9 @@ export default {
   createPost (data, token) {
     return AXIOS.post(`/posts`, data, token)
   },
+  modifyPost (postNo, data, token) {
+    return AXIOS.put(`/posts/` + postNo, data, token)
+  },
   getPostInfo (postNo, token) {
     return AXIOS.get(`/posts/` + postNo, token)
   }
