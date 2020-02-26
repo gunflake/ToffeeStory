@@ -1,5 +1,6 @@
 package com.toffeestory.backend.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.account.Account;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties("account")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
