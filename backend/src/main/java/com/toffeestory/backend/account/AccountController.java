@@ -85,4 +85,5 @@ public class AccountController {
     public ResponseEntity<AccountInfo> getAccountInfo(@AuthenticationPrincipal Account account){
         return ok(new AccountInfo(account.getAccountId(), account.getEmail()));
     }
+
 }

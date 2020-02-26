@@ -12,7 +12,8 @@ export default new Vuex.Store({
     userEmail: null,
     alertState: false,
     alertMessage: null,
-    alertType: null
+    alertType: null,
+    token: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
@@ -21,7 +22,8 @@ export default new Vuex.Store({
     getUserEmail: state => state.userEmail,
     getAlertState: state => state.alertState,
     getAlertMessage: state => state.alertMessage,
-    getAlertType: state => state.alertType
+    getAlertType: state => state.alertType,
+    getToken: state => state.token
   },
   mutations: {
     login_success (state, payload) {
@@ -47,6 +49,12 @@ export default new Vuex.Store({
       state.alertMessage = payload.message
       state.alertType = payload.type
       state.alertState = true
+    },
+    tokenInit (state) {
+      state.token = null
+    },
+    tokenSetting (state, data) {
+      state.token = data
     }
   },
   actions: {
@@ -91,7 +99,10 @@ export default new Vuex.Store({
         })
       }
 
-      if (token == null) { return }
+      if (token == null) {
+        commit('tokenInit')
+        return
+      }
 
       let config = {
         headers: {
@@ -108,7 +119,9 @@ export default new Vuex.Store({
             userName: userObj.username,
             userEmail: userObj.email
           })
+          commit('tokenSetting', config)
         } else {
+          commit('tokenInit')
           localStorage.clear()
         }
       })
@@ -119,6 +132,7 @@ export default new Vuex.Store({
         data.message = message
         data.type = 'gray'
         dispatch('settingAlertMsg', data)
+        commit('tokenInit')
       })
     },
     settingAlertMsg ({ commit }, { message, type }) {
@@ -133,14 +147,6 @@ export default new Vuex.Store({
     logoutProcess ({ commit }) {
       commit('logout')
       localStorage.clear()
-    },
-    getMemberToken () {
-      let config = {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-      return config
     }
   }
 })

@@ -45,4 +45,10 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestApiError(HttpStatus.UNAUTHORIZED, "로그인 세션이 만료되었습니다. 다시 로그인 해주세요."));
     }
 
+    @ExceptionHandler(value = {NotFoundPostException.class})
+    public ResponseEntity notFoundPostException(NotFoundPostException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
 }
