@@ -1,8 +1,6 @@
 package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
-import com.toffeestory.backend.toffee.Product;
-import com.toffeestory.backend.toffee.Topping;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -46,7 +44,7 @@ public class Post {
     private Byte useStateCode;
 
     @Transient
-    private List<String> tags = new ArrayList<>();
+    private List<String> tags;
 
     public void setAccount(Account account) {
         this.account = account;
@@ -114,6 +112,8 @@ public class Post {
 
     // Post 생성시 likeCount, UserStateCode 기본값 세팅
     public Post() {
+        this.tags = new ArrayList<>();
+        this.tags.add("");
         this.likeCnt = 0;
         this.useStateCode = 1;
     }

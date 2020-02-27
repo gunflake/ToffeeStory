@@ -9,12 +9,13 @@
                 <slot name="header">
                   <div class="inline">
                     <div class="inline">
+                      <!-- Account Info -->
                       <img class="h-10 w-10 rounded-full mr-10 inline" style="margin:10px;" src="https://randomuser.me/api/portraits/women/21.jpg">
-                      <span style="font-size:110%;">coffeelover</span>
+                      <span style="font-size:110%;">{{ account.accountId }}</span>
                     </div>
                     <div class="inline" style="margin-left:65%;">
                       <a style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
-                      <span style="margin-left:1%;margin-right: 2%;">256</span>
+                      <span style="margin-left:1%;margin-right: 2%;">{{ post.likeCnt }}</span>
                       <a style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark-o fa-2x"></i></a>
                     </div>
                   </div>
@@ -24,7 +25,6 @@
               <br>
               <div class="modal-body">
                 <slot name="body">
-                  <!-- Account Info -->
                   <!-- photo -->
                   <div class="thumbnail-wrapper">
                     <div class="thumbnail">
@@ -33,12 +33,11 @@
                   </div>
                   <!-- star -->
                   <div class="content-padding">
-                    <star-rating :rating="4" :read-only="true" :star-size="40" :show-rating="false" active-color="#003d24"></star-rating>
+                    <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false" active-color="#003d24"></star-rating>
                   </div>
                   <!-- content -->
                   <div class="content-padding">
-                    <p>맺어 우리 인생을 풍부하게 하는 것이다 보라 청춘을 ! 그들의 몸이 얼마나 튼튼하며 그들의 피부가 얼마나 생생하며 그들의 눈에 무엇이 타오르고 있는가?
-                       우리 눈이 그것을 보는 때에 우리의 귀는 생의 찬미를 듣는다</p>
+                    <p>{{ post.content }}</p>
                   </div>
                   <!-- related post -->
                   <div class="content-padding">
@@ -47,8 +46,7 @@
                   <div class="images-container" style="width:80%;">
                     <div class="images-item" v-for="(image,index) of images" :key="index">
                       <div class="images-card">
-                        <img class="images-card__image" :src="image.urls.small" @load="masksHide.push(index)">
-                        <div class="images-card__mask" :style="{'background-color':image.color}" v-if="!masksHide.includes(index)"></div>
+                        <img class="images-card__image" :src="image.urls.small">
                       </div>
                     </div>
                   </div>
@@ -58,10 +56,8 @@
                   <div class="content-padding">
                     Related Tags
                   </div>
-                  <div class="content-padding" style="padding-top: 0%; padding-bottom: 5%;">
-                    <button class="tag-padding rounded px-2 py-1">아메리카노</button>
-                    <button class="tag-padding rounded px-2 py-1">바닐라 시럽</button>
-                    <button class="tag-padding rounded px-2 py-1">카라멜 시럽</button>
+                  <div class="content-padding" v-for="(tag,index) of post.tags" :key="index" style="padding-top: 0%; padding-bottom: 5%;">
+                    <button class="tag-padding rounded px-2 py-1">{{ tag }}</button>
                   </div>
                 </slot>
               </div>
@@ -95,22 +91,22 @@
         page: 1,
         pageSize: 9,
         images: [],
-        user: {
-
-        },
-        post: {
-
-        }
+        post: [],
+        account: [],
+        tags: []
       }
     },
     methods: {
       getPostInfo (postNo) {
-          api.getPostInfo(postNo).then(response => {
-              console.log(response)
+        api.getPostInfo(postNo).then(response => {
+          this.post = response.data
+          this.account = response.data.account
+          this.tags = response.data.tags
+          console.log(response)
+        })
+          .catch(e => {
+            console.log(e)
           })
-            .catch(e => {
-                console.log(e)
-            })
       },
       getRelatedPostList (postNo) {
 
@@ -137,6 +133,7 @@
       }
     },
     mounted () {
+      this.getPostInfo(this.postNo)
       this.getImagesInfo()
     }
   }

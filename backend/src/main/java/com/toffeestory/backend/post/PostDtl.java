@@ -15,12 +15,12 @@ public class PostDtl {
     private Byte flag;
 
     @Column(nullable = false)
-    private Integer key;
+    private Integer toffeeKey;
 
     @Column(nullable = false, length = 20)
     private String tagName;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String value;
 
     @Column(nullable = false)
@@ -30,16 +30,24 @@ public class PostDtl {
         return seqNo;
     }
 
-    public void setSeqNo(Integer seqNo) {
-        this.seqNo = seqNo;
-    }
-
     public Integer getPostNo() {
         return postNo;
     }
 
     public void setPostNo(Integer postNo) {
         this.postNo = postNo;
+    }
+
+    public void setFlag(Byte flag) {
+        this.flag = flag;
+    }
+
+    public void setToffeeKey(Integer toffeeKey) {
+        this.toffeeKey = toffeeKey;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
     }
 
     public String getValue() {

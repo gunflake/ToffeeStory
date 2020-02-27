@@ -53,7 +53,7 @@ public class PostController {
         }
 
         post.setTags(tagNames);
-
+        post = postRepository.save(post);
         return post;
     }
 
@@ -86,7 +86,7 @@ public class PostController {
     /*-------------------------------
        - select Tag
      -------------------------------*/
-    @GetMapping("/{tagName}")
+    @GetMapping("/tag/{tagName}")
     public List<Post> tagPostList(@PathVariable("tagName") String tagName) {
         List<Post> posts = new ArrayList<>();
         List<PostDtl> postNo = postDtlRepository.findByTagName(tagName);
