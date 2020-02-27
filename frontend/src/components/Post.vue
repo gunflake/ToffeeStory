@@ -11,7 +11,7 @@
                     <div class="inline">
                       <!-- Account Info -->
                       <img class="h-10 w-10 rounded-full mr-10 inline" style="margin:10px;" src="https://randomuser.me/api/portraits/women/21.jpg">
-                      <span style="font-size:110%;">{{ account.accountId }}</span>
+                      <span style="font-size:110%;">{{ accountId }}</span>
                     </div>
                     <div class="inline" style="margin-left:65%;">
                       <a style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
@@ -92,15 +92,17 @@
         pageSize: 9,
         images: [],
         post: [],
-        account: [],
+        accountId: '',
+        accountPic: '',
         tags: []
       }
     },
     methods: {
       getPostInfo (postNo) {
         api.getPostInfo(postNo).then(response => {
-          this.post = response.data
-          this.account = response.data.account
+          this.post = response.data.post
+          this.accountId = response.data.accountId
+          this.accountPic = response.data.accountPic
           this.tags = response.data.tags
           console.log(response)
         })

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,17 +58,17 @@ public class Post {
 
     public void setAccount(Account account) {
         if(this.account != null){
-            this.account.getPost().remove(this);
+            this.account.getPosts().remove(this);
         }
         this.account = account;
-        this.account.getPost().add(this);
+        this.account.getPosts().add(this);
     }
 
     // Post 생성시 likeCount, UserStateCode 기본값 세팅
     public Post() {
 		this.tags = new ArrayList<>();
         this.tags.add("");
-        this.likeCount = 0;
+        this.likeCnt = 0;
         this.useStateCode = 1;
     }
 }

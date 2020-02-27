@@ -74,7 +74,7 @@ public class Account implements UserDetails {
 
     @OneToMany(mappedBy = "account")
     @JsonBackReference
-    private List<Post> post = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @Transient
     private String accountNewPwd;

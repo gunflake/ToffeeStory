@@ -2,13 +2,26 @@ package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountRepository;
+import com.toffeestory.backend.exception.InvalidImageException;
+import com.toffeestory.backend.exception.NotFoundPostException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.*;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -55,7 +68,7 @@ public class PostController {
             throw new InvalidImageException("이미지 업로드에 실패했습니다.");
         }
 
-        account.setPost(postRepository.findAllByAccount(account));
+        account.setPosts(postRepository.findAllByAccount(account));
 
         Post post = new Post();
         post.setScore(score);
@@ -107,7 +120,7 @@ public class PostController {
        - select Post
      -------------------------------*/
     @GetMapping(path = "/{postNo}")
-    public Post selectPost(@PathVariable("postNo") Integer postNo) {
+    public ResponseEntity selectPost(@PathVariable("postNo") Integer postNo) {
         Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
         List<String> tagNames = new ArrayList<>();
 
@@ -118,8 +131,10 @@ public class PostController {
         }
 
         post.setTags(tagNames);
-        post = postRepository.save(post);
-        return post;
+
+        ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getProfilePic());
+
+        return ok(responsePost);
     }
 
     /*-------------------------------
