@@ -230,7 +230,7 @@
         }
       },
       changeProfileImg () {
-        this.account.profileSrc = 'https://www.pngitem.com/pimgs/m/487-4873678_icono-de-mi-cuenta-png-clipart-png-download.png'
+        this.account.profileSrc = 'https://image.flaticon.com/icons/svg/747/747376.svg'
       }
     }
   }
