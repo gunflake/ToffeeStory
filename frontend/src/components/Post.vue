@@ -15,7 +15,7 @@
               <div v-if="accessPossible" class="flex">
                 <span class="flex items-center text-gray-600 font-bold text-base ml-4"
                       style="cursor: pointer">Modify</span>
-                <span class="flex items-center text-red-600 font-bold text-base ml-4"
+                <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
                       style="cursor: pointer">Delete</span>
               </div>
             </div>
@@ -29,7 +29,7 @@
           </div>
           <!-- Photo -->
           <div class="h-auto w-full mt-8">
-            <img :src="src" class="w-full h-auto"/>
+            <img :src="post.src" class="w-full h-auto"/>
           </div>
           <!-- star -->
           <div class="flex w-full mt-4">
@@ -75,7 +75,7 @@
   import VueStarRating from 'vue-star-rating'
   import axios from 'axios'
   import api from '@/backend-api'
-  import { mapGetters } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'Post',
@@ -84,7 +84,7 @@
       'star-rating': VueStarRating
     },
     computed: {
-      ...mapGetters(['getUserName'])
+      ...mapGetters(['getUserName', 'getToken'])
     },
     data () {
       return {
@@ -96,17 +96,21 @@
         post: [],
         accountId: '',
         accountPic: '',
-        src: '',
-        accessPossible: false
+        accessPossible: false,
+        alert: {
+          message: null,
+          type: null
+        }
       }
     },
     methods: {
+      ...mapActions(['settingAlertMsg']),
       getPostInfo (postNo) {
         api.getPostInfo(postNo).then(response => {
+          console.log(response)
           this.post = response.data.post
           this.accountId = response.data.accountId
           this.accountPic = response.data.accountPic
-          this.src = 'http://localhost:8098/api/images/' + response.data.post.postPic
           if (this.accountId === this.getUserName) this.accessPossible = true
         })
           .catch(e => {
@@ -129,6 +133,21 @@
           })
           .catch(error => {
             console.log(error)
+          })
+      },
+      deletePost () {
+        api.deletePost(this.post.postNo, this.getToken)
+          .then(response => {
+            this.alert.message = '글이 삭제되었습니다.'
+            this.alert.type = 'green'
+            this.settingAlertMsg(this.alert)
+            this.$emit('close')
+          })
+          .catch(() => {
+            this.alert.message = '글 삭제에 실패했습니다. 본인 글만 삭제할 수 있습니다.'
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
+            this.$emit('close')
           })
       }
     },

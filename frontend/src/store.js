@@ -101,6 +101,7 @@ export default new Vuex.Store({
 
       if (token == null) {
         commit('tokenInit')
+        commit('logout')
         return
       }
 
@@ -122,6 +123,7 @@ export default new Vuex.Store({
           commit('tokenSetting', config)
         } else {
           commit('tokenInit')
+          commit('logout')
           localStorage.clear()
         }
       })
@@ -133,6 +135,7 @@ export default new Vuex.Store({
         data.type = 'gray'
         dispatch('settingAlertMsg', data)
         commit('tokenInit')
+        commit('logout')
       })
     },
     settingAlertMsg ({ commit }, { message, type }) {

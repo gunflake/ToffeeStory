@@ -36,14 +36,22 @@
               여기는 토핑 선택 칸입니다.(대체 예정)
             </div>
           </div>
-          <!-- star select space -->
-          <div class="flex w-full mt-2">
-            <star-rating v-bind:increment="0.5" :rating=rating :star-size="40" :show-rating="false" active-color="#003d24" @rating-selected="setCurrentRating($event)"/>
+          <div class="mt-4 flex justify-between">
+            <div class="flex">
+              <!-- star select space -->
+              <div class="flex w-full mt-2">
+                <star-rating v-bind:increment="0.5" :rating=post.score :star-size="40" :show-rating="false" active-color="#003d24" @rating-selected="setCurrentRating($event)"/>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <input class="block border-b border-gray-700 w-18 text-xl my-2 px-2 text-right outline-none" v-model="post.price" @keypress="numberValidation"/>
+              <div class="flex items-center mr-2 border-b border-gray-700 my-2 fa fa-krw fa-lg"></div>
+            </div>
           </div>
           <!-- comment input space  -->
-          <div class="w-full mt-2">
+          <div class="w-full mt-4">
             <label>
-              <textarea v-model="content" class="w-full shadow-inner py-2 px-3 border-2" placeholder="내용을 입력해주세요." rows="4"/>
+              <textarea v-model="post.content" class="w-full shadow-inner py-2 px-3 border-2" placeholder="내용을 입력해주세요." rows="4"/>
             </label>
           </div>
           <!-- cancel & publish button -->
@@ -51,7 +59,7 @@
             <button @click="$emit('close')"
                     class="ml-4 bg-gray-400 hover:bg-gray-500 text-black font-semibold py-2 px-4 rounded">Cancel
             </button>
-            <button @click="createPost"
+            <button @click="createModifyPost"
                     class="ml-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">Upload
             </button>
           </div>
@@ -85,11 +93,8 @@
       if (this.postNo > 0) {
         api.getPostInfo(this.postNo, this.getToken)
           .then(response => {
-            this.rating = response.data.post.score
-            this.content = response.data.post.content
-            this.price = response.data.post.price
-            this.src = 'http://localhost:8098/api/images/' + response.data.post.postPic
-            this.previewModifyImage(this.src)
+            this.post = response.data.post
+            this.previewModifyImage(this.post.src)
             this.mode = 'modify'
           })
           .catch(error => {
@@ -100,11 +105,14 @@
     data () {
       return {
         selectedFile: null,
-        rating: 1,
         content: '',
         price: 0,
         src: null,
         mode: 'create',
+        post: {
+          score: 1,
+          price: 0
+        },
         alert: {
           message: null,
           type: null
@@ -114,7 +122,7 @@
     methods: {
       ...mapActions(['settingAlertMsg']),
       setCurrentRating (rating) {
-        this.rating = rating
+        this.post.score = rating
       },
       // Image Upload 기능 함수 Start
       onFileSelected (event) {
@@ -174,12 +182,20 @@
           }
         }
       },
+      numberValidation (event) {
+        let val = event.key
+        let numExp = /[^0-9]/g
+        if (numExp.test(val)) {
+          event.preventDefault()
+        }
+      },
       // Image Upload 기능 함수 End
-      createPost () {
+      createModifyPost () {
         let formData = new FormData()
         formData.append('file', this.selectedFile)
-        formData.append('content', this.content)
-        formData.append('score', this.rating)
+        formData.append('content', this.post.content)
+        formData.append('score', this.post.score)
+        formData.append('price', this.post.price)
 
         if (this.mode === 'create') {
           api.createPost(formData, this.getToken)
@@ -204,13 +220,13 @@
               this.$emit('close')
             })
             .catch(() => {
-              this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+              this.alert.message = '글 수정에 실패했습니다. 작성한 글 내용을 확인해주세요.'
               this.alert.type = 'red'
               this.settingAlertMsg(this.alert)
               this.$emit('close')
             })
         } else {
-          this.alert.message = '글 등록에 실패했습니다. 다시 시도해주세요.'
+          this.alert.message = '글 수정에 실패했습니다. 다시 시도해주세요.'
           this.alert.type = 'red'
           this.settingAlertMsg(this.alert)
           this.$emit('close')
