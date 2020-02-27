@@ -1,6 +1,8 @@
 package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 public class Post {
     @Id
@@ -52,62 +56,6 @@ public class Post {
         if(!account.getPosts().contains(this)) {
             account.getPosts().add(this);
         }
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public Integer getPostNo() {
-        return postNo;
-    }
-
-    public void setPostNo(Integer postNo) {
-        this.postNo = postNo;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public String getPostPic() {
-        return postPic;
-    }
-
-    public void setPostPic(String postPic) {
-        this.postPic = postPic;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Float getScore() {
-        return score;
-    }
-
-    public void setScore(Float score) {
-        this.score = score;
-    }
-
-    public Integer getLikeCnt() {
-        return likeCnt;
-    }
-
-    public void setLikeCnt(Integer likeCnt) {
-        this.likeCnt = likeCnt;
-    }
-
-    public Short getPrice() {
-        return price;
-    }
-
-    public void setPrice(Short price) {
-        this.price = price;
     }
 
     // Post 생성시 likeCount, UserStateCode 기본값 세팅
