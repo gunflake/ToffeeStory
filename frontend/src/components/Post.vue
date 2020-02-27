@@ -28,7 +28,7 @@
                   <!-- photo -->
                   <div class="thumbnail-wrapper">
                     <div class="thumbnail">
-                      <img src="@/assets/image/main_img5.jpg"/>
+                      <img :src="src" class="w-full h-auto"/>
                     </div>
                   </div>
                   <!-- star -->
@@ -94,6 +94,7 @@
         post: [],
         accountId: '',
         accountPic: '',
+        src: '',
         tags: []
       }
     },
@@ -104,6 +105,7 @@
           this.accountId = response.data.accountId
           this.accountPic = response.data.accountPic
           this.tags = response.data.tags
+          this.src = 'http://localhost:8098/api/images/' + response.data.post.postPic
           console.log(response)
         })
           .catch(e => {

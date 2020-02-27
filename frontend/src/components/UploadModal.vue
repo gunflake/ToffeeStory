@@ -81,10 +81,10 @@
       if (this.postNo === 1) {
         api.getPostInfo(this.postNo, this.getToken)
           .then(response => {
-            this.rating = response.data.score
-            this.content = response.data.content
-            this.price = response.data.price
-            this.src = 'http://localhost:8098/api/images/' + response.data.postPic
+            this.rating = response.data.post.score
+            this.content = response.data.post.content
+            this.price = response.data.post.price
+            this.src = 'http://localhost:8098/api/images/' + response.data.post.postPic
             this.previewModifyImage(this.src)
             this.mode = 'modify'
           })
