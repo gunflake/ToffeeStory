@@ -1,71 +1,69 @@
 <template>
-  <transition name="modal" class="modal items-center justify-center">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container w-full mx-auto">
-          <div>
-            <div class="bg-white p-6" style="margin-top:5%;">
-              <div class="modal-header">
-                <slot name="header">
-                  <div class="inline">
-                    <div class="inline">
-                      <!-- Account Info -->
-                      <img class="h-10 w-10 rounded-full mr-10 inline" style="margin:10px;" src="https://randomuser.me/api/portraits/women/21.jpg">
-                      <span style="font-size:110%;">{{ accountId }}</span>
-                    </div>
-                    <div class="inline" style="margin-left:65%;">
-                      <a style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
-                      <span style="margin-left:1%;margin-right: 2%;">{{ post.likeCnt }}</span>
-                      <a style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark-o fa-2x"></i></a>
-                    </div>
-                  </div>
-                  <button class="modal-default-button" style="float:right;color:gray;" @click="$emit('close')">X</button>
-                </slot>
-              </div>
-              <br>
-              <div class="modal-body">
-                <slot name="body">
-                  <!-- photo -->
-                  <div class="thumbnail-wrapper">
-                    <div class="thumbnail">
-                      <img :src="src" class="w-full h-auto"/>
-                    </div>
-                  </div>
-                  <!-- star -->
-                  <div class="content-padding">
-                    <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false" active-color="#003d24"></star-rating>
-                  </div>
-                  <!-- content -->
-                  <div class="content-padding">
-                    <p>{{ post.content }}</p>
-                  </div>
-                  <!-- related post -->
-                  <div class="content-padding">
-                    Related Photos
-                  </div>
-                  <div class="images-container" style="width:80%;">
-                    <div class="images-item" v-for="(image,index) of images" :key="index">
-                      <div class="images-card">
-                        <img class="images-card__image" :src="image.urls.small">
-                      </div>
-                    </div>
-                  </div>
-                  <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore" loader-color="rgba(102,102,102,.5)">
-                  </scroll-loader>
-                  <!-- related tag -->
-                  <div class="content-padding">
-                    Related Tags
-                  </div>
-                  <div class="content-padding" v-for="(tag,index) of post.tags" :key="index" style="padding-top: 0%; padding-bottom: 5%;">
-                    <button class="tag-padding rounded px-2 py-1">{{ tag }}</button>
-                  </div>
-                </slot>
-              </div>
-              <div class="modal-footer">
-                <slot name="footer">
-                </slot>
+  <transition name="modal">
+    <div class="modal-mask overflow-auto">
+      <div class="w-2/3 mx-auto my-8">
+        <div class="bg-white p-8">
+          <!-- Header Id, Like, Bookmark -->
+          <div class="flex justify-between">
+            <div class="flex">
+              <!-- Account Info -->
+              <img class="h-10 w-10 rounded-full inline mr-4"
+                   src="https://randomuser.me/api/portraits/women/21.jpg"
+                   alt="https://randomuser.me/api/portraits/women/21.jpg">
+              <span class="flex items-center text-xl">{{ accountId }}</span>
+              <!-- Modify & Delete -->
+              <div v-if="accessPossible" class="flex">
+                <span class="flex items-center text-gray-600 font-bold text-base ml-4"
+                      style="cursor: pointer">Modify</span>
+                <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
+                      style="cursor: pointer">Delete</span>
               </div>
             </div>
+            <div class="flex">
+              <a class="flex items-center" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
+              <span class="ml-2 mr-4 text-2xl text-center">{{ post.likeCnt }}</span>
+              <a class="flex items-center" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
+              <span class="ml-2 mr-2 text-2xl text-center">{{ post.likeCnt }}</span>
+              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
+            </div>
+          </div>
+          <!-- Photo -->
+          <div class="h-auto w-full mt-8">
+            <img :src="post.src" class="w-full h-auto"/>
+          </div>
+          <!-- star -->
+          <div class="flex w-full mt-4">
+            <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false"
+                         active-color="#003d24"/>
+          </div>
+          <!-- Content -->
+          <div class="mt-4 text-xl">
+            <p>{{ post.content }}</p>
+          </div>
+          <!-- Related Tags -->
+          <div class="mt-4">
+            Related Tags
+          </div>
+          <div class="mt-2 flex flex-wrap">
+            <div class="mr-3" v-for="(tag,index) of post.tags" :key="index">
+              <button class="rounded px-2 py-1" style="background: #cdd0d4">{{ tag }}</button>
+            </div>
+          </div>
+          <!-- Relatet Post -->
+          <div class="mt-4 mb-2">
+            Related Photos
+          </div>
+          <div class="flex flex-wrap w-full" style="">
+            <div class="w-1/3 p-2" v-for="(image,index) of images" :key="index">
+              <img class="h-64 w-full object-cover object-center" :src="image.urls.small">
+            </div>
+          </div>
+          <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
+                         loader-color="rgba(102,102,102,.5)">
+          </scroll-loader>
+          <div class="modal-footer">
+            <slot name="footer">
+            </slot>
           </div>
         </div>
       </div>
@@ -77,12 +75,16 @@
   import VueStarRating from 'vue-star-rating'
   import axios from 'axios'
   import api from '@/backend-api'
+  import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'Post',
     props: ['postNo'],
     components: {
       'star-rating': VueStarRating
+    },
+    computed: {
+      ...mapGetters(['getUserName', 'getToken'])
     },
     data () {
       return {
@@ -94,19 +96,22 @@
         post: [],
         accountId: '',
         accountPic: '',
-        src: '',
-        tags: []
+        accessPossible: false,
+        alert: {
+          message: null,
+          type: null
+        }
       }
     },
     methods: {
+      ...mapActions(['settingAlertMsg']),
       getPostInfo (postNo) {
         api.getPostInfo(postNo).then(response => {
+          console.log(response)
           this.post = response.data.post
           this.accountId = response.data.accountId
           this.accountPic = response.data.accountPic
-          this.tags = response.data.tags
-          this.src = 'http://localhost:8098/api/images/' + response.data.post.postPic
-          console.log(response)
+          if (this.accountId === this.getUserName) this.accessPossible = true
         })
           .catch(e => {
             console.log(e)
@@ -123,12 +128,27 @@
             client_id: 'e874834b096dcd107c232fe4b0bb521158b62e486580c988b0a75cb0b77a2abe'
           }
         })
-        .then(res => {
-          res.data && res.data.length && (this.images = this.images.concat(res.data))
-        })
-        .catch(error => {
-          console.log(error)
-        })
+          .then(res => {
+            res.data && res.data.length && (this.images = this.images.concat(res.data))
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      },
+      deletePost () {
+        api.deletePost(this.post.postNo, this.getToken)
+          .then(response => {
+            this.alert.message = '글이 삭제되었습니다.'
+            this.alert.type = 'green'
+            this.settingAlertMsg(this.alert)
+            this.$emit('close')
+          })
+          .catch(() => {
+            this.alert.message = '글 삭제에 실패했습니다. 본인 글만 삭제할 수 있습니다.'
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
+            this.$emit('close')
+          })
       }
     },
     watch: {
@@ -145,39 +165,14 @@
 
 <style scoped>
   @import '../assets/css/image-scroll.css';
+
   .modal-mask {
+    position: fixed;
+    z-index: 9998;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, .5);
-    display: block !important;
-    overflow-y: initial !important;
-  }
-  .modal-container {
-    position: center;
-    width: 1000px;
-  }
-  .modal-body {
-    height: 600px;
-    overflow-y: auto;
-  }
-  .thumbnail-wrapper {
-    width: 85%;
-  }
-  .thumbnail {
-    position: relative;
-    padding-left: 15%;
-    overflow: hidden;
-  }
-  .content-padding {
-    padding-top: 3%;
-    padding-left: 8%;
-    padding-right: 8%;
-  }
-  .tag-padding {
-    margin-right: 1%;
-    margin-top: 1%;
-    background: #cdd0d4;
   }
 </style>

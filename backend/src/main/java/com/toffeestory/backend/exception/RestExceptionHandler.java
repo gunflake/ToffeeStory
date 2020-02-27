@@ -51,4 +51,10 @@ public class RestExceptionHandler {
         return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
+    @ExceptionHandler(value = {NotFoundImageException.class})
+    public ResponseEntity notFoundImageException(NotFoundImageException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
 }

@@ -52,9 +52,12 @@ public class Post {
 
     @Column
     private Byte useStateCode;
-	
+
 	@Transient
     private List<String> tags;
+
+	@Transient
+    private String src;
 
     public void setAccount(Account account) {
         if(this.account != null){
@@ -70,5 +73,9 @@ public class Post {
         this.tags.add("");
         this.likeCnt = 0;
         this.useStateCode = 1;
+    }
+
+    public void setSrc(String postPic) {
+        this.src = "http://localhost:8098/api/images/" + postPic;
     }
 }

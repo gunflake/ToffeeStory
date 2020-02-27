@@ -42,6 +42,8 @@ public class SampleData implements ApplicationRunner {
         account.setEmail("gunflake09@gmail.com");
         account.setAccountId("gunflake09");
         account.setAccountPwd("qwer1234");
+        account.setInstagram("test007");
+        account.setTwitter("test009");
         account.setAccountName("Vincent Nam");
         accountService.saveAccount(account);
 
@@ -56,6 +58,7 @@ public class SampleData implements ApplicationRunner {
 
         List<String> tag = new ArrayList<>();
         tag.add("아메리카노");
+        tag.add("카페라떼");
         post.setTags(tag);
 
         postRepository.save(post);

@@ -11,7 +11,7 @@ public class RestApiError {
     @JsonFormat
     private String message;
 
-    RestApiError(HttpStatus status, String message) {
+    public RestApiError(HttpStatus status, String message) {
         this.status = status;
         this.message = message;
     }

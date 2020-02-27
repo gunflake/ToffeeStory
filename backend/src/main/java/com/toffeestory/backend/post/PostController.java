@@ -4,8 +4,10 @@ import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountRepository;
 import com.toffeestory.backend.exception.InvalidImageException;
 import com.toffeestory.backend.exception.NotFoundPostException;
+import com.toffeestory.backend.exception.RestApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +57,7 @@ public class PostController {
     public ResponseEntity enrollPost(@RequestParam("file") MultipartFile multipartFile,
                                      @RequestParam("content") String content,
                                      @RequestParam("score") float score,
+                                     @RequestParam("price") short price,
                                      @AuthenticationPrincipal Account account) throws Exception {
 
         log.info(multipartFile.getOriginalFilename());
@@ -74,7 +77,7 @@ public class PostController {
         post.setScore(score);
         post.setContent(content);
         post.setPostPic(multipartFile.getOriginalFilename());
-        post.setPrice((short) 10000);
+        post.setPrice(price);
         post.setAccount(account);
 
         Post save = postRepository.save(post);
@@ -92,9 +95,16 @@ public class PostController {
                                      @RequestParam(value = "file", required = false) MultipartFile multipartFile,
                                      @RequestParam("content") String content,
                                      @RequestParam("score") float score,
+                                     @RequestParam("price") short price,
                                      @AuthenticationPrincipal Account account) throws Exception{
 
         Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
+
+        log.info(post.getAccount().getAccountId());
+        log.info(account.getAccountId());
+        if(!post.getAccount().getAccountId().equals(account.getAccountId())){
+            return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, "본인이 작성한 글만 수정할 수 있습니다."));
+        }
 
         if (multipartFile != null) {
             String fileName = multipartFile.getOriginalFilename();
@@ -110,18 +120,34 @@ public class PostController {
 
         post.setContent(content);
         post.setScore(score);
+        post.setPrice(price);
         postRepository.save(post);
 
         return noContent().build();
 	}
 
+	@DeleteMapping(path = "/{postNo}")
+    public ResponseEntity deletePost(@PathVariable("postNo") Integer postNo,
+                                     @AuthenticationPrincipal Account account){
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
+        log.info(post.getAccount().getAccountId());
+        log.info(account.getAccountId());
+
+        if(!post.getAccount().getAccountId().equals(account.getAccountId())){
+            return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, "본인이 작성한 글만 수정할 수 있습니다."));
+        }
+
+        postRepository.delete(post);
+
+        return noContent().build();
+    }
 
     /*-------------------------------
        - select Post
      -------------------------------*/
     @GetMapping(path = "/{postNo}")
     public ResponseEntity selectPost(@PathVariable("postNo") Integer postNo) {
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
         List<String> tagNames = new ArrayList<>();
 
         List<PostDtl> postDtls = postDtlRepository.findByPostNo(postNo);
@@ -131,6 +157,7 @@ public class PostController {
         }
 
         post.setTags(tagNames);
+        post.setSrc(post.getPostPic());
 
         ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getProfilePic());
 
