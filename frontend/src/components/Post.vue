@@ -6,11 +6,18 @@
           <!-- Header Id, Like, Bookmark -->
           <div class="flex justify-between">
             <div class="flex">
-            <!-- Account Info -->
-            <img class="h-10 w-10 rounded-full inline mr-4"
-                 src="https://randomuser.me/api/portraits/women/21.jpg"
-                 alt="https://randomuser.me/api/portraits/women/21.jpg">
-            <span class="text-xl">{{ accountId }}</span>
+              <!-- Account Info -->
+              <img class="h-10 w-10 rounded-full inline mr-4"
+                   src="https://randomuser.me/api/portraits/women/21.jpg"
+                   alt="https://randomuser.me/api/portraits/women/21.jpg">
+              <span class="flex items-center text-xl">{{ accountId }}</span>
+              <!-- Modify & Delete -->
+              <div v-if="accessPossible" class="flex">
+                <span class="flex items-center text-gray-600 font-bold text-base ml-4"
+                      style="cursor: pointer">Modify</span>
+                <span class="flex items-center text-red-600 font-bold text-base ml-4"
+                      style="cursor: pointer">Delete</span>
+              </div>
             </div>
             <div class="flex">
               <a class="flex items-center" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
@@ -26,7 +33,8 @@
           </div>
           <!-- star -->
           <div class="flex w-full mt-4">
-            <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false" active-color="#003d24"/>
+            <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false"
+                         active-color="#003d24"/>
           </div>
           <!-- Content -->
           <div class="mt-4 text-xl">
@@ -36,7 +44,7 @@
           <div class="mt-4">
             Related Tags
           </div>
-          <div class="mt-2 flex flex-wrap" >
+          <div class="mt-2 flex flex-wrap">
             <div class="mr-3" v-for="(tag,index) of post.tags" :key="index">
               <button class="rounded px-2 py-1" style="background: #cdd0d4">{{ tag }}</button>
             </div>
@@ -47,7 +55,7 @@
           </div>
           <div class="flex flex-wrap w-full" style="">
             <div class="w-1/3 p-2" v-for="(image,index) of images" :key="index">
-                <img class="h-64 w-full object-cover object-center" :src="image.urls.small">
+              <img class="h-64 w-full object-cover object-center" :src="image.urls.small">
             </div>
           </div>
           <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
@@ -67,12 +75,16 @@
   import VueStarRating from 'vue-star-rating'
   import axios from 'axios'
   import api from '@/backend-api'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'Post',
     props: ['postNo'],
     components: {
       'star-rating': VueStarRating
+    },
+    computed: {
+      ...mapGetters(['getUserName'])
     },
     data () {
       return {
@@ -84,7 +96,8 @@
         post: [],
         accountId: '',
         accountPic: '',
-        src: ''
+        src: '',
+        accessPossible: false
       }
     },
     methods: {
@@ -94,6 +107,7 @@
           this.accountId = response.data.accountId
           this.accountPic = response.data.accountPic
           this.src = 'http://localhost:8098/api/images/' + response.data.post.postPic
+          if (this.accountId === this.getUserName) this.accessPossible = true
         })
           .catch(e => {
             console.log(e)
