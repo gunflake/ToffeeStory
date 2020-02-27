@@ -180,10 +180,10 @@
           formData.append('accountId', value)
 
           axios.post(`/api/accounts/secured/checkAccountId`, formData, config).then(response => {
-            if (response.data.responseCode === 0) {
+            if (response.status === 200) {
               this.userNameMsgVisible = false
-            } else {
-              this.userNameMsg = response.data.responseMsg
+            } else if (response.status === 201) {
+              this.userNameMsg = response.data
               this.userNameMsgVisible = true
             }
           }).catch(e => {
@@ -215,9 +215,9 @@
           }
 
           axios.put(`/api/accounts/secured/updateAccount`, this.account, config).then(response => {
-            if (response.data.responseCode === 0) {
+            if (response.status === 200) {
               this.alert = {
-                message: 'Your account has been changed successfully!',
+                message: response.data,
                 type: 'green'
               }
               this.settingAlertMsg(this.alert)

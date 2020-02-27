@@ -5,17 +5,17 @@
       <ul class="list-reset mr-10">
         <h3 class="mb-4 text-xl text-black font-bold">Account settings</h3>
         <li>
-          <router-link to="/accounts/editProfile">
+          <router-link to="/settings/editProfile">
             <a href="#" class="block p-4 text-base text-black hover:bg-gray-100">Edit Profile</a>
           </router-link>
         </li>
         <li>
-          <router-link to="/accounts/changePassword">
+          <router-link to="/settings/changePassword">
             <a href="#" class="block p-4 text-base text-black hover:bg-gray-100">Change Password</a>
           </router-link>
         </li>
         <li>
-          <router-link to="/accounts/closeAccount">
+          <router-link to="/settings/closeAccount">
             <a href="#" class="block p-4 text-base text-black hover:bg-gray-100">Close Account</a>
           </router-link>
         </li>

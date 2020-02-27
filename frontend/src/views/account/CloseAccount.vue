@@ -96,16 +96,14 @@
           }
 
           axios.post(`/api/accounts/secured/deleteAccount`, formData, config).then(response => {
-            if (response.data.responseCode === 0) {
+            if (response.status === 200) {
               this.alert = {
-                message: 'Your account has been closed. We\'re here for you always :)',
+                message: response.data,
                 type: 'green'
               }
               this.$router.push('/')
               this.settingAlertMsg(this.alert)
               this.logoutProcess()
-            } else {
-              alert('Fail')
             }
           }).catch(e => {
             console.log(e)

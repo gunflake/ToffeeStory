@@ -66,10 +66,10 @@
 
         axios.post(`/api/accounts/secured/checkCurrentPassword`, formData, config)
           .then(response => {
-            if (response.data.responseCode === 0) {
+            if (response.status === 200) {
               this.currentPwdMsgVisible = false
-            } else {
-              this.currentPwdMsg = response.data.responseMsg
+            } if (response.status === 201) {
+              this.currentPwdMsg = response.data
               this.currentPwdMsgVisible = true
             }
           }).catch(e => {
@@ -125,13 +125,13 @@
           }
 
           axios.patch(`/api/accounts/secured/changePassword`, formData, config).then(response => {
-            if (response.data.responseCode === 0) {
+            if (response.status === 200) {
               this.alert = {
-                message: 'Your password has been changed successfully!',
+                message: response.data,
                 type: 'green'
               }
               this.settingAlertMsg(this.alert)
-              this.$router.push('/accounts')
+              this.$router.push('/settings')
             }
           }).catch(e => {
             console.log(e)

@@ -7,7 +7,6 @@ const myMenu = () => import('@/views/profile/MyMenu.vue')
 const likes = () => import('@/views/profile/Likes.vue')
 const bookmarks = () => import('@/views/profile/Bookmarks.vue')
 
-const accounts = () => import('@/views/account/AccountSettings.vue')
 const editProfile = () => import('@/views/account/EditProfile.vue')
 const changePassword = () => import('@/views/account/ChangePassword.vue')
 const closeAccount = () => import('@/views/account/CloseAccount.vue')
@@ -34,7 +33,7 @@ const routes = [
     component: () => import('@/views/FindPassword.vue')
   },
   {
-    path: '/profile',
+    path: '/@:username',
     name: 'profile',
     component: () => import('@/views/Profile.vue'),
     children: [
@@ -45,9 +44,9 @@ const routes = [
     ]
   },
   {
-    path: '/accounts',
-    name: 'accounts',
-    component: accounts,
+    path: '/settings',
+    name: 'settings',
+    component: () => import('@/views/account/AccountSettings.vue'),
     children: [
       { path: '', component: editProfile },
       { path: 'editProfile', component: editProfile },
