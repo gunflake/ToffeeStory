@@ -7,7 +7,7 @@
         <!-- 프로필 이미지 -->
         <div class="w-1/3 flex justify-center">
           <div class="block">
-            <img id="selectedImg" class="h-40 w-40 rounded-full mb-4" style="object-fit: cover" :src="account.profilePic">
+            <img id="selectedImg" class="h-40 w-40 rounded-full mb-4" style="object-fit: cover" :src="account.profileSrc" @error="changeProfileImg">
             <input id="inputProfileImg" type="file" accept="image/*" class="hidden" @change="onFileSelected">
             <label for="inputProfileImg">
               <p class="hover:text-blue-500">Change Profile Image</p>
@@ -67,6 +67,7 @@
         userNameMsgVisible: false,
         instagramMsgVisible: false,
         twitterMsgVisible: false,
+        src: '',
         errors: [],
         alert: {
           message: null,
@@ -90,7 +91,8 @@
             accountId: response.data.accountId,
             instagram: response.data.instagram,
             twitter: response.data.twitter,
-            bio: response.data.bio
+            bio: response.data.bio,
+            profileSrc: 'http://localhost:8098/api/images/' + response.data.profilePic
           }
         }
       }).catch(error => {
@@ -226,6 +228,9 @@
             console.log(e)
           })
         }
+      },
+      changeProfileImg () {
+        this.account.profileSrc = 'https://www.pngitem.com/pimgs/m/487-4873678_icono-de-mi-cuenta-png-clipart-png-download.png'
       }
     }
   }

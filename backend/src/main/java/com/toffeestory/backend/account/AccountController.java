@@ -156,7 +156,7 @@ public class AccountController {
 
                 // 계정 업데이트
                 Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
-                accountFromDb.setProfilePic(fileNameAndPath.toString());
+                accountFromDb.setProfilePic(profilePic.getOriginalFilename());
                 accountRepository.save(accountFromDb);
             } catch (IOException e) {
                 throw new InvalidImageException("이미지 업로드에 실패했습니다.");
