@@ -127,7 +127,6 @@ public class AccountController {
         accountFromDb.setInstagram(requestAccount.getInstagram());
         accountFromDb.setTwitter(requestAccount.getTwitter());
         accountFromDb.setBio(requestAccount.getBio());
-        accountFromDb.setResponseCode(0);
 
         accountRepository.save(accountFromDb);
 
@@ -171,7 +170,6 @@ public class AccountController {
     public ResponseEntity<String> updatePassword(@AuthenticationPrincipal Account account, @RequestParam("accountNewPwd") String acocuntNewPwd) {
         account.setAccountNewPwd(acocuntNewPwd);
         account = accountService.updatePassword(account);
-        account.setResponseCode(0);
 
         return ok("Your password has been changed successfully!");
     }
@@ -185,5 +183,4 @@ public class AccountController {
 
         return ok("Your account has been closed. We\'re here for you always :)");
     }
-}
 }
