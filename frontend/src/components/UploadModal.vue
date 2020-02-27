@@ -1,10 +1,14 @@
 <template>
   <transition name="modal">
     <div class="modal-mask overflow-auto">
-      <div class="w-1/2 mx-auto my-8">
+      <div class="w-2/3 mx-auto my-8">
         <div class="bg-white p-6">
-          <div class="flex justify-end">
-            <button class="" @click="$emit('close')">X</button>
+          <div class="flex justify-between mb-4">
+            <div class="flex">
+            </div>
+            <div class="flex">
+              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
+            </div>
           </div>
           <!-- image drag & drop space -->
           <input type="file" id="selected" @change="onFileSelected" class="hidden">
@@ -71,14 +75,14 @@
     props: {
       postNo: {
         type: Number,
-        default: 1
+        default: 0
       }
     },
     computed: {
       ...mapGetters(['getToken'])
     },
     created () {
-      if (this.postNo === 1) {
+      if (this.postNo > 0) {
         api.getPostInfo(this.postNo, this.getToken)
           .then(response => {
             this.rating = response.data.post.score
