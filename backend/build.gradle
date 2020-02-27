@@ -25,6 +25,8 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude module: 'junit'
     }
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
+    testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.2.1.RELEASE'
     testRuntimeOnly('com.h2database:h2')
     testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 
@@ -32,6 +34,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.10'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     runtimeOnly 'mysql:mysql-connector-java'
+
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+
 }
 
 test {

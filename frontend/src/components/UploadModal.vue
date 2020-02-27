@@ -34,7 +34,7 @@
           </div>
           <!-- star select space -->
           <div class="flex w-full mt-2">
-            <star-rating v-bind:increment="0.5" :rating="1" :star-size="40" :show-rating="false" active-color="#003d24" @rating-selected="setCurrentRating($event)"/>
+            <star-rating v-bind:increment="0.5" :rating=rating :star-size="40" :show-rating="false" active-color="#003d24" @rating-selected="setCurrentRating($event)"/>
           </div>
           <!-- comment input space  -->
           <div class="w-full mt-2">
@@ -61,18 +61,46 @@
   import api from '@/backend-api'
   import VueStarRating from 'vue-star-rating'
   import Vue from 'vue'
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   Vue.use(VueStarRating)
   export default {
     name: 'UploadModal',
     components: {
       'star-rating': VueStarRating
     },
+    props: {
+      postNo: {
+        type: Number,
+        default: 1
+      }
+    },
+    computed: {
+      ...mapGetters(['getToken'])
+    },
+    created () {
+      if (this.postNo === 1) {
+        api.getPostInfo(this.postNo, this.getToken)
+          .then(response => {
+            this.rating = response.data.score
+            this.content = response.data.content
+            this.price = response.data.price
+            this.src = 'http://localhost:8098/api/images/' + response.data.postPic
+            this.previewModifyImage(this.src)
+            this.mode = 'modify'
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+    },
     data () {
       return {
         selectedFile: null,
         rating: 1,
         content: '',
+        price: 0,
+        src: null,
+        mode: 'create',
         alert: {
           message: null,
           type: null
@@ -93,7 +121,6 @@
         let reader = new FileReader()
         reader.onload = (function (file) {
           return function (ev) {
-
             let imgForm = document.createElement('img')
             imgForm.setAttribute('id', 'selectedImage')
             imgForm.setAttribute('src', ev.target.result)
@@ -105,6 +132,16 @@
           }
         })(data)
         reader.readAsDataURL(data)
+      },
+      previewModifyImage (src) {
+        let imgForm = document.createElement('img')
+        imgForm.setAttribute('id', 'selectedImage')
+        imgForm.setAttribute('src', src)
+        imgForm.setAttribute('class', 'w-full h-auto')
+
+        let box = document.getElementById('imageBox')
+        box.innerHTML = ''
+        box.appendChild(imgForm)
       },
       dragLeaveHandler (event) {
         event.preventDefault()
@@ -135,29 +172,45 @@
       },
       // Image Upload 기능 함수 End
       createPost () {
-        let token = {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            'Content-Type': 'multipart/form-data'
-          }
-        }
         let formData = new FormData()
         formData.append('file', this.selectedFile)
         formData.append('content', this.content)
         formData.append('score', this.rating)
-        api.createPost(formData, token)
-          .then(response => {
-            this.alert.message = '글이 등록되었습니다.'
-            this.alert.type = 'green'
-            this.settingAlertMsg(this.alert)
-            this.$emit('close')
-          })
-          .catch(() => {
-            this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
-            this.alert.type = 'red'
-            this.settingAlertMsg(this.alert)
-            this.$emit('close')
-          })
+
+        if (this.mode === 'create') {
+          api.createPost(formData, this.getToken)
+            .then(response => {
+              this.alert.message = '글이 등록되었습니다.'
+              this.alert.type = 'green'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+            .catch(() => {
+              this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+              this.alert.type = 'red'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+        } else if (this.mode === 'modify') {
+          api.modifyPost(this.postNo, formData, this.getToken)
+            .then(response => {
+              this.alert.message = '글이 수정되었습니다.'
+              this.alert.type = 'green'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+            .catch(() => {
+              this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+              this.alert.type = 'red'
+              this.settingAlertMsg(this.alert)
+              this.$emit('close')
+            })
+        } else {
+          this.alert.message = '글 등록에 실패했습니다. 다시 시도해주세요.'
+          this.alert.type = 'red'
+          this.settingAlertMsg(this.alert)
+          this.$emit('close')
+        }
       }
     }
   }

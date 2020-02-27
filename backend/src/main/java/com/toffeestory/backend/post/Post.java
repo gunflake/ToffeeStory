@@ -1,5 +1,7 @@
 package com.toffeestory.backend.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.account.Account;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,17 +9,20 @@ import org.hibernate.annotations.*;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import java.io.File;
 import java.util.Date;
 
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties("account")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer postNo;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "accountNo")
     private Account account;
 
@@ -46,6 +51,9 @@ public class Post {
 
     @Column
     private Byte useStateCode;
+
+    @Transient
+    private File file;
 
     public void setAccount(Account account) {
         if(this.account != null){

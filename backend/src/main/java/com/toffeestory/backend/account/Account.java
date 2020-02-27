@@ -1,7 +1,9 @@
 package com.toffeestory.backend.account;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.toffeestory.backend.post.Post;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "UC_account_email", columnNames = { "email"})
 })
+@JsonIgnoreProperties("post")
 public class Account implements UserDetails {
     @Id
     @GeneratedValue
@@ -78,14 +81,7 @@ public class Account implements UserDetails {
 
     @Transient
     private String accountNewPwd;
-
-    @Transient
-    private Integer responseCode;
-
-    @Transient
-    private String responseMsg;
-
-    @Override
+   @Override
     public String toString() {
         return "Account{" +
                 "accountId='" + accountId + '\'' +
