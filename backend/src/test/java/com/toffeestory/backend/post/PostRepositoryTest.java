@@ -6,48 +6,73 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @DataJpaTest
-public class PostRepositoryTest {
+class PostRepositoryTest {
+    @Autowired
+    PostRepository postRepository;
 
     @Autowired
-    public AccountRepository accountRepository;
-
-    @Autowired
-    public PostRepository postRepository;
+    AccountRepository accountRepository;
 
     Account account;
+    int postNo = 0;
+
+    @PersistenceUnit
+    EntityManagerFactory emf;
+
+    @PersistenceContext
+    EntityManager em;
+
     @BeforeEach
-    public void saveAccount(){
+    void createAccount() {
         account = new Account();
         account.setEmail("gunflake09@gmail.com");
         account.setAccountId("gunflake09");
         account.setAccountPwd("qwer1234");
         account.setAccountName("Vincent Nam");
-
+        //account.setPosts()
         accountRepository.save(account);
+
+
+        em.persist(account);
     }
 
-    @Test
-    public void savePost(){
+    @BeforeEach
+    void createPost() {
         Post post = new Post();
-        post.setAccount(accountRepository.findByAccountId("gunflake09").orElseThrow(() -> new RuntimeException()));
-        post.setContent("아메리카노 2샷 1헤이즐넛 추천합니다.");
-        post.setPostPic("https://dfjsdf");
-        post.setScore(4.5f);
-        post.setPrice((short) 10000);
+        Account gunflake09 = accountRepository.findByAccountId("gunflake09").orElseThrow(() -> new RuntimeException());
+        //gunflake09.getPost();
+        if(gunflake09.getPosts() == null){
+            System.out.println("null 값");
+        }
+        gunflake09.setPosts(postRepository.findAllByAccount(gunflake09));
 
+
+        post.setAccount(gunflake09);
+        post.setPostPic("@/assets/image/main_img1.jpg");
+        post.setContent("게시글 입니다.");
+        post.setScore(4.0f);
+        post.setLikeCnt(10);
+        post.setPrice((short)200);
         postRepository.save(post);
-        Post gunflake09 = postRepository.findByAccount(account).orElseThrow(()->new RuntimeException());
-        System.out.println(gunflake09.toString());
-        assertEquals(0, gunflake09.getLikeCount().intValue());
-        assertEquals(1, gunflake09.getUseStateCode().intValue());
-        assertEquals("아메리카노 2샷 1헤이즐넛 추천합니다.", gunflake09.getContent());
+
+        em.persist(post);
+        postNo = post.getPostNo();
     }
-
-
-
+    @Test
+    void findByPostNo() {
+        List<Post> findPost = postRepository.findAll();
+        System.out.println("----------------");
+        for (int i = 0; i < findPost.size(); i++) {
+            System.out.println(findPost.get(i).getPostPic());
+        }
+        System.out.println("----------------");
+    }
+}
 }

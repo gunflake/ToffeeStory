@@ -3,6 +3,10 @@ package com.toffeestory.backend.account;
 import com.toffeestory.backend.exception.InvalidAccountException;
 import com.toffeestory.backend.exception.InvalidImageException;
 import com.toffeestory.backend.exception.NotFoundAccountException;
+import com.toffeestory.backend.post.PostRepository;
+import com.toffeestory.backend.post.Post;
+import com.toffeestory.backend.post.InterestPostRepository;
+import com.toffeestory.backend.post.InterestPost;
 import com.toffeestory.backend.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -45,6 +50,12 @@ public class AccountController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private InterestPostRepository interestPostRepository;
 
     /**
      * 회원 생성
@@ -182,5 +193,35 @@ public class AccountController {
         accountRepository.delete(account);
 
         return ok("Your account has been closed. We\'re here for you always :)");
+    }
+
+    /*-------------------------------
+        - select Bookmark Post List
+    -------------------------------*/
+    @GetMapping("/me/{accountId}/likePosts")
+    public List<Post> likePostList(@AuthenticationPrincipal Account account) {
+        List<Post> posts = new ArrayList<>();
+        List<InterestPost> likePosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), (byte) 0);
+
+        for (int i = 0; i < likePosts.size(); i++) {
+            posts.add(postRepository.findByPostNo(likePosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+        }
+
+        return posts;
+    }
+
+    /*-------------------------------
+        - select Bookmark Post List
+    -------------------------------*/
+    @GetMapping("/me/{accountId}/bookmarkPosts")
+    public List<Post> bookmarkPostList(@AuthenticationPrincipal Account account) {
+        List<Post> posts = new ArrayList<>();
+        List<InterestPost> bookmarkPosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), (byte) 1);
+
+        for (int i = 0; i < bookmarkPosts.size(); i++) {
+            posts.add(postRepository.findByPostNo(bookmarkPosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+        }
+
+        return posts;
     }
 }

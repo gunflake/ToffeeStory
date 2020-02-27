@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.account.Account;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.hibernate.annotations.*;
 
-@Entity
 @Getter
 @Setter
+@Entity
 @JsonIgnoreProperties("account")
 public class Post {
     @Id
@@ -37,7 +37,7 @@ public class Post {
     private Float score;
 
     @Column(nullable = false)
-    private Integer likeCount;
+    private Integer likeCnt;
 
     @Column(nullable = false)
     private Short price;
@@ -51,9 +51,9 @@ public class Post {
 
     @Column
     private Byte useStateCode;
-
-    @Transient
-    private File file;
+	
+	@Transient
+    private List<String> tags;
 
     public void setAccount(Account account) {
         if(this.account != null){
@@ -65,6 +65,8 @@ public class Post {
 
     // Post 생성시 likeCount, UserStateCode 기본값 세팅
     public Post() {
+		this.tags = new ArrayList<>();
+        this.tags.add("");
         this.likeCount = 0;
         this.useStateCode = 1;
     }

@@ -34,5 +34,18 @@ export default {
   },
   getAccount (token) {
     return AXIOS.get('/accounts/secured/getAccount', token)
+  },
+  getPostList (flag) {
+    return AXIOS.get('/posts/', {
+      params: {
+        'flag': flag
+      }
+    })
+  },
+  getPostInfo (postNo) {
+    return AXIOS.get('/posts/' + postNo)
+  },
+  getRelatedPostList (postNo) {
+    return AXIOS.get('posts/' + postNo + '/relatedPost')
   }
 }
