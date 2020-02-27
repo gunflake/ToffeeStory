@@ -76,9 +76,12 @@ public class Account implements UserDetails {
     private String authority;
 
     @OneToMany(mappedBy = "account")
+    @JsonBackReference
     private List<Post> post = new ArrayList<>();
 
-    @Override
+    @Transient
+    private String accountNewPwd;
+   @Override
     public String toString() {
         return "Account{" +
                 "accountId='" + accountId + '\'' +

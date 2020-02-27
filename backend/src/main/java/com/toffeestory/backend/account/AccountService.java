@@ -1,5 +1,6 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.exception.NotFoundAccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,9 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 
 @Slf4j
 @Service
@@ -32,5 +30,32 @@ public class AccountService implements UserDetailsService {
         // TODO : DB에 저장할 때, 정상적으로 저장되었는지 로직 처리하기. (try-catch 문 같은거....)
 
         return accountRepository.save(account);
+    }
+
+    // 아이디 검사
+    public boolean checkAccountId(String accountId, String requestAccountId) {
+        if (accountId.equals(requestAccountId) || accountId == requestAccountId || accountRepository.findByAccountId(requestAccountId).orElse(null) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // 현재 비밀번호 일치 여부 확인
+    public Boolean checkCurrentPassword(String currentPassword, String requestPwd) {
+        if (passwordEncoder.matches(requestPwd, currentPassword)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // 비밀번호 업데이트
+    public Account updatePassword(Account account) {
+        Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
+
+        accountFromDb.setAccountPwd(passwordEncoder.encode(account.getAccountNewPwd()));
+
+        return accountRepository.save(accountFromDb);
     }
 }

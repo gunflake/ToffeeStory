@@ -31,5 +31,8 @@ export default {
   },
   getPostInfo (postNo, token) {
     return AXIOS.get(`/posts/` + postNo, token)
+  },
+  getAccount (token) {
+    return AXIOS.get('/accounts/secured/getAccount', token)
   }
 }
