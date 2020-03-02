@@ -13,7 +13,7 @@
               <span class="flex items-center text-xl">{{ accountId }}</span>
               <!-- Modify & Delete -->
               <div v-if="accessPossible" class="flex">
-                <span class="flex items-center text-gray-600 font-bold text-base ml-4"
+                <span class="flex items-center text-gray-600 font-bold text-base ml-4" @click="modifyPost"
                       style="cursor: pointer">Modify</span>
                 <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
                       style="cursor: pointer">Delete</span>
@@ -75,7 +75,7 @@
   import VueStarRating from 'vue-star-rating'
   import axios from 'axios'
   import api from '@/backend-api'
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions, mapGetters, mapMutations } from 'vuex'
 
   export default {
     name: 'Post',
@@ -104,6 +104,7 @@
       }
     },
     methods: {
+      ...mapMutations(['uploadSetting']),
       ...mapActions(['settingAlertMsg']),
       getPostInfo (postNo) {
         api.getPostInfo(postNo).then(response => {
@@ -134,6 +135,10 @@
           .catch(error => {
             console.log(error)
           })
+      },
+      modifyPost () {
+        this.uploadSetting(this.post.postNo)
+        this.$emit('close')
       },
       deletePost () {
         api.deletePost(this.post.postNo, this.getToken)
