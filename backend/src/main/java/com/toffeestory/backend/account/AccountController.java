@@ -169,7 +169,8 @@ public class AccountController {
     @PatchMapping(path = "/secured/changePassword")
     public ResponseEntity<String> updatePassword(@AuthenticationPrincipal Account account, @RequestParam("accountNewPwd") String acocuntNewPwd) {
         account.setAccountNewPwd(acocuntNewPwd);
-        account = accountService.updatePassword(account);
+
+        accountService.updatePassword(account);
 
         return ok("Your password has been changed successfully!");
     }
