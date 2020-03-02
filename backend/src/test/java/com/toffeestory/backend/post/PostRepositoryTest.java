@@ -75,4 +75,3 @@ class PostRepositoryTest {
         System.out.println("----------------");
     }
 }
-}

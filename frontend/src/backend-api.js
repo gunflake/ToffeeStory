@@ -39,10 +39,13 @@ export default {
       }
     })
   },
-  getPostInfo (postNo) {
-    return AXIOS.get('/posts/' + postNo)
+  getPostInfo (postNo, token) {
+    return AXIOS.get('/posts/' + postNo, token)
   },
   getRelatedPostList (postNo) {
     return AXIOS.get('posts/' + postNo + '/relatedPost')
+  },
+  modifyInterest (postNo, data, token) {
+    return AXIOS.put('posts/' + postNo + '/interest', data, token)
   }
 }

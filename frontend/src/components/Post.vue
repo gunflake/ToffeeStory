@@ -14,9 +14,11 @@
                       <span style="font-size:110%;">{{ accountId }}</span>
                     </div>
                     <div class="inline" style="margin-left:65%;">
-                      <a style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
-                      <span style="margin-left:1%;margin-right: 2%;">{{ post.likeCnt }}</span>
-                      <a style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark-o fa-2x"></i></a>
+                      <a v-if="likeFlag == 0 || likeFlag == null" @click="modifyInterest(0,0)" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
+                      <a v-else @click="modifyInterest(0,1)" style="cursor: pointer"><i class="fa fa-heart fa-2x" style="color:red;"></i></a>
+                      <span style="margin-left:1%;margin-right: 2%;">{{ likeCnt }}</span>
+                      <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark-o fa-2x"></i></a>
+                      <a v-else @click="modifyInterest(1,1)" style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
                     </div>
                   </div>
                   <button class="modal-default-button" style="float:right;color:gray;" @click="$emit('close')">X</button>
@@ -77,6 +79,7 @@
   import VueStarRating from 'vue-star-rating'
   import axios from 'axios'
   import api from '@/backend-api'
+  import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'Post',
@@ -91,20 +94,33 @@
         page: 1,
         pageSize: 9,
         images: [],
+        alert: {
+          message: null,
+          type: null
+        },
         post: [],
+        likeCnt: null,
+        likeFlag: 0,
+        bookmarkFlag: 0,
         accountId: '',
         accountPic: '',
         tags: []
       }
     },
+    computed: {
+      ...mapGetters(['isLoggedIn', 'getToken'])
+    },
     methods: {
+      ...mapActions(['settingAlertMsg']),
       getPostInfo (postNo) {
-        api.getPostInfo(postNo).then(response => {
+        api.getPostInfo(postNo, this.getToken).then(response => {
           this.post = response.data.post
+          this.likeCnt = response.data.post.likeCnt
+          this.likeFlag = response.data.likeFlag
+          this.bookmarkFlag = response.data.bookmarkFlag
           this.accountId = response.data.accountId
           this.accountPic = response.data.accountPic
           this.tags = response.data.tags
-          console.log(response)
         })
           .catch(e => {
             console.log(e)
@@ -112,6 +128,31 @@
       },
       getRelatedPostList (postNo) {
 
+      },
+      modifyInterest (valueCode, useFlag) {
+        if (!this.isLoggedIn) {
+          this.alert.message = '로그인이 필요합니다.'
+          this.alert.type = 'gray'
+          this.settingAlertMsg(this.alert)
+        } else {
+          let formData = new FormData()
+          formData.append('valueCode', valueCode)
+          formData.append('useFlag', useFlag)
+
+          if (valueCode === 0) {
+            this.likeFlag = useFlag === 0 ? 1 : 0
+          } else {
+            this.bookmarkFlag = useFlag === 0 ? 1 : 0
+          }
+
+          api.modifyInterest(this.postNo, formData, this.getToken)
+            .then(response => {
+              this.likeCnt = response.data.likeCnt
+            })
+            .catch(e => {
+              console.log(e)
+            })
+        }
       },
       getImagesInfo () {
         axios.get('https://api.unsplash.com/photos', {
