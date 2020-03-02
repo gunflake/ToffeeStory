@@ -50,7 +50,7 @@
         Upload
       </button>
       <!-- Image Upload Modal-->
-      <UploadModal v-if="showModal" @close="showModal = false"></UploadModal>
+      <UploadModal v-if="getUpload.state" @close="getUpload.state = false"></UploadModal>
       <!-- Login 상태에 따라 프로필 / 로그인 버튼  -->
       <div v-if="isLoggedIn" class="flex">
         <a href="#" class="ml-4">
@@ -83,7 +83,7 @@
   import '@/assets/css/unsplash.css'
   import '@/assets/css/searchComplete.css'
   import UploadModal from '@/components/UploadModal'
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions, mapGetters, mapMutations } from 'vuex'
 
   export default {
     name: 'Header',
@@ -105,9 +105,10 @@
       UploadModal
     },
     computed: {
-      ...mapGetters(['isLoggedIn', 'getUserName'])
+      ...mapGetters(['isLoggedIn', 'getUserName', 'getUpload'])
     },
     methods: {
+      ...mapMutations(['uploadSetting']),
       ...mapActions(['settingAlertMsg']),
       goHome () {
         this.$router.push('/')
@@ -119,7 +120,7 @@
           this.settingAlertMsg(this.alert)
           this.$router.push('/login')
         } else {
-          this.showModal = true
+          this.uploadSetting(0)
         }
       }
     }

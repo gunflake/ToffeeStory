@@ -13,7 +13,11 @@ export default new Vuex.Store({
     alertState: false,
     alertMessage: null,
     alertType: null,
-    token: null
+    token: null,
+    upload: {
+      state: false,
+      postNo: 0
+    }
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
@@ -23,7 +27,8 @@ export default new Vuex.Store({
     getAlertState: state => state.alertState,
     getAlertMessage: state => state.alertMessage,
     getAlertType: state => state.alertType,
-    getToken: state => state.token
+    getToken: state => state.token,
+    getUpload: state => state.upload
   },
   mutations: {
     login_success (state, payload) {
@@ -55,6 +60,14 @@ export default new Vuex.Store({
     },
     tokenSetting (state, data) {
       state.token = data
+    },
+    uploadSetting (state, postNo) {
+      state.upload.state = true
+      state.upload.postNo = postNo
+    },
+    uploadInit (state) {
+      state.upload.state = false
+      state.upload.postNo = 0
     }
   },
   actions: {

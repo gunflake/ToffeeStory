@@ -7,7 +7,7 @@
             <div class="flex">
             </div>
             <div class="flex">
-              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
+              <button class="fa fa-times fa-2x ml-2" @click="closeModal"></button>
             </div>
           </div>
           <!-- image drag & drop space -->
@@ -56,7 +56,7 @@
           </div>
           <!-- cancel & publish button -->
           <div class="flex w-full mt-2 justify-end">
-            <button @click="$emit('close')"
+            <button @click="closeModal"
                     class="ml-4 bg-gray-400 hover:bg-gray-500 text-black font-semibold py-2 px-4 rounded">Cancel
             </button>
             <button @click="createModifyPost"
@@ -73,7 +73,7 @@
   import api from '@/backend-api'
   import VueStarRating from 'vue-star-rating'
   import Vue from 'vue'
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions, mapGetters, mapMutations } from 'vuex'
   Vue.use(VueStarRating)
   export default {
     name: 'UploadModal',
@@ -87,18 +87,21 @@
       }
     },
     computed: {
-      ...mapGetters(['getToken'])
+      ...mapGetters(['getToken', 'getUpload'])
     },
-    created () {
-      if (this.postNo > 0) {
-        api.getPostInfo(this.postNo, this.getToken)
+    mounted () {
+      if (this.getUpload.postNo > 0) {
+        api.getPostInfo(this.getUpload.postNo, this.getToken)
           .then(response => {
             this.post = response.data.post
             this.previewModifyImage(this.post.src)
             this.mode = 'modify'
           })
-          .catch(error => {
-            console.log(error)
+          .catch(() => {
+            this.alert.message = '다시 시도해주세요.'
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
+            this.closeModal()
           })
       }
     },
@@ -120,6 +123,7 @@
       }
     },
     methods: {
+      ...mapMutations(['uploadInit']),
       ...mapActions(['settingAlertMsg']),
       setCurrentRating (rating) {
         this.post.score = rating
@@ -189,6 +193,9 @@
           event.preventDefault()
         }
       },
+      closeModal () {
+        this.uploadInit()
+      },
       // Image Upload 기능 함수 End
       createModifyPost () {
         let formData = new FormData()
@@ -203,13 +210,13 @@
               this.alert.message = '글이 등록되었습니다.'
               this.alert.type = 'green'
               this.settingAlertMsg(this.alert)
-              this.$emit('close')
+              this.closeModal()
             })
             .catch(() => {
               this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
               this.alert.type = 'red'
               this.settingAlertMsg(this.alert)
-              this.$emit('close')
+              this.closeModal()
             })
         } else if (this.mode === 'modify') {
           api.modifyPost(this.postNo, formData, this.getToken)
@@ -217,19 +224,19 @@
               this.alert.message = '글이 수정되었습니다.'
               this.alert.type = 'green'
               this.settingAlertMsg(this.alert)
-              this.$emit('close')
+              this.closeModal()
             })
             .catch(() => {
               this.alert.message = '글 수정에 실패했습니다. 작성한 글 내용을 확인해주세요.'
               this.alert.type = 'red'
               this.settingAlertMsg(this.alert)
-              this.$emit('close')
+              this.closeModal()
             })
         } else {
           this.alert.message = '글 수정에 실패했습니다. 다시 시도해주세요.'
           this.alert.type = 'red'
           this.settingAlertMsg(this.alert)
-          this.$emit('close')
+          this.closeModal()
         }
       }
     }

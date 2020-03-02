@@ -100,8 +100,6 @@ public class PostController {
 
         Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
 
-        log.info(post.getAccount().getAccountId());
-        log.info(account.getAccountId());
         if(!post.getAccount().getAccountId().equals(account.getAccountId())){
             return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, "본인이 작성한 글만 수정할 수 있습니다."));
         }
