@@ -11,7 +11,7 @@
             </div>
           </div>
           <!-- image drag & drop space -->
-          <input type="file" id="selected" @change="onFileSelected" class="hidden">
+          <input type="file" id="selected" @change="onFileSelected" class="hidden" accept="image/*">
           <label for="selected">
             <div id="imageBox" class="bg-gray-200 h-auto w-full" v-on:dragover="dragOverHandler($event)"
                  v-on:dragleave="dragLeaveHandler($event)" v-on:drop="dropHandler($event)">
