@@ -17,23 +17,16 @@
                       style="cursor: pointer">Modify</span>
                 <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
                       style="cursor: pointer">Delete</span>
-            <div class="flex">
-				<div class="inline" style="margin-left:65%;">
-                      <a v-if="likeFlag == 0 || likeFlag == null" @click="modifyInterest(0,0)" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
-                      <a v-else @click="modifyInterest(0,1)" style="cursor: pointer"><i class="fa fa-heart fa-2x" style="color:red;"></i></a>
-                      <span style="margin-left:1%;margin-right: 2%;">{{ likeCnt }}</span>
-                      <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark-o fa-2x"></i></a>
-                      <a v-else @click="modifyInterest(1,1)" style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
-                    </div>
-                  </div>
-
               </div>
             </div>
             <div class="flex">
-              <a class="flex items-center" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
-              <span class="ml-2 mr-4 text-2xl text-center">{{ post.likeCnt }}</span>
-              <a class="flex items-center" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
-              <span class="ml-2 mr-2 text-2xl text-center">{{ post.likeCnt }}</span>
+              <a v-if="likeFlag == 0 || likeFlag == null" @click="modifyInterest(0,0)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
+              <a v-else @click="modifyInterest(0,1)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart fa-2x"
+                                                                                style="color:red;"></i></a>
+              <span class="ml-2 mr-4 text-2xl text-center">{{ likeCnt }}</span>
+              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
+              <a v-else @click="modifyInterest(1,1)" class="flex items-center" style="cursor: pointer; margin-left:3%;"><i
+                class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
               <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
             </div>
           </div>
@@ -93,9 +86,6 @@
     components: {
       'star-rating': VueStarRating
     },
-    computed: {
-      ...mapGetters(['getUserName', 'getToken'])
-    },
     data () {
       return {
         showModal: false,
@@ -103,10 +93,6 @@
         page: 1,
         pageSize: 9,
         images: [],
-        alert: {
-          message: null,
-          type: null
-        },
         post: [],
         likeCnt: null,
         likeFlag: 0,
@@ -121,7 +107,7 @@
       }
     },
     computed: {
-      ...mapGetters(['isLoggedIn', 'getToken'])
+      ...mapGetters(['isLoggedIn', 'getUserName', 'getToken'])
     },
     methods: {
       ...mapActions(['settingAlertMsg']),
