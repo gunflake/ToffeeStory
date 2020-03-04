@@ -20,6 +20,9 @@ public class Product {
     @JoinColumn(name = "productCategoryNo")
     private ProductCategory productCategory;
 
+//    @Column
+//    private Integer productCategoryNo;
+
     @Column(length = 20)
     private String productName;
 

@@ -1,47 +1,49 @@
 <template>
   <div>
-    <table class="table-fixed">
+    <table class="table-fixed table w-full">
       <tbody>
-      <tr>
-        <td class="w-1/6 border px-4 py-2 text-center font-semibold">음료</td>
-        <td class="w-5/6 border px-4 py-2">
+      <!--   search area   -->
+<!--      <tr>-->
+<!--        <td class="border px-4 py-2">-->
+<!--          <form>-->
+<!--            <div class="flex items-center border border-gray-500">-->
+<!--              <input class="appearance-none bg-transparent border-none w-full text-gray-700 text-xs mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="음료를 검색하세요." aria-label="Full name">-->
+<!--              <button class="flex-shrink-0 bg-gray-500 border-gray-500 text-xs border-4 text-white py-1 px-2" type="button">검색</button>-->
+<!--            </div>-->
+<!--          </form>-->
+<!--        </td>-->
+<!--      </tr>-->
+      <!--   filter area   -->
+      <tr v-if="toppingVisible">
+        <td id="toffeeFilter" class="border px-4 py-2">
+          <component :is="filter" :productName="selectedProductName" :productNo="selectedProductNo" v-on:deleteEvent="deleteProduct"></component>
+        </td>
+      </tr>
+      <!--   product area   -->
+      <tr v-if="productVisible">
+        <td class="border px-4 py-2">
           <div class="mb-3">
             <nav class="bg-white flex">
-              <div class="-mb-px flex justify-left w-4/5">
-                <a v-for="item in categories" :key="item.no" v-on:click="selectTab(item.no)" role="button" class="no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
-                  {{item.name}}
+              <div class="-mb-px flex justify-left">
+                <a :id="'category'+category.no" v-for="category in categories" :key="category.no" @click="selectProductCategory($event, category.no)" role="button" class="product-category no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
+                  {{category.name}}
                 </a>
-              </div>
-              <div class="flex w-1/5">
-                <form>
-                  <div class="flex items-center border border-gray-500">
-                    <input class="appearance-none bg-transparent border-none w-full text-gray-700 text-xs mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="음료를 검색하세요." aria-label="Full name">
-                    <button class="flex-shrink-0 bg-gray-500 border-gray-500 text-xs border-4 text-white py-1 px-2" type="button">검색</button>
-                  </div>
-                </form>
               </div>
             </nav>
           </div>
-          <div class="mb-1" id="categoryTab">
-            <div v-show="show" v-for="category in categories" :key="category.no">
-              category {{category.no}}
-            </div>
-            <div v-for="item in products" :key="item.no" class="mr-3 mb-2 p-2 bg-gray-300 items-center text-gray-900 text-sm leading-none rounded-full inline-flex">
-              <a class="mx-2 text-left flex-auto" role="button">{{item.name}}</a>
+          <div class="mb-1">
+            <div v-for="product in products" :key="product.no" class="inline-flex">
+              <div role="button" v-if="product.categoryNo == selectedCategoryNo" @click="selectProduct($event, product)" class="mr-3 mb-2 p-2 bg-gray-300 items-center text-gray-900 text-sm leading-none rounded-full">
+                <a class="mx-2 text-left flex-auto">{{product.name}}</a>
+              </div>
             </div>
           </div>
         </td>
       </tr>
-      <tr>
-        <td class="border px-4 py-2 text-center font-semibold">토핑</td>
-        <!-- 토핑 카테고리 -->
+      <!--   toffing area   -->
+      <tr v-if="toppingVisible">
         <td class="border px-4 py-2">
           <div class="mb-3">
-            <v-tabs>
-              <v-tab>Item One</v-tab>
-              <v-tab>Item Two</v-tab>
-              <v-tab>Item Three</v-tab>
-            </v-tabs>
             <nav class="bg-white flex">
               <div class="-mb-px flex justify-left">
                 <a v-for="item in toppingCategories" :key="item.no" v-on:click="selectTopping(item.no)" role="button" class="no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
@@ -140,9 +142,10 @@
 </template>
 <script>
   import NumberCounter from '@/components/toffeeFilter/NumberCounter'
+  import ButtonWithX from '@/components/toffeeFilter/ButtonWithX'
   export default {
     name: 'ToffeeFilter',
-    components: { NumberCounter },
+    components: { NumberCounter, ButtonWithX },
     props: {
       filterMode: Number
     },
@@ -157,32 +160,87 @@
           { no: 6, name: '기타 제조음료' },
           { no: 7, name: '병음료' }
         ],
-        toppingCategories: [
-          { no: 1, name: '커피' },
-          { no: 2, name: '시럽' },
-          { no: 3, name: '베이스' },
-          { no: 4, name: '얼음' },
-          { no: 5, name: '휘핑크림' }
-        ],
         products: [
           { categoryNo: 1, no: 1, name: '카페 아메리카노' },
           { categoryNo: 1, no: 2, name: '아이스 카페 아메리카노' },
           { categoryNo: 1, no: 3, name: '카페 모카' },
           { categoryNo: 1, no: 4, name: '아이스 카페 모카' },
-          { categoryNo: 2, no: 5, name: '카페 라떼' },
-          { categoryNo: 2, no: 6, name: '아이스 카페 라떼' },
-          { categoryNo: 2, no: 7, name: '카푸치노' },
-          { categoryNo: 2, no: 8, name: '아이스 카푸치노' },
-          { categoryNo: 3, no: 9, name: '화이트 초콜릿 모카' },
-          { categoryNo: 3, no: 10, name: '아이스 화이트 초콜릿 모카' },
-          { categoryNo: 3, no: 11, name: '스타벅스 돌체 라떼' },
-          { categoryNo: 3, no: 12, name: '아이스 스타벅스 돌체 라떼' }
-        ]
+          { categoryNo: 1, no: 5, name: '카페 라떼' },
+          { categoryNo: 1, no: 6, name: '아이스 카페 라떼' },
+          { categoryNo: 1, no: 7, name: '카푸치노' },
+          { categoryNo: 1, no: 8, name: '아이스 카푸치노' },
+          { categoryNo: 1, no: 9, name: '화이트 초콜릿 모카' },
+          { categoryNo: 1, no: 10, name: '아이스 화이트 초콜릿 모카' },
+          { categoryNo: 1, no: 11, name: '스타벅스 돌체 라떼' },
+          { categoryNo: 1, no: 12, name: '아이스 스타벅스 돌체 라떼' },
+          { categoryNo: 4, no: 13, name: '핑크 자몽 피지오' },
+          { categoryNo: 4, no: 14, name: '쿨 라임 피지오' },
+          { categoryNo: 4, no: 15, name: '블랙 티 레모네이드 피지오' },
+          { categoryNo: 4, no: 16, name: '패션 탱고 티 레모네이드 피지오' }
+        ],
+        toppingCategories: [
+          { no: 1, name: '커피' },
+          { no: 2, name: '시럽' },
+          { no: 3, name: '베이스' },
+          { no: 4, name: '기타' },
+          { no: 5, name: '얼음' },
+          { no: 6, name: '휘핑크림' },
+          { no: 7, name: '드리즐' }
+        ],
+        toppings: [
+          { categoryNo: 1, no: 1, name: '에스프레소 샷', subFlag: 0 },
+          { categoryNo: 2, no: 2, name: '바닐라 시럽', subFlag: 1 },
+          { categoryNo: 2, no: 3, name: '헤이즐넛 시럽', subFlag: 1 },
+          { categoryNo: 2, no: 4, name: '카라멜 시럽', subFlag: 1 },
+          { categoryNo: 3, no: 5, name: '물', subFlag: 1 },
+          { categoryNo: 4, no: 6, name: '기타', subFlag: 1 },
+          { categoryNo: 5, no: 7, name: '얼음', subFlag: 1 },
+          { categoryNo: 5, no: 7, name: '얼음', subFlag: 1 }
+        ],
+        productVisible: true,
+        toppingVisible: false,
+        selectedCategoryNo: 1,
+        selectedProductNo: 0,
+        selectedProductName: '',
+        filter: ''
       }
+    },
+    mounted () {
+      document.getElementById('category' + this.selectedCategoryNo).classList.add('border-black')
     },
     methods: {
       selectTopping (itemNo) {
         console.log(itemNo)
+      },
+      selectProductCategory (event, categoryNo) {
+        // 선택된 카테고리 번호로 업데이트
+        this.selectedCategoryNo = categoryNo
+
+        let tabs = document.querySelectorAll('.product-category')
+
+        // 탭 밑줄 설정
+        for (let i = 0; i < tabs.length; i++) {
+          if (tabs[i] === event.target) {
+            event.target.classList.add('border-black')
+          } else {
+            tabs[i].classList.remove('border-black')
+          }
+        }
+      },
+      selectProduct (event, product) {
+        this.selectedProductNo = product.no
+        this.selectedProductName = product.name
+        this.productVisible = false
+        this.toppingVisible = true
+        this.filter = 'button-with-x'
+      },
+      deleteProduct () {
+        this.selectedCategoryNo = 1
+        this.productVisible = true
+        this.toppingVisible = false
+
+        // 필터에서 지우고 첫번째 탭에 밑줄 - 안
+        document.getElementById('category' + this.selectedCategoryNo).classList.add('border-black')
       }
     }
   }
