@@ -1,7 +1,12 @@
 package com.toffeestory.backend.post;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
 public class InterestPost {
     @Id
@@ -15,21 +20,12 @@ public class InterestPost {
     private Integer accountNo;
 
     @Column(nullable = false)
-    private Byte valueCode;
+    private Byte valueCode; // 0: like, 1: bookmark
 
-    public Integer getPostNo() {
-        return postNo;
-    }
+    @Column(nullable = false)
+    private Byte useFlag;   // 1: use
 
-    public void setPostNo(Integer postNo) {
-        this.postNo = postNo;
-    }
-
-    public void setAccountNo(Integer accountNo) {
-        this.accountNo = accountNo;
-    }
-
-    public void setValueCode(Byte valueCode) {
-        this.valueCode = valueCode;
+    public InterestPost() {
+        this.useFlag = 1;
     }
 }

@@ -39,6 +39,9 @@ public class PostController {
     @Autowired
     InterestPostRepository interestPostRepository;
 
+    @Autowired
+    PostService postService;
+
     /*-------------------------------
        -select Post List (new / best / hot)
      -------------------------------*/
@@ -146,10 +149,10 @@ public class PostController {
        - select Post
      -------------------------------*/
     @GetMapping(path = "/{postNo}")
-    public ResponseEntity selectPost(@PathVariable("postNo") Integer postNo) {
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
-        List<String> tagNames = new ArrayList<>();
-
+    public ResponseEntity selectPost(@PathVariable("postNo") Integer postNo,
+                                     @AuthenticationPrincipal Account account) {
+        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        List<String>  tagNames = new ArrayList<>();
         List<PostDtl> postDtls = postDtlRepository.findByPostNo(postNo);
 
         for (int i = 0; i < postDtls.size(); i++) {
@@ -159,7 +162,15 @@ public class PostController {
         post.setTags(tagNames);
         post.setSrc(post.getPostPic());
 
-        ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getProfilePic());
+        Byte likeFlag     = 0;
+        Byte bookmarkFlag = 0;
+
+        if(account != null) {
+            likeFlag     = interestPostRepository.selectUseFlag(postNo, account.getAccountNo(), (byte)0);
+            bookmarkFlag = interestPostRepository.selectUseFlag(postNo, account.getAccountNo(), (byte)1);
+        }
+
+        ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getProfilePic(), likeFlag, bookmarkFlag);
 
         return ok(responsePost);
     }
@@ -168,7 +179,7 @@ public class PostController {
       -select Related Post List
     -------------------------------*/
     @GetMapping("/{postNo}/relatedPost")
-    public List<Post> relatedPostList(@PathVariable("postNo") Integer postNo) {
+    public ResponseEntity relatedPostList(@PathVariable("postNo") Integer postNo) {
         List<Post> posts = new ArrayList<>();
 
         //해당 게시글이 가지고 있는 토핑, 상품 조회
@@ -187,7 +198,7 @@ public class PostController {
             }
         }
 
-        return posts;
+        return ok(posts);
     }
 
     /*-------------------------------
@@ -208,33 +219,26 @@ public class PostController {
     /*-------------------------------
        - update linkCnt
      -------------------------------*/
-    @PostMapping("/{postNo}/like")
-    public Post updateLikeCnt(@PathVariable("postNo") Integer postNo, @AuthenticationPrincipal Account account) {
+    @PutMapping("/{postNo}/interest")
+    public ResponseEntity updateInterest(@PathVariable("postNo") Integer postNo,
+                                         @RequestParam("valueCode") Byte valueCode,
+                                         @RequestParam("useFlag") Byte useFlag,
+                                         @AuthenticationPrincipal Account account) {
+
+        postService.updateInterest(postNo, account.getAccountNo(), valueCode, useFlag);
+
         Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
-        InterestPost likePost = new InterestPost();
+        if(valueCode == 0) {
 
-        likePost.setAccountNo(account.getAccountNo());
-        likePost.setPostNo(postNo);
-        likePost.setValueCode((byte)0);
+            if(useFlag == 0) {
+                post.setLikeCnt(post.getLikeCnt() + 1);
+            } else {
+                post.setLikeCnt(post.getLikeCnt() - 1);
+            }
 
-        post.setLikeCnt(post.getLikeCnt()+ 1);
+            postRepository.save(post);
+        }
 
-        interestPostRepository.save(likePost);
-
-        return postRepository.save(post);
-    }
-
-    /*-------------------------------
-      -insert Bookmark Post
-    -------------------------------*/
-    @PostMapping("/{postNo}/bookmark")
-    public void bookmarkPost(@PathVariable("postNo") Integer postNo, @AuthenticationPrincipal Account account) {
-        InterestPost bookmarkPost = new InterestPost();
-
-        bookmarkPost.setAccountNo(account.getAccountNo());
-        bookmarkPost.setPostNo(postNo);
-        bookmarkPost.setValueCode((byte)1);
-
-        interestPostRepository.save(bookmarkPost);
+        return ok(post);
     }
 }

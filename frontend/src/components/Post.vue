@@ -17,6 +17,16 @@
                       style="cursor: pointer">Modify</span>
                 <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
                       style="cursor: pointer">Delete</span>
+            <div class="flex">
+				<div class="inline" style="margin-left:65%;">
+                      <a v-if="likeFlag == 0 || likeFlag == null" @click="modifyInterest(0,0)" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
+                      <a v-else @click="modifyInterest(0,1)" style="cursor: pointer"><i class="fa fa-heart fa-2x" style="color:red;"></i></a>
+                      <span style="margin-left:1%;margin-right: 2%;">{{ likeCnt }}</span>
+                      <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark-o fa-2x"></i></a>
+                      <a v-else @click="modifyInterest(1,1)" style="cursor: pointer; margin-left:3%;"><i class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
+                    </div>
+                  </div>
+
               </div>
             </div>
             <div class="flex">
@@ -93,7 +103,14 @@
         page: 1,
         pageSize: 9,
         images: [],
+        alert: {
+          message: null,
+          type: null
+        },
         post: [],
+        likeCnt: null,
+        likeFlag: 0,
+        bookmarkFlag: 0,
         accountId: '',
         accountPic: '',
         accessPossible: false,
@@ -103,15 +120,21 @@
         }
       }
     },
+    computed: {
+      ...mapGetters(['isLoggedIn', 'getToken'])
+    },
     methods: {
       ...mapActions(['settingAlertMsg']),
       getPostInfo (postNo) {
-        api.getPostInfo(postNo).then(response => {
-          console.log(response)
+        api.getPostInfo(postNo, this.getToken).then(response => {
           this.post = response.data.post
+          this.likeCnt = response.data.post.likeCnt
+          this.likeFlag = response.data.likeFlag
+          this.bookmarkFlag = response.data.bookmarkFlag
           this.accountId = response.data.accountId
           this.accountPic = response.data.accountPic
           if (this.accountId === this.getUserName) this.accessPossible = true
+          this.tags = response.data.tags
         })
           .catch(e => {
             console.log(e)
@@ -119,6 +142,31 @@
       },
       getRelatedPostList (postNo) {
 
+      },
+      modifyInterest (valueCode, useFlag) {
+        if (!this.isLoggedIn) {
+          this.alert.message = '로그인이 필요합니다.'
+          this.alert.type = 'gray'
+          this.settingAlertMsg(this.alert)
+        } else {
+          let formData = new FormData()
+          formData.append('valueCode', valueCode)
+          formData.append('useFlag', useFlag)
+
+          if (valueCode === 0) {
+            this.likeFlag = useFlag === 0 ? 1 : 0
+          } else {
+            this.bookmarkFlag = useFlag === 0 ? 1 : 0
+          }
+
+          api.modifyInterest(this.postNo, formData, this.getToken)
+            .then(response => {
+              this.likeCnt = response.data.likeCnt
+            })
+            .catch(e => {
+              console.log(e)
+            })
+        }
       },
       getImagesInfo () {
         axios.get('https://api.unsplash.com/photos', {
