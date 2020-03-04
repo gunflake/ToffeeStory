@@ -2,6 +2,10 @@ package com.toffeestory.backend.sample;
 
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountService;
+import com.toffeestory.backend.product.Product;
+import com.toffeestory.backend.product.ProductCategory;
+import com.toffeestory.backend.product.ProductCategoryRepository;
+import com.toffeestory.backend.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -19,7 +23,6 @@ public class SampleDataSera implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         createAccount();
-
     }
 
     private void createAccount() {
