@@ -39,6 +39,10 @@
             <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false"
                          active-color="#003d24"/>
           </div>
+          <div class="flex justify-end">
+            <div class="block border-b border-gray-700 w-18 text-xl my-2 px-2 text-right outline-none"> {{ post.price }} </div>
+            <div class="flex items-center mr-2 border-b border-gray-700 my-2 fa fa-krw fa-lg"></div>
+          </div>
           <!-- Content -->
           <div class="mt-4 text-xl">
             <p>{{ post.content }}</p>
@@ -88,7 +92,6 @@
     },
     data () {
       return {
-        showModal: false,
         loadMore: true,
         page: 1,
         pageSize: 9,

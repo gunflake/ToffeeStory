@@ -15,11 +15,11 @@
     <div class="images-container">
       <div class="images-item" v-for="(image,index) of posts" :key="index">
         <div class="images-card">
-          <a @click="showModal = true"><img class="images-card__image" :src="image.postPic"></a>
-          <Post v-bind:postNo="image.postNo" v-if="showModal" @close="showModal = false"></Post>
+          <a @click="setPostNo(image.postNo)"><img class="images-card__image" :src="image.postPic"></a>
         </div>
       </div>
     </div>
+    <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
     <!--<scroll-loader :loader-method="getPosts" :loader-enable="loadMore" loader-color="rgba(102,102,102,.5)">
     </scroll-loader>-->
     <div class="images-container">
@@ -78,6 +78,10 @@
           .catch(error => {
             console.log(error)
           })
+      },
+      setPostNo (postNo) {
+        this.posts.postNo = postNo
+        this.showModal = true
       }
     },
     computed: {
