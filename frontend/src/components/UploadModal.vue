@@ -11,7 +11,7 @@
             </div>
           </div>
           <!-- image drag & drop space -->
-          <input type="file" id="selected" @change="onFileSelected" class="hidden">
+          <input type="file" id="selected" @change="onFileSelected" class="hidden" accept="image/*">
           <label for="selected">
             <div id="imageBox" class="bg-gray-200 h-auto w-full" v-on:dragover="dragOverHandler($event)"
                  v-on:dragleave="dragLeaveHandler($event)" v-on:drop="dropHandler($event)">
@@ -94,7 +94,7 @@
     computed: {
       ...mapGetters(['getToken'])
     },
-    created () {
+    mounted () {
       if (this.postNo > 0) {
         api.getPostInfo(this.postNo, this.getToken)
           .then(response => {
@@ -102,8 +102,11 @@
             this.previewModifyImage(this.post.src)
             this.mode = 'modify'
           })
-          .catch(error => {
-            console.log(error)
+          .catch(() => {
+            this.alert.message = '게시글 정보를 블러오지 못했습니다. 다시 시도해주세요.'
+            this.alert.type = 'red'
+            this.settingAlertMsg(this.alert)
+            this.closeModal()
           })
       }
     },

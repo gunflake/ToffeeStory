@@ -63,23 +63,23 @@ public class PostController {
                                      @RequestParam("price") short price,
                                      @AuthenticationPrincipal Account account) throws Exception {
 
-        log.info(multipartFile.getOriginalFilename());
-
         // TODO : image 파일이 아닌거는 예외처리 던질 수 있도록 처리하기, 글 내용 유효성 검사 추가하기
+        Post post = new Post();
 
-        Path fileNameAndPath = Paths.get("./images/",multipartFile.getOriginalFilename());
         try{
+            String fileName = multipartFile.getOriginalFilename();
+            Path fileNameAndPath = Paths.get("./images/", fileName);
             Files.write(fileNameAndPath, multipartFile.getBytes());
+            post.setSrc(fileName);
         }catch (IOException e){
             throw new InvalidImageException("이미지 업로드에 실패했습니다.");
         }
 
         account.setPosts(postRepository.findAllByAccount(account));
 
-        Post post = new Post();
+
         post.setScore(score);
         post.setContent(content);
-        post.setPostPic(multipartFile.getOriginalFilename());
         post.setPrice(price);
         post.setAccount(account);
 
@@ -103,8 +103,6 @@ public class PostController {
 
         Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
 
-        log.info(post.getAccount().getAccountId());
-        log.info(account.getAccountId());
         if(!post.getAccount().getAccountId().equals(account.getAccountId())){
             return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, "본인이 작성한 글만 수정할 수 있습니다."));
         }
@@ -118,7 +116,7 @@ public class PostController {
             } catch (IOException e) {
                 throw new InvalidImageException("이미지 업로드에 실패했습니다.");
             }
-            post.setPostPic(fileName);
+            post.setSrc(fileName);
         }
 
         post.setContent(content);
@@ -160,7 +158,6 @@ public class PostController {
         }
 
         post.setTags(tagNames);
-        post.setSrc(post.getPostPic());
 
         Byte likeFlag     = 0;
         Byte bookmarkFlag = 0;

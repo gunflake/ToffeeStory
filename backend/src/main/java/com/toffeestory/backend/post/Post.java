@@ -28,7 +28,7 @@ public class Post {
     private Account account;
 
     @Column(nullable = false)
-    private String postPic;
+    private String src;
 
     @Lob
     @Column(nullable = false)
@@ -55,9 +55,6 @@ public class Post {
 
 	@Transient
     private List<String> tags;
-
-	@Transient
-    private String src;
 
     public void setAccount(Account account) {
         if(this.account != null){

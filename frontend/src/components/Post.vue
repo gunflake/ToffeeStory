@@ -13,7 +13,7 @@
               <span class="flex items-center text-xl">{{ accountId }}</span>
               <!-- Modify & Delete -->
               <div v-if="accessPossible" class="flex">
-                <span class="flex items-center text-gray-600 font-bold text-base ml-4"
+                <span class="flex items-center text-gray-600 font-bold text-base ml-4" @click="modifyPost"
                       style="cursor: pointer">Modify</span>
                 <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
                       style="cursor: pointer">Delete</span>
@@ -30,6 +30,8 @@
               <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
             </div>
           </div>
+          <!-- Modify Modal -->
+          <ModifyModal v-if="showModal" :postNo="post.postNo" @close="showModal = false"></ModifyModal>
           <!-- Photo -->
           <div class="h-auto w-full mt-8">
             <img :src="post.src" class="w-full h-auto"/>
@@ -78,13 +80,15 @@
   import VueStarRating from 'vue-star-rating'
   import axios from 'axios'
   import api from '@/backend-api'
+  import ModifyModal from '@/components/UploadModal'
   import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'Post',
     props: ['postNo'],
     components: {
-      'star-rating': VueStarRating
+      'star-rating': VueStarRating,
+      ModifyModal
     },
     data () {
       return {
@@ -183,6 +187,16 @@
             this.settingAlertMsg(this.alert)
             this.$emit('close')
           })
+      },
+      modifyPost () {
+        if (!this.isLoggedIn) {
+          this.alert.message = '글을 등록하기 위해서는 로그인이 필요합니다.'
+          this.alert.type = 'gray'
+          this.settingAlertMsg(this.alert)
+          this.$router.push('/login')
+        } else {
+          this.showModal = true
+        }
       }
     },
     watch: {
