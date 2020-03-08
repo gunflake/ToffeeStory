@@ -3,6 +3,14 @@
     <div class="modal-mask overflow-auto">
       <div class="w-2/3 mx-auto my-8">
         <div class="bg-white p-8">
+          <!-- Close Button -->
+          <div class="flex justify-between mb-2">
+            <div class="flex">
+            </div>
+            <div class="flex">
+              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
+            </div>
+          </div>
           <!-- Header Id, Like, Bookmark -->
           <div class="flex justify-between">
             <div class="flex">
@@ -27,7 +35,6 @@
               <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
               <a v-else @click="modifyInterest(1,1)" class="flex items-center" style="cursor: pointer; margin-left:3%;"><i
                 class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
-              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
             </div>
           </div>
           <!-- Modify Modal -->
