@@ -167,7 +167,7 @@ public class PostController {
             bookmarkFlag = interestPostRepository.selectUseFlag(postNo, account.getAccountNo(), (byte)1);
         }
 
-        ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getProfilePic(), likeFlag, bookmarkFlag);
+        ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getSrc(), likeFlag, bookmarkFlag);
 
         return ok(responsePost);
     }

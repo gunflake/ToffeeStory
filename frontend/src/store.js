@@ -10,6 +10,7 @@ export default new Vuex.Store({
     loginError: false,
     userName: null,
     userEmail: null,
+    userSrc: null,
     alertState: false,
     alertMessage: null,
     alertType: null,
@@ -23,13 +24,15 @@ export default new Vuex.Store({
     getAlertState: state => state.alertState,
     getAlertMessage: state => state.alertMessage,
     getAlertType: state => state.alertType,
-    getToken: state => state.token
+    getToken: state => state.token,
+    getUserSrc: state => state.userSrc
   },
   mutations: {
     login_success (state, payload) {
       state.loginSuccess = true
       state.userName = payload.userName
       state.userEmail = payload.userEmail
+      state.userSrc = payload.userSrc
     },
     login_error (state, payload) {
       state.loginError = true
@@ -39,6 +42,7 @@ export default new Vuex.Store({
       state.loginSuccess = false
       state.userName = null
       state.userEmail = null
+      state.userSrc = null
     },
     alertInit (state) {
       state.alertMessage = null
@@ -116,9 +120,11 @@ export default new Vuex.Store({
           let userObj = response.data
           localStorage.setItem('username', userObj.username)
           localStorage.setItem('userEmail', userObj.email)
+          localStorage.setItem('userSrc', userObj.src)
           commit('login_success', {
             userName: userObj.username,
-            userEmail: userObj.email
+            userEmail: userObj.email,
+            userSrc: userObj.src
           })
           commit('tokenSetting', config)
         } else {

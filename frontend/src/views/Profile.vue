@@ -2,7 +2,7 @@
   <div>
     <!-- 프로필 -->
     <div id="profile" class="flex justify-center bg-white py-20">
-      <img class="h-40 w-40 rounded-full mr-10" style="object-fit: cover" :src="account.profileSrc" @error="changeProfileImg">
+      <img class="h-40 w-40 rounded-full mr-10" style="object-fit: cover" :src="account.src" @error="changeProfileImg">
       <div class="text-left max-w-md">
         <div class="flex items-center pb-3">
           <div class="pr-4">
@@ -80,7 +80,7 @@
             instagram: response.data.instagram,
             twitter: response.data.twitter,
             bio: response.data.bio,
-            profileSrc: 'http://localhost:8098/api/images/' + response.data.profilePic
+            src: response.data.src
           }
         }
       }).catch(e => {
@@ -94,7 +94,7 @@
         this.$router.push('/')
       },
       changeProfileImg () {
-        this.account.profileSrc = 'https://image.flaticon.com/icons/svg/747/747376.svg'
+        this.account.src = 'http://localhost:8098/api/images/defaultProfile.png'
       }
     }
   }

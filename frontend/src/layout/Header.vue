@@ -58,7 +58,7 @@
         </a>
         <router-link :to="'/@' + getUserName">
           <a href="#" rel="home" class="flex items-center mx-4">
-            <img src="@/assets/image/alt_profile.jpg" class="w-10 h-10 rounded-full" />
+            <img :src="getUserSrc" alt="http://localhost:8098/api/images/defaultProfile.png" class="w-10 h-10 rounded-full"/>
             <span class="text-base pl-2">{{ getUserName }}</span>
           </a>
         </router-link>
@@ -105,7 +105,7 @@
       UploadModal
     },
     computed: {
-      ...mapGetters(['isLoggedIn', 'getUserName'])
+      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserSrc'])
     },
     methods: {
       ...mapActions(['settingAlertMsg']),
