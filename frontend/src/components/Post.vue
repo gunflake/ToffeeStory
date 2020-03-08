@@ -31,7 +31,7 @@
             </div>
           </div>
           <!-- Modify Modal -->
-          <ModifyModal v-if="showModal" :postNo="post.postNo" @close="showModal = false"></ModifyModal>
+          <ModifyModal v-if="showModal" :postNo="post.postNo" @close="showModal = false" @reload="postNum => getPostInfo(postNum)"></ModifyModal>
           <!-- Photo -->
           <div class="h-auto w-full mt-8">
             <img :src="post.src" class="w-full h-auto"/>

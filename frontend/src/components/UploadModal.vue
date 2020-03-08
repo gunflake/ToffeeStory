@@ -226,6 +226,7 @@
               this.alert.type = 'green'
               this.settingAlertMsg(this.alert)
               this.$emit('close')
+              this.$emit('reload', this.postNo)
             })
             .catch(() => {
               this.alert.message = '글 수정에 실패했습니다. 작성한 글 내용을 확인해주세요.'
