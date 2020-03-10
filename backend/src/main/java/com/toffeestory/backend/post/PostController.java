@@ -190,9 +190,9 @@ public class PostController {
             List<PostDtl> setPostNo = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
 
             for (int j = 0; j < setPostNo.size(); j++) {
-                int getPostNo = setPostNo.get(i).getPostNo();
+                int getPostNo = setPostNo.get(j).getPostNo();
 
-                if(!posts.contains(getPostNo)) {
+                if(!posts.contains(getPostNo) && getPostNo != postNo) {
                     posts.add(postRepository.findByPostNo(getPostNo).orElseThrow(() -> new RuntimeException()));
                 }
             }
