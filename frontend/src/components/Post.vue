@@ -3,6 +3,14 @@
     <div class="modal-mask overflow-auto">
       <div class="w-2/3 mx-auto my-8">
         <div class="bg-white p-8">
+          <!-- Close Button -->
+          <div class="flex justify-between mb-2">
+            <div class="flex">
+            </div>
+            <div class="flex">
+              <img src="../assets/image/close.png" class="w-5 h-5 rounded-full" style="cursor: pointer" @click="$emit('close')"/>
+            </div>
+          </div>
           <!-- Header Id, Like, Bookmark -->
           <div class="flex justify-between">
             <div class="flex">
@@ -13,7 +21,7 @@
               <span class="flex items-center text-xl">{{ accountId }}</span>
               <!-- Modify & Delete -->
               <div v-if="accessPossible" class="flex">
-                <span class="flex items-center text-gray-600 font-bold text-base ml-4"
+                <span class="flex items-center text-gray-600 font-bold text-base ml-4" @click="modifyPost"
                       style="cursor: pointer">Modify</span>
                 <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
                       style="cursor: pointer">Delete</span>
@@ -24,12 +32,13 @@
               <a v-else @click="modifyInterest(0,1)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart fa-2x"
                                                                                 style="color:red;"></i></a>
               <span class="ml-2 mr-4 text-2xl text-center">{{ likeCnt }}</span>
-              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
-              <a v-else @click="modifyInterest(1,1)" class="flex items-center" style="cursor: pointer; margin-left:3%;"><i
+              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center mr-6" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
+              <a v-else @click="modifyInterest(1,1)" class="flex items-center mr-6" style="cursor: pointer"><i
                 class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
-              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
             </div>
           </div>
+          <!-- Modify Modal -->
+          <ModifyModal v-if="showModal" :postNo="post.postNo" @close="showModal = false" @reload="postNum => getPostInfo(postNum)"></ModifyModal>
           <!-- Photo -->
           <div class="h-auto w-full mt-8">
             <img :src="post.src" class="w-full h-auto"/>
@@ -83,13 +92,15 @@
 <script>
   import VueStarRating from 'vue-star-rating'
   import api from '@/backend-api'
+  import ModifyModal from '@/components/UploadModal'
   import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'Post',
     props: ['postNo'],
     components: {
-      'star-rating': VueStarRating
+      'star-rating': VueStarRating,
+      ModifyModal
     },
     data () {
       return {
@@ -175,6 +186,16 @@
             this.settingAlertMsg(this.alert)
             this.$emit('close')
           })
+      },
+      modifyPost () {
+        if (!this.isLoggedIn) {
+          this.alert.message = '글을 등록하기 위해서는 로그인이 필요합니다.'
+          this.alert.type = 'gray'
+          this.settingAlertMsg(this.alert)
+          this.$router.push('/login')
+        } else {
+          this.showModal = true
+        }
       }
     },
     watch: {

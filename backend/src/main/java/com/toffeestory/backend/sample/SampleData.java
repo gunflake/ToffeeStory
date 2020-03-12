@@ -50,7 +50,7 @@ public class SampleData implements ApplicationRunner {
         Post post = new Post();
         account.setPosts(postRepository.findAllByAccount(account));
         post.setAccount(account);
-        post.setPostPic("postpic1.png");
+        post.setSrc("test.png");
         post.setContent("content");
         post.setScore(3.0f);
         post.setLikeCnt(10);

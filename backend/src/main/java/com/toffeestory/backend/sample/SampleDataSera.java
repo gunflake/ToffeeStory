@@ -33,7 +33,6 @@ public class SampleDataSera implements ApplicationRunner {
         account.setAccountName("Sera Lee");
         account.setBio("Hello :)");
         account.setInstagram("seralee0330");
-        account.setProfilePic("https://randomuser.me/api/portraits/women/21.jpg");
 
         accountService.saveAccount(account);
     }
