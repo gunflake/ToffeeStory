@@ -104,6 +104,7 @@
     },
     data () {
       return {
+        showModal: false,
         loadMore: true,
         page: 1,
         pageSize: 9,
