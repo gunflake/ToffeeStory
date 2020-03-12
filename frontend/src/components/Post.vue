@@ -39,6 +39,10 @@
             <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false"
                          active-color="#003d24"/>
           </div>
+          <div class="flex justify-end">
+            <div class="block border-b border-gray-700 w-18 text-xl my-2 px-2 text-right outline-none"> {{ post.price }} </div>
+            <div class="flex items-center mr-2 border-b border-gray-700 my-2 fa fa-krw fa-lg"></div>
+          </div>
           <!-- Content -->
           <div class="mt-4 text-xl">
             <p>{{ post.content }}</p>
@@ -52,18 +56,20 @@
               <button class="rounded px-2 py-1" style="background: #cdd0d4">{{ tag }}</button>
             </div>
           </div>
-          <!-- Relatet Post -->
+          <!-- Related Post -->
           <div class="mt-4 mb-2">
             Related Photos
           </div>
-          <div class="flex flex-wrap w-full" style="">
-            <div class="w-1/3 p-2" v-for="(image,index) of images" :key="index">
-              <img class="h-64 w-full object-cover object-center" :src="image.urls.small">
+          <div class="flex flex-wrap w-full">
+            <div class="w-1/3 p-2" v-for="(image,index) of relatedPost" :key="index">
+              <div class="images-card">
+                <a @click="getPostInfo(image.postNo)"><img class="h-64 w-full object-cover object-center" :src="image.src"></a>
+              </div>
             </div>
           </div>
-          <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
+          <!--<scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
                          loader-color="rgba(102,102,102,.5)">
-          </scroll-loader>
+          </scroll-loader>-->
           <div class="modal-footer">
             <slot name="footer">
             </slot>
@@ -76,7 +82,6 @@
 
 <script>
   import VueStarRating from 'vue-star-rating'
-  import axios from 'axios'
   import api from '@/backend-api'
   import { mapActions, mapGetters } from 'vuex'
 
@@ -88,12 +93,11 @@
     },
     data () {
       return {
-        showModal: false,
         loadMore: true,
         page: 1,
         pageSize: 9,
-        images: [],
         post: [],
+        relatedPost: [],
         likeCnt: null,
         likeFlag: 0,
         bookmarkFlag: 0,
@@ -125,9 +129,12 @@
           .catch(e => {
             console.log(e)
           })
-      },
-      getRelatedPostList (postNo) {
-
+        api.getRelatedPostList(postNo).then(response => {
+          this.relatedPost = response.data
+        })
+          .catch(e => {
+            console.log(e)
+          })
       },
       modifyInterest (valueCode, useFlag) {
         if (!this.isLoggedIn) {
@@ -154,21 +161,6 @@
             })
         }
       },
-      getImagesInfo () {
-        axios.get('https://api.unsplash.com/photos', {
-          params: {
-            page: this.page++,
-            per_page: this.pageSize,
-            client_id: 'e874834b096dcd107c232fe4b0bb521158b62e486580c988b0a75cb0b77a2abe'
-          }
-        })
-          .then(res => {
-            res.data && res.data.length && (this.images = this.images.concat(res.data))
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      },
       deletePost () {
         api.deletePost(this.post.postNo, this.getToken)
           .then(response => {
@@ -192,7 +184,6 @@
     },
     mounted () {
       this.getPostInfo(this.postNo)
-      this.getImagesInfo()
     }
   }
 </script>

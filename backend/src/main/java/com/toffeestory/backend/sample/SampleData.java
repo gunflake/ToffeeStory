@@ -50,7 +50,7 @@ public class SampleData implements ApplicationRunner {
         Post post = new Post();
         account.setPosts(postRepository.findAllByAccount(account));
         post.setAccount(account);
-        post.setPostPic("postPic");
+        post.setPostPic("postpic1.png");
         post.setContent("content");
         post.setScore(3.0f);
         post.setLikeCnt(10);
@@ -63,6 +63,21 @@ public class SampleData implements ApplicationRunner {
 
         postRepository.save(post);
 
+        Post post2 = new Post();
+        account.setPosts(postRepository.findAllByAccount(account));
+        post2.setAccount(account);
+        post2.setPostPic("postpic2.png");
+        post2.setContent("content2");
+        post2.setScore(4.0f);
+        post2.setLikeCnt(20);
+        post2.setPrice((short)1000);
+
+        List<String> tag2 = new ArrayList<>();
+        tag2.add("아메리카노");
+        post.setTags(tag2);
+
+        postRepository.save(post2);
+
         PostDtl postdtl = new PostDtl();
         postdtl.setPostNo(1);
         postdtl.setFlag((byte)1);
@@ -70,5 +85,22 @@ public class SampleData implements ApplicationRunner {
         postdtl.setTagName("아메리카노");
 
         postDtlRepository.save(postdtl);
+
+        PostDtl postdtl2 = new PostDtl();
+        postdtl2.setPostNo(1);
+        postdtl2.setFlag((byte)1);
+        postdtl2.setToffeeKey(2);
+        postdtl2.setTagName("카페라떼");
+
+        postDtlRepository.save(postdtl2);
+
+        PostDtl postdtl3 = new PostDtl();
+        postdtl3.setPostNo(2);
+        postdtl3.setFlag((byte)1);
+        postdtl3.setToffeeKey(1);
+        postdtl3.setTagName("아메리카노");
+
+        postDtlRepository.save(postdtl3);
+
     }
 }
