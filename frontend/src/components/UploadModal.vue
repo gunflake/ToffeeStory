@@ -7,7 +7,7 @@
             <div class="flex">
             </div>
             <div class="flex">
-              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
+              <img src="../assets/image/close.png" class="w-5 h-5 rounded-full" style="cursor: pointer" @click="$emit('close')"/>
             </div>
           </div>
           <!-- image drag & drop space -->

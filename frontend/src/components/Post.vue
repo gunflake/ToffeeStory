@@ -8,7 +8,7 @@
             <div class="flex">
             </div>
             <div class="flex">
-              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
+              <img src="../assets/image/close.png" class="w-5 h-5 rounded-full" style="cursor: pointer" @click="$emit('close')"/>
             </div>
           </div>
           <!-- Header Id, Like, Bookmark -->
@@ -32,8 +32,8 @@
               <a v-else @click="modifyInterest(0,1)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart fa-2x"
                                                                                 style="color:red;"></i></a>
               <span class="ml-2 mr-4 text-2xl text-center">{{ likeCnt }}</span>
-              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
-              <a v-else @click="modifyInterest(1,1)" class="flex items-center" style="cursor: pointer; margin-left:3%;"><i
+              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center mr-6" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
+              <a v-else @click="modifyInterest(1,1)" class="flex items-center mr-6" style="cursor: pointer"><i
                 class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
             </div>
           </div>
