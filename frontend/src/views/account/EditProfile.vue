@@ -7,7 +7,7 @@
         <!-- 프로필 이미지 -->
         <div class="w-1/3 flex justify-center">
           <div class="block">
-            <img id="selectedImg" class="h-40 w-40 rounded-full mb-4" style="object-fit: cover" :src="account.profileSrc" @error="changeProfileImg">
+            <img id="selectedImg" class="h-40 w-40 rounded-full mt-4" style="object-fit: cover" :src="account.src" @error="changeProfileImg">
             <input id="inputProfileImg" type="file" accept="image/*" class="hidden" @change="onFileSelected">
             <label for="inputProfileImg">
               <p class="hover:text-blue-500">Change Profile Image</p>
@@ -85,14 +85,13 @@
       api.getAccount(config).then(response => {
         if (response.status === 200) {
           this.account = {
-            profilePic: response.data.profilePic,
+            src: response.data.src,
             accountName: response.data.accountName,
             email: response.data.email,
             accountId: response.data.accountId,
             instagram: response.data.instagram,
             twitter: response.data.twitter,
-            bio: response.data.bio,
-            profileSrc: 'http://localhost:8098/api/images/' + response.data.profilePic
+            bio: response.data.bio
           }
         }
       }).catch(error => {
@@ -230,7 +229,7 @@
         }
       },
       changeProfileImg () {
-        this.account.profileSrc = 'https://image.flaticon.com/icons/svg/747/747376.svg'
+        this.account.src = 'http://localhost:8098/api/images/defaultProfile.png'
       }
     }
   }

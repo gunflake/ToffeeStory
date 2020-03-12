@@ -140,3 +140,5 @@ gradle-app.setting
 
 # 이미지 폴더 추가 X
 images/**
+!images/defaultProfile.png
+!images/postpic**

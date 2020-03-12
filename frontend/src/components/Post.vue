@@ -3,6 +3,14 @@
     <div class="modal-mask overflow-auto">
       <div class="w-2/3 mx-auto my-8">
         <div class="bg-white p-8">
+          <!-- Close Button -->
+          <div class="flex justify-between mb-2">
+            <div class="flex">
+            </div>
+            <div class="flex">
+              <img src="../assets/image/close.png" class="w-5 h-5 rounded-full" style="cursor: pointer" @click="$emit('close')"/>
+            </div>
+          </div>
           <!-- Header Id, Like, Bookmark -->
           <div class="flex justify-between">
             <div class="flex">
@@ -13,7 +21,7 @@
               <span class="flex items-center text-xl">{{ accountId }}</span>
               <!-- Modify & Delete -->
               <div v-if="accessPossible" class="flex">
-                <span class="flex items-center text-gray-600 font-bold text-base ml-4"
+                <span class="flex items-center text-gray-600 font-bold text-base ml-4" @click="modifyPost"
                       style="cursor: pointer">Modify</span>
                 <span class="flex items-center text-red-600 font-bold text-base ml-4" @click="deletePost"
                       style="cursor: pointer">Delete</span>
@@ -24,12 +32,13 @@
               <a v-else @click="modifyInterest(0,1)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart fa-2x"
                                                                                 style="color:red;"></i></a>
               <span class="ml-2 mr-4 text-2xl text-center">{{ likeCnt }}</span>
-              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
-              <a v-else @click="modifyInterest(1,1)" class="flex items-center" style="cursor: pointer; margin-left:3%;"><i
+              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center mr-6" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
+              <a v-else @click="modifyInterest(1,1)" class="flex items-center mr-6" style="cursor: pointer"><i
                 class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
-              <button class="fa fa-times fa-2x ml-2" @click="$emit('close')"></button>
             </div>
           </div>
+          <!-- Modify Modal -->
+          <ModifyModal v-if="showModal" :postNo="post.postNo" @close="showModal = false" @reload="postNum => getPostInfo(postNum)"></ModifyModal>
           <!-- Photo -->
           <div class="h-auto w-full mt-8">
             <img :src="post.src" class="w-full h-auto"/>
@@ -39,9 +48,13 @@
             <star-rating :rating="post.score" :read-only="true" :star-size="40" :show-rating="false"
                          active-color="#003d24"/>
           </div>
+          <div class="flex justify-end">
+            <div class="block border-b border-gray-700 w-18 text-xl my-2 px-2 text-right outline-none"> {{ post.price }} </div>
+            <div class="flex items-center mr-2 border-b border-gray-700 my-2 fa fa-krw fa-lg"></div>
+          </div>
           <!-- Content -->
           <div class="mt-4 text-xl">
-            <p>{{ post.content }}</p>
+            <pre>{{ post.content }}</pre>
           </div>
           <!-- Related Tags -->
           <div class="mt-4">
@@ -52,18 +65,20 @@
               <button class="rounded px-2 py-1" style="background: #cdd0d4">{{ tag }}</button>
             </div>
           </div>
-          <!-- Relatet Post -->
+          <!-- Related Post -->
           <div class="mt-4 mb-2">
             Related Photos
           </div>
-          <div class="flex flex-wrap w-full" style="">
-            <div class="w-1/3 p-2" v-for="(image,index) of images" :key="index">
-              <img class="h-64 w-full object-cover object-center" :src="image.urls.small">
+          <div class="flex flex-wrap w-full">
+            <div class="w-1/3 p-2" v-for="(image,index) of relatedPost" :key="index">
+              <div class="images-card">
+                <a @click="getPostInfo(image.postNo)"><img class="h-64 w-full object-cover object-center" :src="image.src"></a>
+              </div>
             </div>
           </div>
-          <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
+          <!--<scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
                          loader-color="rgba(102,102,102,.5)">
-          </scroll-loader>
+          </scroll-loader>-->
           <div class="modal-footer">
             <slot name="footer">
             </slot>
@@ -76,15 +91,16 @@
 
 <script>
   import VueStarRating from 'vue-star-rating'
-  import axios from 'axios'
   import api from '@/backend-api'
+  import ModifyModal from '@/components/UploadModal'
   import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'Post',
     props: ['postNo'],
     components: {
-      'star-rating': VueStarRating
+      'star-rating': VueStarRating,
+      ModifyModal
     },
     data () {
       return {
@@ -92,8 +108,8 @@
         loadMore: true,
         page: 1,
         pageSize: 9,
-        images: [],
         post: [],
+        relatedPost: [],
         likeCnt: null,
         likeFlag: 0,
         bookmarkFlag: 0,
@@ -125,9 +141,12 @@
           .catch(e => {
             console.log(e)
           })
-      },
-      getRelatedPostList (postNo) {
-
+        api.getRelatedPostList(postNo).then(response => {
+          this.relatedPost = response.data
+        })
+          .catch(e => {
+            console.log(e)
+          })
       },
       modifyInterest (valueCode, useFlag) {
         if (!this.isLoggedIn) {
@@ -154,21 +173,6 @@
             })
         }
       },
-      getImagesInfo () {
-        axios.get('https://api.unsplash.com/photos', {
-          params: {
-            page: this.page++,
-            per_page: this.pageSize,
-            client_id: 'e874834b096dcd107c232fe4b0bb521158b62e486580c988b0a75cb0b77a2abe'
-          }
-        })
-          .then(res => {
-            res.data && res.data.length && (this.images = this.images.concat(res.data))
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      },
       deletePost () {
         api.deletePost(this.post.postNo, this.getToken)
           .then(response => {
@@ -183,6 +187,16 @@
             this.settingAlertMsg(this.alert)
             this.$emit('close')
           })
+      },
+      modifyPost () {
+        if (!this.isLoggedIn) {
+          this.alert.message = '글을 등록하기 위해서는 로그인이 필요합니다.'
+          this.alert.type = 'gray'
+          this.settingAlertMsg(this.alert)
+          this.$router.push('/login')
+        } else {
+          this.showModal = true
+        }
       }
     },
     watch: {
@@ -192,7 +206,6 @@
     },
     mounted () {
       this.getPostInfo(this.postNo)
-      this.getImagesInfo()
     }
   }
 </script>

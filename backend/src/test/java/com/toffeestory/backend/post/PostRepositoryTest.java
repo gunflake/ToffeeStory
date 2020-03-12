@@ -55,7 +55,7 @@ class PostRepositoryTest {
 
 
         post.setAccount(gunflake09);
-        post.setPostPic("@/assets/image/main_img1.jpg");
+        post.setSrc("@/assets/image/main_img1.jpg");
         post.setContent("게시글 입니다.");
         post.setScore(4.0f);
         post.setLikeCnt(10);
@@ -70,7 +70,7 @@ class PostRepositoryTest {
         List<Post> findPost = postRepository.findAll();
         System.out.println("----------------");
         for (int i = 0; i < findPost.size(); i++) {
-            System.out.println(findPost.get(i).getPostPic());
+            System.out.println(findPost.get(i).getSrc());
         }
         System.out.println("----------------");
     }
