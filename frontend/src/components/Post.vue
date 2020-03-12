@@ -63,7 +63,7 @@
           <div class="flex flex-wrap w-full">
             <div class="w-1/3 p-2" v-for="(image,index) of relatedPost" :key="index">
               <div class="images-card">
-                <a @click="getPostInfo(image.postNo)"><img class="h-64 w-full object-cover object-center" :src="'http://localhost:8098/api/images/' + image.postPic"></a>
+                <a @click="getPostInfo(image.postNo)"><img class="h-64 w-full object-cover object-center" :src="image.src"></a>
               </div>
             </div>
           </div>

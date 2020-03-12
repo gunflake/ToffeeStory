@@ -15,7 +15,7 @@
     <div class="images-container">
       <div class="images-item" v-for="(image,index) of posts" :key="index">
         <div class="images-card">
-          <a @click="setPostNo(image.postNo)"><img class="images-card__image" :src="'http://localhost:8098/api/images/' + image.postPic"></a>
+          <a @click="setPostNo(image.postNo)"><img class="images-card__image" :src="image.src"></a>
         </div>
       </div>
     </div>
