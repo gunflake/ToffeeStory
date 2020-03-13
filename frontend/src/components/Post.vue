@@ -54,7 +54,7 @@
           </div>
           <!-- Content -->
           <div class="mt-4 text-xl">
-            <p>{{ post.content }}</p>
+            <pre>{{ post.content }}</pre>
           </div>
           <!-- Related Tags -->
           <div class="mt-4">
