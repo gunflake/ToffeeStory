@@ -27,11 +27,18 @@
 </template>
 <script>
   import ToffeeList from '@/components/ToffeeList'
+  import { mapMutations } from 'vuex'
 
   export default {
     name: 'home',
     components: {
       ToffeeList
+    },
+    mounted () {
+      this.showHeader()
+    },
+    methods: {
+      ...mapMutations(['showHeader'])
     }
   }
 </script>
