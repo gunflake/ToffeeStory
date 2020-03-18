@@ -3,22 +3,22 @@
     <!-- Mobile -->
     <div class="flex w-full md:hidden py-2">
       <div class="w-1/4 ">
-          <div class="flex justify-center fa fa-home fa-2x" style="cursor: pointer" @click="goHome()"></div>
+          <div class="flex justify-center fa fa-home fa-2x" style="cursor: pointer" @click="goHomePage()"></div>
       </div>
       <div class="w-1/4 ">
-        <div class="flex justify-center fa fa-search fa-2x" style="cursor: pointer" @click="goSearch()"></div>
+        <div class="flex justify-center fa fa-search fa-2x" style="cursor: pointer" @click="goMobileSearchPage()"></div>
       </div>
       <div class="w-1/4 ">
         <div class="flex justify-center fa fa-plus-square fa-2x" style="cursor: pointer" @click="showUpload"></div>
       </div>
       <div class="w-1/4 ">
-        <div class="flex justify-center fa fa-user-circle fa-2x" style="cursor: pointer" @click="goProfile"></div>
+        <div class="flex justify-center fa fa-user-circle fa-2x" style="cursor: pointer" @click="goProfilePage"></div>
       </div>
     </div>
     <!-- Home & Search -->
     <div class="hidden md:flex flex-grow">
       <!-- Logo -->
-      <img src="../assets/image/logo.png" class="h-12 w-12" @click="goHome()" style="cursor: pointer"/>
+      <img src="../assets/image/logo.png" class="h-12 w-12" @click="goHomePage()" style="cursor: pointer"/>
       <div class="hidden lg:block ml-3">
         <div class="font-bold font-sans pt-1">Toffee Story</div>
         <div class="text-sm font-sans" style="line-height: 1; white-space: nowrap;">Toppings for everyone</div>
@@ -31,6 +31,7 @@
                    type="text" placeholder="Search desired topping" autocomplete="off"
                    spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
                    aria-label="search input"  dir="auto"
+                   v-on:keyup.enter="search"
                    v-model="searchTag">
           </span>
           <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
@@ -126,7 +127,7 @@
     },
     methods: {
       ...mapActions(['settingAlertMsg']),
-      goHome () {
+      goHomePage () {
         this.$router.push('/')
       },
       showUpload () {
@@ -139,7 +140,7 @@
           this.showModal = true
         }
       },
-      goProfile () {
+      goProfilePage () {
         if (!this.isLoggedIn) {
           this.alert.message = '프로필을 보기 위해서는 로그인이 필요합니다.'
           this.alert.type = 'gray'
@@ -149,8 +150,11 @@
           this.$router.push('/@' + this.getUserName)
         }
       },
-      goSearch () {
+      goMobileSearchPage () {
         this.$router.push('/mobile-search')
+      },
+      search () {
+        alert('검색 기능 구현중입니다.')
       }
     }
   }

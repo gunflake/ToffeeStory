@@ -14,8 +14,8 @@
           <InputBox title="Full Name" type="text" name="fullName" id="fullName" @sendVal="updateFullName"/>
           <InputBox title="Email" type="email" name="email" id="email" @sendVal="updateEmail"/>
           <InputBox title="User Name" type="text" name="userName" id="userName" @sendVal="updateUserName"/>
-          <InputBox title="Password" type="password" name="password" id="password" @sendVal="updatePassword"/>
-          <button @click="createAccount()" class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
+          <InputBox title="Password" type="password" name="password" id="password" @sendVal="updatePassword" @submit="createAccount"/>
+          <button @click="createAccount" class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3">
             Join
           </button>
         </div>

@@ -6,7 +6,8 @@
                    type="text" placeholder="Search desired topping" autocomplete="off"
                    spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
                    aria-label="search input"  dir="auto"
-                   v-model="searchTag">
+                   v-model="searchTag"
+                   v-on:keyup.enter="search">
           </span>
       <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
         <svg class="fill-current pointer-events-none text-gray-600 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
@@ -35,6 +36,9 @@
       goHome () {
         this.showHeader()
         this.$router.push('/')
+      },
+      search () {
+        alert('검색 기능 구현중입니다.')
       }
     }
   }
