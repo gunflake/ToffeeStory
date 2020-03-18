@@ -1,8 +1,8 @@
 <template>
-  <div class="flex w-full items-center mx-3 pt-2">
+  <div class="flex w-full items-center px-3 pt-2">
     <div class="w-5/6 relative">
           <span>
-            <input class="transition-colors duration-100 ease-in-out focus:outline-0 border border-transparent focus:bg-white focus:border-gray-300 placeholder-gray-600 rounded-lg bg-search py-2 pr-4 pl-10 block w-full appearance-none leading-normal ds-input"
+            <input class="transition-colors duration-100 ease-in-out focus:outline-none border border-transparent focus:bg-white focus:border-gray-900 placeholder-gray-600 rounded-lg bg-search py-2 pr-4 pl-10 block w-full appearance-none leading-normal ds-input"
                    type="text" placeholder="Search desired topping" autocomplete="off"
                    spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
                    aria-label="search input"  dir="auto"
@@ -17,7 +17,7 @@
       </div>
     </div>
     <button
-      class="w-1/6 bg-transparent text-gray-600 hover:text-black py-2 px-6 border-gray-700 " @click="goHome">
+      class="w-1/6 ml-1 bg-transparent text-gray-600 focus:outline-none hover:text-black py-2 px-6 border-gray-700 " @click="goHome">
       Cancel
     </button>
   </div>

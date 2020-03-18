@@ -27,7 +27,7 @@
       <div class="w-full items-center ml-3 pt-1">
         <div class="relative">
           <span>
-            <input class="transition-colors duration-100 ease-in-out focus:outline-0 border border-transparent focus:bg-white focus:border-gray-300 placeholder-gray-600 rounded-lg bg-search py-2 pr-4 pl-10 block w-full appearance-none leading-normal ds-input"
+            <input class="transition-colors duration-100 ease-in-out focus:outline-none border border-transparent focus:bg-white focus:border-gray-900 placeholder-gray-600 rounded-lg bg-search py-2 pr-4 pl-10 block w-full appearance-none leading-normal ds-input"
                    type="text" placeholder="Search desired topping" autocomplete="off"
                    spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
                    aria-label="search input"  dir="auto"
