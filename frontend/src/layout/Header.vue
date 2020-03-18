@@ -1,56 +1,72 @@
 <template>
-  <nav class="bg-white mx-4 flex" role="navigation">
-    <!-- Logo -->
-    <div class="w-1/12">
-        <img src="@/assets/image/toffeeStory.png" class="w-36 h-16" @click="goHome()" style="cursor: pointer"/>
+  <nav class="bg-white flex p-2 items-center" role="navigation">
+    <!-- Mobile -->
+    <div class="flex w-full md:hidden py-2">
+      <div class="w-1/4 ">
+          <div class="flex justify-center fa fa-home fa-2x" style="cursor: pointer" @click="goHome()"></div>
+      </div>
+      <div class="w-1/4 ">
+        <div class="flex justify-center fa fa-search fa-2x" style="cursor: pointer" @click="goSearch()"></div>
+      </div>
+      <div class="w-1/4 ">
+        <div class="flex justify-center fa fa-plus-square fa-2x" style="cursor: pointer" @click="showUpload"></div>
+      </div>
+      <div class="w-1/4 ">
+        <div class="flex justify-center fa fa-user-circle fa-2x" style="cursor: pointer" @click="goProfile"></div>
+      </div>
     </div>
-    <!-- Search -->
-    <div class="w-7/12 _1g2pj _3PSbf ml-4">
-      <form class="_2jvJJ mV0BM vertical-center" data-test="nav-bar-search-form-form" action="/s">
-        <button title="Search Unsplash" class="_2VoZY _3d86A" type="submit" data-test="nav-bar-search-form-button">
-          <svg class="_2-tlh _1azRR _1mPD6" version="1.1" viewBox="0 0 32 32" width="32" height="32"
-               aria-hidden="false">
-            <path
-              d="M31 28.64l-7.57-7.57a12.53 12.53 0 1 0-2.36 2.36l7.57 7.57zm-17.5-6a9.17 9.17 0 1 1 6.5-2.64 9.11 9.11 0 0 1-6.5 2.67z"></path>
-          </svg>
-        </button>
-        <div role="combobox" aria-haspopup="listbox" aria-owns="react-autowhatever-SEARCH_FORM_INPUT_nav-bar"
-             aria-expanded="false" class="_2ZbDJ">
-          <input type="search" autocomplete="off" aria-autocomplete="list"
-                 aria-controls="react-autowhatever-SEARCH_FORM_INPUT_nav-bar" class="_3q0cO _3FYu1" name="searchKeyword"
-                 placeholder="Search desired topping" required="" data-test="nav-bar-search-form-input"
-                 id="SEARCH_FORM_INPUT_nav-bar" title="Search Unsplash" autocapitalize="none" spellcheck="false"
-                 value="" v-model="searchTag">
-          <div id="react-autowhatever-SEARCH_FORM_INPUT_nav-bar" role="listbox"></div>
+    <!-- Home & Search -->
+    <div class="hidden md:flex flex-grow">
+      <!-- Logo -->
+      <img src="../assets/image/logo.png" class="h-12 w-12" @click="goHome()" style="cursor: pointer"/>
+      <div class="hidden lg:block ml-3">
+        <div class="font-bold font-sans pt-1">Toffee Story</div>
+        <div class="text-sm font-sans" style="line-height: 1; white-space: nowrap;">Toppings for everyone</div>
+      </div>
+      <!-- Search -->
+      <div class="w-full items-center ml-3 pt-1">
+        <div class="relative">
+          <span>
+            <input class="transition-colors duration-100 ease-in-out focus:outline-0 border border-transparent focus:bg-white focus:border-gray-300 placeholder-gray-600 rounded-lg bg-search py-2 pr-4 pl-10 block w-full appearance-none leading-normal ds-input"
+                   type="text" placeholder="Search desired topping" autocomplete="off"
+                   spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
+                   aria-label="search input"  dir="auto"
+                   v-model="searchTag">
+          </span>
+          <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
+            <svg class="fill-current pointer-events-none text-gray-600 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 20 20" >
+              <path
+                d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"></path>
+            </svg>
+          </div>
         </div>
-      </form>
-      <!-- Auto Complete -->
-      <div v-if="searchTag.length > 0 " class="relative">
-        <div class="VR6_Q"></div>
-        <div class="drKGC">
-          <div class="fuqBx">
-            <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
-              <span class="Ap253 py-8"># 아메리카노</span>
-            </a>
-            <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
-              <span class="Ap253 py-8"># 흑당 카페라떼</span>
-            </a>
-            <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
-              <span class="Ap253 py-8"># 밀크티</span>
-            </a>
+        <div v-if="searchTag.length > 0 " class="relative">
+          <div class="VR6_Q"></div>
+          <div class="drKGC">
+            <div class="fuqBx">
+              <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
+                <span class="Ap253 py-8"># 아메리카노</span>
+              </a>
+              <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
+                <span class="Ap253 py-8"># 흑당 카페라떼</span>
+              </a>
+              <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
+                <span class="Ap253 py-8"># 밀크티</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <!-- User Information -->
-    <div class="w-4/12 flex items-center justify-end">
+    <div class="hidden md:flex ml-4 items-center justify-end">
       <!-- Upload 버튼 -->
       <button id="show-modal" @click="showUpload"
               class="bg-transparent text-gray-600 font-semibold border border-gray-600 hover:bg-white hover:border-black hover:text-black hover:border-transparent rounded py-2 px-4">
         Upload
       </button>
       <!-- Image Upload Modal-->
-      <UploadModal v-if="showModal" @close="showModal = false"></UploadModal>
       <!-- Login 상태에 따라 프로필 / 로그인 버튼  -->
       <div v-if="isLoggedIn" class="flex">
         <a href="#" class="ml-4">
@@ -77,6 +93,7 @@
         </router-link>
       </div>
     </div>
+    <UploadModal v-if="showModal" @close="showModal = false"></UploadModal>
   </nav>
 </template>
 <script>
@@ -121,6 +138,19 @@
         } else {
           this.showModal = true
         }
+      },
+      goProfile () {
+        if (!this.isLoggedIn) {
+          this.alert.message = '프로필을 보기 위해서는 로그인이 필요합니다.'
+          this.alert.type = 'gray'
+          this.settingAlertMsg(this.alert)
+          this.$router.push('/login')
+        } else {
+          this.$router.push('/@' + this.getUserName)
+        }
+      },
+      goSearch () {
+        this.$router.push('/mobile-search')
       }
     }
   }
