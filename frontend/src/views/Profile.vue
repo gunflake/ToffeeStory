@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- 프로필 -->
-    <div id="profile" class="flex justify-center bg-white py-20">
-      <img class="h-40 w-40 rounded-full mr-10" style="object-fit: cover" :src="account.src" @error="changeProfileImg">
+    <div id="profile" class="flex-row md:flex justify-center bg-white py-20 ml-4 md:ml-0">
+      <img class="h-40 w-40 rounded-full md:mr-10 object-cover"  :src="account.src" @error="changeProfileImg">
       <div class="text-left max-w-md">
         <div class="flex items-center pb-3">
           <div class="pr-4">

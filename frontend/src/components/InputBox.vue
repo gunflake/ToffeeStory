@@ -13,6 +13,7 @@
       v-bind:name="name"
       v-model="value"
       @change="sendValue"
+      v-on:keyup.enter="submit"
     />
   </div>
 </template>
@@ -36,6 +37,9 @@
     methods: {
       sendValue () {
         this.$emit('sendVal', this.value)
+      },
+      submit () {
+        this.$emit('submit')
       }
     }
   }

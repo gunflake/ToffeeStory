@@ -53,6 +53,11 @@ const routes = [
       { path: 'changePassword', component: changePassword },
       { path: 'closeAccount', component: closeAccount }
     ]
+  },
+  {
+    path: '/mobile-search',
+    name: 'mobileSearch',
+    component: () => import('@/views/MobileSearch.vue')
   }
 ]
 
