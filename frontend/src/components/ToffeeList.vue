@@ -12,10 +12,10 @@
         </ol>
       </nav>
     </div>
-    <div class="images-container">
-      <div class="images-item" v-for="(image,index) of posts" :key="index">
-        <div class="images-card">
-          <a @click="setPostNo(image.postNo)"><img class="images-card__image" :src="image.src"></a>
+    <div class="flex flex-wrap lg:px-10 xl:px-20">
+      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of posts" :key="index">
+        <div class="w-full h-image object-cover">
+          <a @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
     <div v-if="getAlertState">
-        <div class="fixed flex alert-show text-center h-16 items-center w-full z-50" v-bind:class="getColor(getAlertType)">
+        <div class="fixed flex alert-show text-center h-16 items-center w-full" style="z-index: 99999;" v-bind:class="getColor(getAlertType)">
             <span class="mx-auto text-white text-base">{{ getAlertMessage }}</span>
             <span class="absolute top-0 bottom-0 right-0 p-5">
         <svg class="fill-current h-6 w-6 text-white" role="button" xmlns="http://www.w3.org/2000/svg"
