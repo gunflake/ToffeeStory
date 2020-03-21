@@ -17,5 +17,11 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findAllByOrderByScoreDesc();
     // Hot
     List<Post> findAllByOrderByLikeCntDesc();
+
     List<Post> findAllByAccount(Account account);
+    // Best
+    List<Post> findAllByAccountOrderByScoreDesc(Account account);
+    // Hot
+    List<Post> findAllByAccountOrderByLikeCntDesc(Account account);
+
 }

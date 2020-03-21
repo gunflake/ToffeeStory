@@ -41,33 +41,39 @@
     <!-- 네비게이션 -->
     <nav class="bg-white px-8 pt-2 shadow-md">
       <div class="-mb-px flex justify-left">
-        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a href="#" class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" @click="setValueCode(3)">
           My Menu
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a href="#" class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" @click="setValueCode(0)">
           Likes
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
+        <a href="#" class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" @click="setValueCode(1)">
           Bookmarks
         </a>
       </div>
     </nav>
+    <ToffeeList v-bind:sortFlag = 1 :valueCode = this.valueCode></ToffeeList>
   </div>
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import axios from 'axios'
+  import ToffeeList from '@/components/ToffeeList'
 
   export default {
     name: 'profile',
+    components: {
+      ToffeeList
+    },
     data () {
       return {
         account: [],
         instagramLink: 'https://www.instagram.com/',
         twitterLink: 'https://www.twitter.com/',
         errors: [],
-        isMyProfile: true
+        isMyProfile: true,
+        valueCode: 3
       }
     },
     mounted () {
@@ -87,6 +93,9 @@
         console.log(e)
       })
     },
+    computed: {
+      ...mapGetters(['getToken'])
+    },
     methods: {
       ...mapActions(['logoutProcess']),
       logout () {
@@ -95,6 +104,9 @@
       },
       changeProfileImg () {
         this.account.src = 'http://localhost:8098/api/images/defaultProfile.png'
+      },
+      setValueCode (valueCode) {
+        this.valueCode = valueCode
       }
     }
   }

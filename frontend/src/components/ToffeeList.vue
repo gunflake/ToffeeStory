@@ -1,7 +1,7 @@
 <template>
-  <div id="toffeeList">
+  <div>
     <!-- Sort Component -->
-    <div id="sortComponent">
+    <div v-if="sortFlag == 0">
       <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
         <ol class="list-reset flex text-grey-dark">
           <li><a href="#" class="text-blue font-bold" @click="getPosts(0)">NEW</a></li>
@@ -40,6 +40,7 @@
 
   export default {
     name: 'ToffeeList',
+    props: ['sortFlag', 'valueCode'],
     components: {
       Post
     },
@@ -64,8 +65,13 @@
             console.log(e)
           })
       },
+      getInterestPost () {
+        api.getInterestPosts(this.valueCode).then(response => {
+          this.posts = response.data
+        })
+      },
       getImagesInfo () {
-        axios.get('https://api.unsplash.com/photos', {
+        axios.get('https://api.unsplash.com/photos/', {
           params: {
             page: this.page++,
             per_page: this.pageSize,
@@ -84,22 +90,18 @@
         this.showModal = true
       }
     },
-    computed: {
-      postNo: function () {
-        return this.posts.postNo
-      }
-    },
     watch: {
       page (n) {
         n > 30 && (this.loadMore = false)
       }
     },
     mounted () {
-      this.getPosts(this.flag)
+      if (this.valueCode === 2) {
+        this.getPosts(this.flag)
+      } else {
+        this.getInterestPost(this.valueCode)
+      }
       this.getImagesInfo()
     }
   }
 </script>
-<style>
-  @import '../assets/css/image-scroll.css';
-</style>

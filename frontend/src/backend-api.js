@@ -46,9 +46,12 @@ export default {
     return AXIOS.get('/posts/' + postNo, token)
   },
   getRelatedPostList (postNo) {
-    return AXIOS.get('posts/' + postNo + '/relatedPost')
+    return AXIOS.get('/posts/' + postNo + '/relatedPost')
   },
   modifyInterest (postNo, data, token) {
-    return AXIOS.put('posts/' + postNo + '/interest', data, token)
+    return AXIOS.put('/posts/' + postNo + '/interest', data, token)
+  },
+  getInterestPosts (valueCode, token) {
+    return AXIOS.get('/me/myMenu/' + valueCode, token)
   }
 }
