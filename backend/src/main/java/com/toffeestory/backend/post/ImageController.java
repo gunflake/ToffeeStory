@@ -27,7 +27,6 @@ public class ImageController {
     public ResponseEntity getImageName(@PathVariable("imageName") String imageName) throws IOException {
         //TODO : postName으로 받아서 처리하기
         InputStream in = null;
-        log.info(Paths.get("").toAbsolutePath().toString() +"/images/" + imageName);
         try{
             in = new BufferedInputStream(
                     new FileInputStream(Paths.get("").toAbsolutePath().toString() +"/images/" + imageName));
