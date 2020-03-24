@@ -32,6 +32,7 @@ public class ImageController {
 
         log.info(rootPath);
         try{
+            log.info(rootPath +"/images/" + imageName);
             in = new BufferedInputStream(
                     new FileInputStream(rootPath +"/images/" + imageName));
         }catch (Exception e){
