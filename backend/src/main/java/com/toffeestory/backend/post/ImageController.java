@@ -30,6 +30,7 @@ public class ImageController {
         String rootPath = Paths.get("").toAbsolutePath().toString();
         rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
 
+        log.info(rootPath);
         try{
             in = new BufferedInputStream(
                     new FileInputStream(rootPath +"/images/" + imageName));
