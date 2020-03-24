@@ -67,8 +67,10 @@ public class PostController {
         Post post = new Post();
 
         try{
+            String rootPath = Paths.get("").toAbsolutePath().toString();
+            rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
             String fileName = multipartFile.getOriginalFilename();
-            Path fileNameAndPath = Paths.get(Paths.get("").toAbsolutePath().toString() +"/images/", fileName);
+            Path fileNameAndPath = Paths.get(rootPath +"/images/", fileName);
             Files.write(fileNameAndPath, multipartFile.getBytes());
             post.setSrc(fileName);
         }catch (IOException e){
