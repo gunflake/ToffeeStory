@@ -2,7 +2,7 @@
   <div id="toffeeList">
     <!-- Sort Component -->
     <div id="sortComponent">
-      <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
+      <nav class="bg-grey-light rounded font-sans w-full lg:px-10 xl:px-20 mx-3 my-4">
         <ol class="list-reset flex text-grey-dark">
           <li><a href="#" class="text-blue font-bold" @click="getPosts(0)">NEW</a></li>
           <li><span class="mx-2">|</span></li>
