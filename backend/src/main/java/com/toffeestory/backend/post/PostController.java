@@ -7,6 +7,7 @@ import com.toffeestory.backend.exception.NotFoundPostException;
 import com.toffeestory.backend.exception.RestApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,6 +43,9 @@ public class PostController {
     @Autowired
     PostService postService;
 
+    @Value("${url}")
+    String defaultUrl;
+
     /*-------------------------------
        -select Post List (new / best / hot)
      -------------------------------*/
@@ -72,7 +76,7 @@ public class PostController {
             String fileName = multipartFile.getOriginalFilename();
             Path fileNameAndPath = Paths.get(rootPath +"/images/", fileName);
             Files.write(fileNameAndPath, multipartFile.getBytes());
-            post.setSrc(fileName);
+            post.setSrc(defaultUrl+fileName);
         }catch (IOException e){
             throw new InvalidImageException("이미지 업로드에 실패했습니다.");
         }
@@ -118,7 +122,7 @@ public class PostController {
             } catch (IOException e) {
                 throw new InvalidImageException("이미지 업로드에 실패했습니다.");
             }
-            post.setSrc(fileName);
+            post.setSrc(defaultUrl+fileName);
         }
 
         post.setContent(content);

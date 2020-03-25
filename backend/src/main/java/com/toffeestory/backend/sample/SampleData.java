@@ -8,6 +8,7 @@ import com.toffeestory.backend.post.PostDtl;
 import com.toffeestory.backend.post.PostDtlRepository;
 import com.toffeestory.backend.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,9 @@ public class SampleData implements ApplicationRunner {
     @Autowired
     PostDtlRepository postDtlRepository;
 
+    @Value("${url}")
+    String defaultUrl;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         createAccountHM();
@@ -45,6 +49,7 @@ public class SampleData implements ApplicationRunner {
         account.setInstagram("test007");
         account.setTwitter("test009");
         account.setAccountName("Vincent Nam");
+        account.setSrc(defaultUrl+"defaultProfile.png");
         accountService.saveAccount(account);
 
         Account account1 = new Account();
@@ -54,6 +59,7 @@ public class SampleData implements ApplicationRunner {
         account1.setInstagram("test007");
         account1.setTwitter("test009");
         account1.setAccountName("Sera Lee");
+        account1.setSrc(defaultUrl+"defaultProfile.png");
         accountService.saveAccount(account1);
 
         Account account2 = new Account();
@@ -63,12 +69,13 @@ public class SampleData implements ApplicationRunner {
         account2.setInstagram("happy_oriday");
         account2.setTwitter("twitter");
         account2.setAccountName("Yuri");
+        account2.setSrc(defaultUrl+"defaultProfile.png");
         accountService.saveAccount(account2);
 
         Post post = new Post();
         account.setPosts(postRepository.findAllByAccount(account));
         post.setAccount(account);
-        post.setSrc("postpic1.jpg");
+        post.setSrc(defaultUrl+"postpic1.jpg");
         post.setContent("content");
         post.setScore(3.0f);
         post.setLikeCnt(10);
@@ -100,7 +107,7 @@ public class SampleData implements ApplicationRunner {
         Post post2 = new Post();
         account.setPosts(postRepository.findAllByAccount(account));
         post2.setAccount(account);
-        post2.setSrc("postpic2.jpg");
+        post2.setSrc(defaultUrl+"postpic2.jpg");
         post2.setContent("content2");
         post2.setScore(4.0f);
         post2.setLikeCnt(20);
@@ -124,7 +131,7 @@ public class SampleData implements ApplicationRunner {
 
         account1.setPosts(postRepository.findAllByAccount(account1));
         post3.setAccount(account1);
-        post3.setSrc("postpic3.jpg");
+        post3.setSrc(defaultUrl+"postpic3.jpg");
         post3.setContent("content3");
         post3.setScore(3.5f);
         post3.setLikeCnt(5);
@@ -157,7 +164,7 @@ public class SampleData implements ApplicationRunner {
         Post post4 = new Post();
         account2.setPosts(postRepository.findAllByAccount(account2));
         post4.setAccount(account2);
-        post4.setSrc("postpic4.jpg");
+        post4.setSrc(defaultUrl+"postpic4.jpg");
         post4.setContent("content4");
         post4.setScore(1.5f);
         post4.setLikeCnt(3);
@@ -201,7 +208,7 @@ public class SampleData implements ApplicationRunner {
         Post post5 = new Post();
         account1.setPosts(postRepository.findAllByAccount(account1));
         post5.setAccount(account1);
-        post5.setSrc("postpic5.jpg");
+        post5.setSrc(defaultUrl+"postpic5.jpg");
         post5.setContent("content5");
         post5.setScore(3.5f);
         post5.setLikeCnt(25);
@@ -234,7 +241,7 @@ public class SampleData implements ApplicationRunner {
         Post post6 = new Post();
         account2.setPosts(postRepository.findAllByAccount(account2));
         post6.setAccount(account2);
-        post6.setSrc("postpic6.jpg");
+        post6.setSrc(defaultUrl+"postpic6.jpg");
         post6.setContent("content6");
         post6.setScore(5.0f);
         post6.setLikeCnt(30);
