@@ -10,6 +10,7 @@ import com.toffeestory.backend.post.InterestPost;
 import com.toffeestory.backend.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,6 +57,9 @@ public class AccountController {
 
     @Autowired
     private InterestPostRepository interestPostRepository;
+
+    @Value("${url}")
+    String defaultUrl;
 
     /**
      * 회원 생성
@@ -156,7 +160,7 @@ public class AccountController {
 
                 // 계정 업데이트
                 Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
-                accountFromDb.setSrc(profilePic.getOriginalFilename());
+                accountFromDb.setSrc(defaultUrl+profilePic.getOriginalFilename());
                 accountRepository.save(accountFromDb);
             } catch (IOException e) {
                 throw new InvalidImageException("이미지 업로드에 실패했습니다.");
