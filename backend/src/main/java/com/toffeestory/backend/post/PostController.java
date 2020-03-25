@@ -50,13 +50,26 @@ public class PostController {
        -select Post List (new / best / hot)
      -------------------------------*/
     @GetMapping(path = "")
-    public List<Post> initPage(@RequestParam("flag") Integer flag) {
+    public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword, @RequestParam("flag") Integer flag) {
         if(flag == 0){                      // New
-            return postRepository.findAll();
+            // keyword가 존재할 떄
+            if(keyword != null){
+                return postRepository.findAllSearchKeywordPostOrderByPostNoDesc(keyword);
+            }else{
+                return postRepository.findAllByOrderByPostNoDesc();
+            }
         } else if(flag == 1) {              // Best
-            return postRepository.findAllByOrderByScoreDesc();
+            if(keyword != null){
+                return postRepository.findAllSearchKeywordPostOrderByScoreDesc(keyword);
+            }else{
+                return postRepository.findAllByOrderByScoreDesc();
+            }
         } else {                            // Hot
-            return postRepository.findAllByOrderByLikeCntDesc();
+            if(keyword != null){
+                return postRepository.findAllSearchKeywordPostOrderByLikeCntDesc(keyword);
+            }else{
+                return postRepository.findAllByOrderByLikeCntDesc();
+            }
         }
     }
 
