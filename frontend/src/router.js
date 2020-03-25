@@ -58,6 +58,11 @@ const routes = [
     path: '/mobile-search',
     name: 'mobileSearch',
     component: () => import('@/views/MobileSearch.vue')
+  },
+  {
+    path: '/search',
+    name: 'searchList',
+    component: () => import('@/views/SearchList.vue')
   }
 ]
 

@@ -154,7 +154,7 @@
         this.$router.push('/mobile-search')
       },
       search () {
-        alert('검색 기능 구현중입니다.')
+        location.href = '/search?keyword=' + this.searchTag
       }
     }
   }

@@ -78,7 +78,7 @@ public class SampleData implements ApplicationRunner {
         post.setSrc(defaultUrl+"postpic1.jpg");
         post.setContent("content");
         post.setScore(3.0f);
-        post.setLikeCnt(10);
+        post.setLikeCnt(20);
         post.setPrice((short)2000);
 
         List<String> tag = new ArrayList<>();
@@ -110,7 +110,7 @@ public class SampleData implements ApplicationRunner {
         post2.setSrc(defaultUrl+"postpic2.jpg");
         post2.setContent("content2");
         post2.setScore(4.0f);
-        post2.setLikeCnt(20);
+        post2.setLikeCnt(10);
         post2.setPrice((short)1000);
 
         List<String> tag2 = new ArrayList<>();
