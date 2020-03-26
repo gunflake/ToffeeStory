@@ -4,16 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 public class Topping {
     @Id
+    @Column(name = "toppingNo")
     @GeneratedValue
-    private Integer toppingNo; // PK, Auto Increase
+    private Integer toppingNo;
 
     @ManyToOne
     @JoinColumn(name = "toppingCategoryNo")
@@ -23,20 +22,11 @@ public class Topping {
     private String toppingName;
 
     @Column
-    private boolean subFlag;
-
-    @Column(length = 3)
-    private Integer subToppingGroupNo;
-
-    @Column
     private Integer toppingPrice;
 
     @Column
-    private Boolean useStateCode;
+    private Integer quantityType;
 
-    @OneToMany(mappedBy = "topping")
-    private List<SubTopping> subToppingList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "topping")
-    private List<ProductToppingMap> productToppingMapList = new ArrayList<>();
+    @Column
+    private Byte useStateCode;
 }
