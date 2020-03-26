@@ -46,7 +46,8 @@
           <div class="mb-3">
             <nav class="bg-white flex">
               <div class="-mb-px flex justify-left">
-                <a :id="'toppingCategory'+toppingCategory.no" v-for="toppingCategory in toppingCategories" :key="toppingCategory.no" @click="selectToppingCategory($event, toppingCategory.no)" role="button" class="topping-category no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
+                <a :id="'toppingCategory'+toppingCategory.no" v-for="toppingCategory in toppingCategories" :key="toppingCategory.no" @click="selectToppingCategory($event, toppingCategory.no)"
+                   role="button" class="topping-category no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
                   {{toppingCategory.name}}
                 </a>
               </div>
@@ -95,43 +96,8 @@
             </div>
             <!-- 등록/수정 -->
             <div v-else class="w-full max-w-sm ml-3">
-              <topping toppingName="테스트토핑" quantityType="1"></topping>
-              <div class="mb-3 flex items-center">
-                <div class="w-1/3">
-                  <span class="font-semibold text-sm">
-                    프라푸치노용 시럽
-                  </span>
-                </div>
-              </div>
-              <div class="mb-3 flex items-center">
-                <label class="inline-flex items-center mr-3">
-                  <input type="radio" class="form-radio" name="radio" value="1" checked="checked">
-                  <span class="ml-2 text-sm">일반</span>
-                </label>
-                <label class="inline-flex items-center mr-3">
-                  <input type="radio" class="form-radio" name="radio" value="2">
-                  <span class="ml-2 text-sm">라이트 (휘핑없이 추천)</span>
-                </label>
-              </div>
-              <div class="mb-3 flex items-center">
-                <div class="w-1/3">
-                  <span class="font-semibold text-sm">
-                    바닐라 시럽
-                  </span>
-                </div>
-                <div class="w-2/3">
-                  <number-counter></number-counter>
-                </div>
-              </div>
-              <div class="mb-3 flex items-center">
-                <div class="w-1/3">
-                  <span class="font-semibold text-sm">
-                    헤이즐넛 시럽
-                  </span>
-                </div>
-                <div class="w-2/3">
-                  <number-counter></number-counter>
-                </div>
+              <div v-for="topping in toppings" :key="topping.no">
+                <topping v-show="topping.categoryNo == selectedToppingCategoryNo" :topping="topping"></topping>
               </div>
             </div>
           </div>
@@ -196,49 +162,30 @@
         ],
         toppings: [
           // 커피
-          { categoryNo: 1, no: 1, name: '에스프레소 샷', toppingPrice: 0, qauntityType: 1 },
-          { categoryNo: 1, no: 2, name: '디카페인', toppingPrice: 0, qauntityType: 0 },
-          { categoryNo: 1, no: 3, name: '프라푸치노 로스트', toppingPrice: 0, qauntityType: 1 },
+          { categoryNo: 1, no: 1, name: '에스프레소 샷', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 1, no: 2, name: '디카페인', toppingPrice: 0, quantityType: 0 },
+          { categoryNo: 1, no: 3, name: '프라푸치노 로스트', toppingPrice: 0, quantityType: 1 },
           // 시럽
-          { categoryNo: 2, no: 4, name: '클래식 시럽', toppingPrice: 0, qauntityType: 1 },
-          { categoryNo: 2, no: 5, name: '바닐라 시럽', toppingPrice: 0, qauntityType: 1 },
-          { categoryNo: 2, no: 6, name: '헤이즐넛 시럽', toppingPrice: 0, qauntityType: 1 },
-          { categoryNo: 2, no: 7, name: '카라멜 시럽', toppingPrice: 0, qauntityType: 1 },
+          { categoryNo: 2, no: 4, name: '클래식 시럽', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 2, no: 5, name: '바닐라 시럽', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 2, no: 6, name: '헤이즐넛 시럽', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 2, no: 7, name: '카라멜 시럽', toppingPrice: 0, quantityType: 1 },
           // 베이스
           { categoryNo: 3, no: 8, name: '물', subFlag: 1 },
           // 우유/음료 온도
-          { categoryNo: 4, no: 9, name: '우유종류', toppingPrice: 0, qauntityType: 0 },
+          { categoryNo: 4, no: 9, name: '우유종류', toppingPrice: 0, quantityType: 0 },
           // 기타
-          { categoryNo: 5, no: 10, name: '저지방 요거트', toppingPrice: 0, qauntityType: 0 },
+          { categoryNo: 5, no: 10, name: '저지방 요거트', toppingPrice: 0, quantityType: 0 },
           // 얼음
-          { categoryNo: 6, no: 11, name: '얼음', toppingPrice: 0, qauntityType: 3 },
+          { categoryNo: 6, no: 11, name: '얼음', toppingPrice: 0, quantityType: 3 },
           // 자바칩
-          { categoryNo: 7, no: 12, name: '자바칩', toppingPrice: 0, qauntityType: 0 },
-          { categoryNo: 7, no: 13, name: '프라푸치노 자바칩', toppingPrice: 0, qauntityType: 1 },
+          { categoryNo: 7, no: 12, name: '자바칩', toppingPrice: 0, quantityType: 0 },
+          { categoryNo: 7, no: 13, name: '프라푸치노 자바칩', toppingPrice: 0, quantityType: 1 },
           // 휘핑크림
-          { categoryNo: 8, no: 14, name: '휘핑크림', toppingPrice: 0, qauntityType: 3 },
+          { categoryNo: 8, no: 14, name: '휘핑크림', toppingPrice: 0, quantityType: 3 },
           // 드리즐
-          { categoryNo: 9, no: 15, name: '카라멜 드리즐', toppingPrice: 0, qauntityType: 3 },
-          { categoryNo: 9, no: 16, name: '초콜릿 드리즐', toppingPrice: 0, qauntityType: 3 }
-        ],
-        subToppings: [
-          // 커피
-          { subToppingNo: 1, toppingNo: 2, subToppingName: '디카페인' },
-          { subToppingNo: 2, toppingNo: 2, subToppingName: '1/2디카페인' },
-          // 우유/음료 온도
-          { subToppingNo: 3, toppingNo: 4, subToppingName: '일반' },
-          { subToppingNo: 4, toppingNo: 4, subToppingName: '저지방' },
-          { subToppingNo: 5, toppingNo: 4, subToppingName: '무지방' },
-          { subToppingNo: 6, toppingNo: 4, subToppingName: '두유' },
-          // 얼음
-          { subToppingNo: 7, toppingNo: 11, subToppingName: '얼음' },
-          // 자바칩
-          { subToppingNo: 8, toppingNo: 12, subToppingName: '자바칩' },
-          { subToppingNo: 9, toppingNo: 12, subToppingName: '자바칩&토핑(반반)' },
-          { subToppingNo: 10, toppingNo: 12, subToppingName: '통 자바칩 토핑' },
-          // 휘핑 크림
-          { subToppingNo: 11, toppingNo: 14, subToppingName: '일반 휘핑' },
-          { subToppingNo: 12, toppingNo: 14, subToppingName: '에스프레소 휘핑' }
+          { categoryNo: 9, no: 15, name: '카라멜 드리즐', toppingPrice: 0, quantityType: 3 },
+          { categoryNo: 9, no: 16, name: '초콜릿 드리즐', toppingPrice: 0, quantityType: 3 }
         ],
         quantityCode: [
           { quantityCode: 1, seqNo: 1, quantityName: '없이', quantityType: '4' },
@@ -257,45 +204,20 @@
       }
     },
     mounted () {
-      // 첫번째 탭에 밑
+      // 첫번째 탭에 밑줄
       document.getElementById('productCategory' + this.selectedProductCategoryNo).classList.add('border-black')
       document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
     },
     methods: {
-      selectTopping (itemNo) {
-        console.log(itemNo)
-      },
       // 상품 카테고리 선택
       selectProductCategory (event, productCategoryNo) {
-        // 선택된 상품 카테고리 번호로 업데이트
         this.selectedProductCategoryNo = productCategoryNo
-
-        // 상품 탭 밑줄 설정
-        let tabs = document.querySelectorAll('.product-category')
-
-        for (let i = 0; i < tabs.length; i++) {
-          if (tabs[i] === event.target) {
-            event.target.classList.add('border-black')
-          } else {
-            tabs[i].classList.remove('border-black')
-          }
-        }
+        this.tabUnderline(true, event.target, '.product-category')
       },
       // 토핑 카테고리 선택
       selectToppingCategory (event, toppingCategoryNo) {
-        // 선택된 토핑 카테고리 번호로 업데이트
         this.selectedToppingCategoryNo = toppingCategoryNo
-
-        // 탭 밑줄 설정
-        let tabs = document.querySelectorAll('.topping-category')
-
-        for (let i = 0; i < tabs.length; i++) {
-          if (tabs[i] === event.target) {
-            event.target.classList.add('border-black')
-          } else {
-            tabs[i].classList.remove('border-black')
-          }
-        }
+        this.tabUnderline(true, event.target, '.topping-category')
       },
       // 상품 선택
       selectProduct (event, product) {
@@ -306,6 +228,8 @@
         this.filter = 'button-with-x'
 
         document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
+
+        // 상품의 토핑 목록 조회
       },
       // 필터에서 상품 삭제
       deleteProduct () {
@@ -313,20 +237,27 @@
         this.selectedToppingCategoryNo = 1
         this.productVisible = true
         this.toppingVisible = false
+        this.tabUnderline(false, 'productCategory', '.product-category')
+        this.tabUnderline(false, 'toppingCategory', '.topping-category')
+      },
+      // 탭 밑줄 설정
+      tabUnderline (isSelectMode, element, selector) {
+        let tabs = document.querySelectorAll(selector)
 
-        // 첫번째 탭에 밑줄
-        let tabs = document.querySelectorAll('.product-category')
-        for (let i = 0; i < tabs.length; i++) {
-          tabs[i].classList.remove('border-black')
+        if (isSelectMode) { // select
+          for (let i = 0; i < tabs.length; i++) {
+            if (tabs[i] === element) {
+              element.classList.add('border-black')
+            } else {
+              tabs[i].classList.remove('border-black')
+            }
+          }
+        } else { // delete
+          for (let i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('border-black')
+          }
+          document.getElementById(element + this.selectedProductCategoryNo).classList.add('border-black')
         }
-
-        tabs = tabs = document.querySelectorAll('.topping-category')
-        for (let i = 0; i < tabs.length; i++) {
-          tabs[i].classList.remove('border-black')
-        }
-
-        document.getElementById('productCategory' + this.selectedProductCategoryNo).classList.add('border-black')
-        document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
       }
     }
   }

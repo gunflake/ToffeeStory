@@ -1,27 +1,29 @@
 <template>
   <div class="mb-3">
-    <!--  topping name area  -->
-    <div class="mb-3 flex items-center">
+    <div class="flex items-center">
+      <!--  topping name area  -->
       <div class="w-1/3">
         <span class="font-semibold text-sm">
-          {{ toppingName }}
+          {{ topping.name }}
         </span>
       </div>
       <!--  subtopping area  -->
-      <div v-if="subToppings != null" class="mb-3 flex items-center">
+      <div v-if="topping.quantityType == 0 && subToppings != null" class="flex items-center">
+        <radio-button v-on:clickEvent="selectRadio('subToppingRadio')" v-for="subTopping in subToppings" :key="subTopping.subToppingNo"
+                      :value="subTopping.subToppingNo" :title="subTopping.subToppingName" name="subToppingRadio"></radio-button>
       </div>
       <!--  quantity area:Number Counter  -->
-      <div v-if="quantityType == 1" class="w-2/3">
+      <div v-if="topping.quantityType == 1" class="w-2/3">
         <number-counter></number-counter>
       </div>
-    </div>
-    <!--  quantity area"Quantity Code  -->
-    <div v-if="quantityType != 1" class="mb-3 flex items-center">
-      <radio-button v-on:clickEvent="selectQauntity" v-if="quantityType == 4" quantityCode="1" quantityName="없이" name="quantityRadio"></radio-button>
-      <radio-button v-on:clickEvent="selectQauntity" v-if="quantityType == 2 || quantityType == 3 || quantityType == 4" quantityCode="2" quantityName="적게" name="quantityRadio"></radio-button>
-      <radio-button v-on:clickEvent="selectQauntity" v-if="quantityType == 2 || quantityType == 3 || quantityType == 4" quantityCode="3" quantityName="보통" name="quantityRadio"></radio-button>
-      <radio-button v-on:clickEvent="selectQauntity" v-if="quantityType == 3 || quantityType == 4" quantityCode="4" quantityName="많이" name="quantityRadio"></radio-button>
-      <radio-button v-on:clickEvent="selectQauntity" v-if="quantityType == 5" quantityCode="5" quantityName="클래식 시럽 없이" name="quantityRadio"></radio-button>
+      <!--  quantity area"Quantity Code  -->
+      <div v-if="topping.quantityType != 1" class="flex items-center">
+        <radio-button v-on:clickEvent="selectRadio('quantityRadio')" v-if="topping.quantityType == 4" value="1" title="없이" name="quantityRadio"></radio-button>
+        <radio-button v-on:clickEvent="selectRadio('quantityRadio')" v-if="topping.quantityType == 2 || topping.quantityType == 3 || topping.quantityType == 4" value="2" title="적게" name="quantityRadio"></radio-button>
+        <radio-button v-on:clickEvent="selectRadio('quantityRadio')" v-if="topping.quantityType == 2 || topping.quantityType == 3 || topping.quantityType == 4" value="3" title="보통" name="quantityRadio"></radio-button>
+        <radio-button v-on:clickEvent="selectRadio('quantityRadio')" v-if="topping.quantityType == 3 || topping.quantityType == 4" value="4" title="많이" name="quantityRadio"></radio-button>
+        <radio-button v-on:clickEvent="selectRadio('quantityRadio')" v-if="topping.quantityType == 5" value="5" title="클래식 시럽 없이" name="quantityRadio"></radio-button>
+      </div>
     </div>
   </div>
 </template>
@@ -34,32 +36,33 @@
     components: { NumberCounter, RadioButton },
     props: {
       topping: [],
-      toppingNo: Number,
-      toppingName: String,
-      toppingPrice: Number,
-      quantityType: Number,
-      subToppings: [],
       defaultSubToppingNo: Number,
       defaultValue: Number
     },
     data () {
       return {
-        quantityCodes: []
+        quantityCodes: [],
+        subToppings: [ // subTopping ex
+          { subToppingNo: 1, toppingNo: 2, subToppingName: '디카페인' },
+          { subToppingNo: 2, toppingNo: 2, subToppingName: '1/2디카페인' }
+        ]
       }
     },
     mounted () {
-      // quantityCodes 조회 함수
+      // init default value
     },
     methods: {
       deleteButton () {
         this.$emit('deleteEvent')
       },
-      selectQauntity () {
-        let radioButtons = document.querySelectorAll('input[name="quantityRadio"]')
+      selectRadio (name) {
+        let radioButtons = document.querySelectorAll('input[name="' + name + '"]')
+
         for (let i = 0; i < radioButtons.length; i++) {
           radioButtons[i].parentElement.classList.remove('bg-gray-500', 'border-transparent', 'text-white')
         }
-        document.querySelector('input[name="quantityRadio"]:checked').parentElement.classList.add('bg-gray-500', 'border-transparent', 'text-white')
+
+        document.querySelector('input[name="' + name + '"]:checked').parentElement.classList.add('bg-gray-500', 'border-transparent', 'text-white')
       }
     }
   }
