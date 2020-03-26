@@ -1,8 +1,8 @@
 <template>
-  <div class="flex py-20 px-20">
+  <div class="flex-row md:flex lg:p-20 xl:pr-40">
     <!-- 계정관리 사이드바 -->
-    <aside class="sidebar w-1/4 bg-white w-64 my-2 mx-6">
-      <ul class="list-reset mr-10">
+    <aside class="sidebar w-full md:w-1/4 bg-white my-2 px-2">
+      <ul class="list-reset">
         <h3 class="mb-4 text-xl text-black font-bold">Account settings</h3>
         <li>
           <router-link to="/settings/editProfile">
@@ -22,7 +22,7 @@
       </ul>
     </aside>
     <!-- 계정관리 메인 -->
-    <main class="page w-3/4 bg-white my-2 mr-6">
+    <main class="page w-full md:w-3/4 bg-white my-2 px-2">
       <router-view></router-view>
     </main>
   </div>

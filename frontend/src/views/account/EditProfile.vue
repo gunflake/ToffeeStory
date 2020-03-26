@@ -3,9 +3,9 @@
     <h3 class="mb-4 text-xl text-black font-bold">Edit Profile</h3>
     <!-- 입력 폼 -->
     <div class="w-full">
-      <div class="flex">
+      <div class="flex-row md:flex">
         <!-- 프로필 이미지 -->
-        <div class="w-1/3 flex justify-center">
+        <div class="w-full md:w-1/3 flex justify-center">
           <div class="block">
             <img id="selectedImg" class="h-40 w-40 rounded-full mt-4" style="object-fit: cover" :src="account.src" @error="changeProfileImg">
             <input id="inputProfileImg" type="file" accept="image/*" class="hidden" @change="onFileSelected">
@@ -15,7 +15,7 @@
           </div>
         </div>
         <!-- 회원 정보 -->
-        <div class="w-2/3">
+        <div class="w-full md:w-2/3">
           <input-with-error type="text" title="Full Name" id="fullName" minlength="2" maxlength="30"
                             v-on:inputEvent="validFullName" v-model="account.accountName"
                             :errorMsg="fullNameMsg" :visible="fullNameMsgVisible"></input-with-error>
@@ -25,12 +25,12 @@
                             :errorMsg="userNameMsg" :visible="userNameMsgVisible" ></input-with-error>
         </div>
       </div>
-      <div class="flex">
-        <div class="w-1/2 mr-6">
+      <div class="flex-row md:flex">
+        <div class="w-full md:w-1/2 mr-6">
           <input-with-error type="text" title="Instagram User Name" id="instagram" maxlength="30"
                             v-model="account.instagram" :errorMsg="instagramMsg" :visible="instagramMsgVisible"></input-with-error>
         </div>
-        <div class="w-1/2">
+        <div class="w-full md:w-1/2">
           <input-with-error type="text" title="Twitter User Name" id="twitter" maxlength="30"
                             v-model="account.twitter" :errorMsg="twitterMsg" :visible="twitterMsgVisible"></input-with-error>
         </div>
