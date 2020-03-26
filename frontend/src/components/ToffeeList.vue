@@ -78,15 +78,16 @@
           })
       },
       getImagesInfo () {
-        axios.get('https://api.unsplash.com/photos/', {
+        axios.get('https://api.unsplash.com/search/photos/', {
           params: {
+            query: 'starbucks',
             page: this.page++,
             per_page: this.pageSize,
             client_id: 'e874834b096dcd107c232fe4b0bb521158b62e486580c988b0a75cb0b77a2abe'
           }
         })
           .then(res => {
-            res.data && res.data.length && (this.images = this.images.concat(res.data))
+            res.data.results && res.data.results.length && (this.images = this.images.concat(res.data.results))
           })
           .catch(error => {
             console.log(error)
