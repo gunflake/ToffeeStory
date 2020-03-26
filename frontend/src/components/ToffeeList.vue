@@ -37,6 +37,7 @@
   import axios from 'axios'
   import Post from '@/components/Post'
   import api from '@/backend-api'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'ToffeeList',
@@ -55,6 +56,9 @@
         posts: []
       }
     },
+    computed: {
+      ...mapGetters(['getToken'])
+    },
     methods: {
       getPosts (flag) {
         this.flag = flag
@@ -65,10 +69,13 @@
             console.log(e)
           })
       },
-      getInterestPost () {
-        api.getInterestPosts(this.valueCode).then(response => {
+      getInterestPost (valueCode) {
+        api.getInterestPosts(valueCode, this.getToken).then(response => {
           this.posts = response.data
         })
+          .catch(e => {
+            console.log(e)
+          })
       },
       getImagesInfo () {
         axios.get('https://api.unsplash.com/photos/', {
@@ -93,6 +100,9 @@
     watch: {
       page (n) {
         n > 30 && (this.loadMore = false)
+      },
+      valueCode: function (valueCode) {
+        this.getInterestPost(valueCode)
       }
     },
     mounted () {

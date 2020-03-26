@@ -52,6 +52,6 @@ export default {
     return AXIOS.put('/posts/' + postNo + '/interest', data, token)
   },
   getInterestPosts (valueCode, token) {
-    return AXIOS.get('/me/myMenu/' + valueCode, token)
+    return AXIOS.get('/accounts/me/myMenu/' + valueCode, token)
   }
 }
