@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- 프로필 -->
-    <div id="profile" class="flex-row md:flex justify-center bg-white py-20 ml-4 md:ml-0">
-      <img class="h-40 w-40 rounded-full md:mr-10 object-cover"  :src="account.src" @error="changeProfileImg">
+    <div id="profile" class="flex justify-center bg-white py-20">
+      <img class="h-40 w-40 rounded-full mr-10" style="object-fit: cover" :src="account.src" @error="changeProfileImg">
       <div class="text-left max-w-md">
         <div class="flex items-center pb-3">
           <div class="pr-4">
@@ -41,39 +41,33 @@
     <!-- 네비게이션 -->
     <nav class="bg-white px-8 pt-2 shadow-md">
       <div class="-mb-px flex justify-left">
-        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(3)">
+        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           My Menu
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(0)">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           Likes
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(1)">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" href="#">
           Bookmarks
         </a>
       </div>
     </nav>
-    <ToffeeList v-bind:sortFlag = 1 :valueCode = this.valueCode></ToffeeList>
   </div>
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions } from 'vuex'
   import axios from 'axios'
-  import ToffeeList from '@/components/ToffeeList'
 
   export default {
     name: 'profile',
-    components: {
-      ToffeeList
-    },
     data () {
       return {
         account: [],
         instagramLink: 'https://www.instagram.com/',
         twitterLink: 'https://www.twitter.com/',
         errors: [],
-        isMyProfile: true,
-        valueCode: 3
+        isMyProfile: true
       }
     },
     mounted () {
@@ -93,9 +87,6 @@
         console.log(e)
       })
     },
-    computed: {
-      ...mapGetters(['getToken'])
-    },
     methods: {
       ...mapActions(['logoutProcess']),
       logout () {
@@ -104,9 +95,6 @@
       },
       changeProfileImg () {
         this.account.src = 'http://localhost:8098/api/images/defaultProfile.png'
-      },
-      setValueCode (valueCode) {
-        this.valueCode = valueCode
       }
     }
   }

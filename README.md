@@ -15,11 +15,8 @@
     - axios 통신을 이용해서 BackEnd API를 호출하는 방식
     - Server Port : 8080
     
-## AWS 주소
-> http://ec2-13-125-236-65.ap-northeast-2.compute.amazonaws.com:8080/  
-
 ## 기술 스택
-> Vue, Vuex, Vue-Cli, Docker, Java, Spring boot, JPA, Spring Security, JWT, Tailwind css, Git, Gradle, MySQL, AWS EC2
+> Vue, Vuex, Vue-Cli, Java, Spring boot, JPA, Spring Security, JWT, Tailwind css, Git, Gradle, MySQL, AWS EC2, AWS RDS
 
 ## AWS 접속 방법
 > AWS 접속하기 위해서는 AWS 계정에서 자신의 IP를 변경 후 접속해야 한다.

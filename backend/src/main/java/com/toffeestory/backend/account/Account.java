@@ -100,6 +100,11 @@ public class Account implements UserDetails {
     public Account() {
         this.authority = "ROLE_USER";
         this.useStateCode = 1;
+        setSrc("defaultProfile.png");
+    }
+
+    public void setSrc(String postPic) {
+        this.src = "http://localhost:8098/api/images/" + postPic;
     }
 
     // UserDetails 필수 구현부분

@@ -71,4 +71,8 @@ public class Post {
         this.likeCnt = 0;
         this.useStateCode = 1;
     }
+
+    public void setSrc(String postPic) {
+        this.src = "http://localhost:8098/api/images/" + postPic;
+    }
 }

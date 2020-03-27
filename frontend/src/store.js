@@ -14,8 +14,7 @@ export default new Vuex.Store({
     alertState: false,
     alertMessage: null,
     alertType: null,
-    token: null,
-    headerVisible: true
+    token: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
@@ -26,8 +25,7 @@ export default new Vuex.Store({
     getAlertMessage: state => state.alertMessage,
     getAlertType: state => state.alertType,
     getToken: state => state.token,
-    getUserSrc: state => state.userSrc,
-    getHeaderVisible: state => state.headerVisible
+    getUserSrc: state => state.userSrc
   },
   mutations: {
     login_success (state, payload) {
@@ -61,12 +59,6 @@ export default new Vuex.Store({
     },
     tokenSetting (state, data) {
       state.token = data
-    },
-    showHeader (state) {
-      state.headerVisible = true
-    },
-    hideHeader (state) {
-      state.headerVisible = false
     }
   },
   actions: {
@@ -82,7 +74,6 @@ export default new Vuex.Store({
           })
           .catch(error => {
             let message = error.response.data.message
-            if (message === undefined) { message = '서버에 연결할 수 없습니다. 잠시 후에 다시 시도해주세요.' }
             reject(message)
           })
       })
@@ -96,7 +87,6 @@ export default new Vuex.Store({
           })
           .catch(error => {
             let message = error.response.data.message
-            if (message === undefined) { message = '서버에 연결할 수 없습니다. 잠시 후에 다시 시도해주세요.' }
             reject(message)
           })
       })

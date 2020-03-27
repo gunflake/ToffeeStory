@@ -739,10 +739,6 @@ video {
   background-color: #1a202c;
 }
 
-.bg-search {
-  background-color: #eee;
-}
-
 .bg-red-100 {
   background-color: #fff5f5;
 }
@@ -3839,10 +3835,6 @@ video {
 
 .h-64 {
   height: 16rem;
-}
-
-.h-image {
-  height: 20rem;
 }
 
 .h-auto {

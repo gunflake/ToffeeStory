@@ -45,4 +45,51 @@ public class AccountControllerTest {
         accountService.saveAccount(account);
         entityManager.flush();
     }
+
+    @Test
+    public void testCreateMember() throws Exception{
+
+        Account account = new Account();
+        account.setEmail("gunflake09@gmail.com");
+        account.setAccountId("gunflake09");
+        account.setAccountPwd("qwer1234");
+        account.setAccountName("Vincent Nam");
+
+        this.mockMvc.perform(
+                post("/api/accounts")
+                        .content("{\n" +
+                                "      \"accountName\": \"vincent\",\n" +
+                                "      \"accountId\": \"vincent\",\n" +
+                                "      \"email\": \"vincent@gmail.com\",\n" +
+                                "      \"accountPwd\": \"qwer1234\"\n" +
+                                "}")
+        .contentType(MediaType.APPLICATION_JSON))
+         .andExpect(status().isCreated());
+
+        entityManager.flush();
+
+        verify(accountRepository, times(1)).save(any(Account.class));
+        verifyNoMoreInteractions(accountRepository);
+    }
+
+    @Test
+    public void testLoginMember() throws Exception {
+
+
+
+        this.mockMvc.perform(
+                post("/api/accounts/login")
+                        .content("{\n" +
+                                "      \"email\": \"gunflake09@gmail.com\",\n" +
+                                "      \"accountPwd\": \"qwer1234\"\n" +
+                                "}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(accountRepository, times(1)).save(any(Account.class));
+        verifyNoMoreInteractions(accountRepository);
+
+    }
+
+
 }
