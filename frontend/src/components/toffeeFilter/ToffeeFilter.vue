@@ -40,7 +40,7 @@
           </div>
         </td>
       </tr>
-      <!--   toffing area   -->
+      <!--   topping area   -->
       <tr v-show="toppingVisible">
         <td class="border px-4 py-2">
           <div class="mb-3">
@@ -57,47 +57,11 @@
           <div class="mb-1">
             <!-- 검색 -->
             <div v-if="filterMode == 0" class="w-full max-w-sm ml-3">
-              <div class="mb-3">
-                <label class="flex items-center font-semibold">
-                  <div class="w-1/3">
-                    <span class="text-sm">
-                      프라푸치노용 시럽
-                    </span>
-                  </div>
-                  <div class="w-2/3">
-                    <input class="leading-tight" type="checkbox" checked="checked" disabled="disabled">
-                  </div>
-                </label>
-              </div>
-              <div class="mb-3">
-                <label class="flex items-center font-semibold">
-                  <div class="w-1/3">
-                    <span class="text-sm">
-                      바닐라 시럽
-                    </span>
-                  </div>
-                  <div class="w-2/3">
-                    <input class="leading-tight" type="checkbox">
-                  </div>
-                </label>
-              </div>
-              <div class="mb-3">
-                <label class="flex items-center font-semibold">
-                  <div class="w-1/3">
-                    <span class="text-sm">
-                      헤이즐넛 시럽
-                    </span>
-                  </div>
-                  <div class="w-2/3">
-                    <input class="leading-tight" type="checkbox">
-                  </div>
-                </label>
-              </div>
             </div>
             <!-- 등록/수정 -->
             <div v-else class="w-full max-w-sm ml-3">
               <div v-for="topping in toppings" :key="topping.no">
-                <topping v-show="topping.categoryNo == selectedToppingCategoryNo" :topping="topping"></topping>
+                <topping v-show="topping.categoryNo == selectedToppingCategoryNo" :topping="topping" :productDefault="productTopping"></topping>
               </div>
             </div>
           </div>
@@ -146,8 +110,8 @@
           { categoryNo: 4, no: 15, name: '블랙 티 레모네이드 피지오' },
           { categoryNo: 4, no: 16, name: '패션 탱고 티 레모네이드 피지오' }
         ],
-        productToppingMap: [
-          { productNo: 1, toppingNo: 1, defaultValue: 1, checkFlag: 1 }
+        productTopping: [
+          { subToppingNo: 1, quantityCode: 1, value: 1, optionType: 1 }
         ],
         toppingCategories: [
           { no: 1, name: '커피' },
@@ -177,7 +141,7 @@
           // 기타
           { categoryNo: 5, no: 10, name: '저지방 요거트', toppingPrice: 0, quantityType: 0 },
           // 얼음
-          { categoryNo: 6, no: 11, name: '얼음', toppingPrice: 0, quantityType: 3 },
+          { categoryNo: 6, no: 11, name: '얼음', toppingPrice: 0, quantityType: 2 },
           // 자바칩
           { categoryNo: 7, no: 12, name: '자바칩', toppingPrice: 0, quantityType: 0 },
           { categoryNo: 7, no: 13, name: '프라푸치노 자바칩', toppingPrice: 0, quantityType: 1 },
@@ -186,13 +150,6 @@
           // 드리즐
           { categoryNo: 9, no: 15, name: '카라멜 드리즐', toppingPrice: 0, quantityType: 3 },
           { categoryNo: 9, no: 16, name: '초콜릿 드리즐', toppingPrice: 0, quantityType: 3 }
-        ],
-        quantityCode: [
-          { quantityCode: 1, seqNo: 1, quantityName: '없이', quantityType: '4' },
-          { quantityCode: 2, seqNo: 2, quantityName: '적게', quantityType: '2,3,4' },
-          { quantityCode: 3, seqNo: 3, quantityName: '보통', quantityType: '2,3,4' },
-          { quantityCode: 4, seqNo: 4, quantityName: '많이', quantityType: '3,4' },
-          { quantityCode: 5, seqNo: 5, quantityName: '클래식 시럽 없이', quantityType: '5' }
         ],
         productVisible: true,
         toppingVisible: false,
@@ -229,7 +186,11 @@
 
         document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
 
+        // ProductTopping
         // 상품의 토핑 목록 조회
+        // this.toppings = ''
+        // 상품 토핑 초기값 세팅
+        // this.productTopping = ''
       },
       // 필터에서 상품 삭제
       deleteProduct () {

@@ -5,7 +5,7 @@
         <button @click="decrement" data-action="decrement" class=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-l cursor-pointer outline-none">
           <span class="m-auto text-2xl font-thin">−</span>
         </button>
-        <input @change="checkValue" type="number" class="outline-none focus:outline-none text-center w-full bg-white font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none" name="custom-input-number" value="0">
+        <input :value="defaultValue" @change="checkValue" type="number" class="outline-none focus:outline-none text-center w-full bg-white font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none" name="custom-input-number">
         <button @click="increment" data-action="increment" class="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer">
           <span class="m-auto text-2xl font-thin">+</span>
         </button>
@@ -35,6 +35,9 @@
 <script>
   export default {
     name: 'NumberCounter',
+    props: {
+      defaultValue: Number
+    },
     methods: {
       decrement (e) {
         const btn = e.target.parentNode.parentElement.querySelector(
