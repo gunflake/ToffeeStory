@@ -201,32 +201,23 @@ public class AccountController {
     }
 
     /*-------------------------------
-        - select Bookmark Post List
+        - select My Menu List
     -------------------------------*/
-    @GetMapping("/me/{accountId}/likePosts")
-    public List<Post> likePostList(@AuthenticationPrincipal Account account) {
+    @GetMapping("/me/myMenu/{valueCode}")
+    public ResponseEntity interestList(@PathVariable("valueCode") Byte valueCode,
+                                       @AuthenticationPrincipal Account account) {
         List<Post> posts = new ArrayList<>();
-        List<InterestPost> likePosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), (byte) 0);
 
-        for (int i = 0; i < likePosts.size(); i++) {
-            posts.add(postRepository.findByPostNo(likePosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+        if(valueCode == 3) {
+            posts = postRepository.findAllByAccount(account);
+        } else {
+            List<InterestPost> likePosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), valueCode);
+
+            for (int i = 0; i < likePosts.size(); i++) {
+                posts.add(postRepository.findByPostNo(likePosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+            }
         }
 
-        return posts;
-    }
-
-    /*-------------------------------
-        - select Bookmark Post List
-    -------------------------------*/
-    @GetMapping("/me/{accountId}/bookmarkPosts")
-    public List<Post> bookmarkPostList(@AuthenticationPrincipal Account account) {
-        List<Post> posts = new ArrayList<>();
-        List<InterestPost> bookmarkPosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), (byte) 1);
-
-        for (int i = 0; i < bookmarkPosts.size(); i++) {
-            posts.add(postRepository.findByPostNo(bookmarkPosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
-        }
-
-        return posts;
+        return ok(posts);
     }
 }

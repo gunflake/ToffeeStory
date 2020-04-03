@@ -1,8 +1,8 @@
 <template>
-  <div id="toffeeList">
+  <div>
     <!-- Sort Component -->
-    <div id="sortComponent">
-      <nav class="bg-grey-light rounded font-sans w-full lg:px-10 xl:px-20 mx-3 my-4">
+    <div v-if="sortFlag == 0">
+      <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
         <ol class="list-reset flex text-grey-dark">
           <li><a href="#" class="text-blue font-bold" @click="getPosts(0)">NEW</a></li>
           <li><span class="mx-2">|</span></li>
@@ -35,9 +35,11 @@
   import axios from 'axios'
   import Post from '@/components/Post'
   import api from '@/backend-api'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'ToffeeList',
+    props: ['sortFlag', 'valueCode'],
     components: {
       Post
     },
@@ -52,6 +54,9 @@
         posts: []
       }
     },
+    computed: {
+      ...mapGetters(['getToken'])
+    },
     methods: {
       getPosts (flag) {
         this.flag = flag
@@ -62,16 +67,25 @@
             console.log(e)
           })
       },
+      getInterestPost (valueCode) {
+        api.getInterestPosts(valueCode, this.getToken).then(response => {
+          this.posts = response.data
+        })
+          .catch(e => {
+            console.log(e)
+          })
+      },
       getImagesInfo () {
-        axios.get('https://api.unsplash.com/photos', {
+        axios.get('https://api.unsplash.com/search/photos/', {
           params: {
+            query: 'starbucks',
             page: this.page++,
             per_page: this.pageSize,
             client_id: 'e874834b096dcd107c232fe4b0bb521158b62e486580c988b0a75cb0b77a2abe'
           }
         })
           .then(res => {
-            res.data && res.data.length && (this.images = this.images.concat(res.data))
+            res.data.results && res.data.results.length && (this.images = this.images.concat(res.data.results))
           })
           .catch(error => {
             console.log(error)
@@ -82,18 +96,20 @@
         this.showModal = true
       }
     },
-    computed: {
-      postNo: function () {
-        return this.posts.postNo
-      }
-    },
     watch: {
       page (n) {
         n > 30 && (this.loadMore = false)
+      },
+      valueCode: function (valueCode) {
+        this.getInterestPost(valueCode)
       }
     },
     mounted () {
-      this.getPosts(this.flag)
+      if (this.valueCode === 2) {
+        this.getPosts(this.flag)
+      } else {
+        this.getInterestPost(this.valueCode)
+      }
       this.getImagesInfo()
     }
   }

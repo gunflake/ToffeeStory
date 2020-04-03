@@ -15,7 +15,8 @@ export default new Vuex.Store({
     alertMessage: null,
     alertType: null,
     token: null,
-    headerVisible: true
+    headerVisible: true,
+    autocompleteList: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
@@ -27,7 +28,8 @@ export default new Vuex.Store({
     getAlertType: state => state.alertType,
     getToken: state => state.token,
     getUserSrc: state => state.userSrc,
-    getHeaderVisible: state => state.headerVisible
+    getHeaderVisible: state => state.headerVisible,
+    getAutocompleteList: state => state.autocompleteList
   },
   mutations: {
     login_success (state, payload) {
@@ -67,6 +69,9 @@ export default new Vuex.Store({
     },
     hideHeader (state) {
       state.headerVisible = false
+    },
+    setAutocompleteList (state, product) {
+      state.autocompleteList = product
     }
   },
   actions: {
@@ -153,6 +158,15 @@ export default new Vuex.Store({
         commit('tokenInit')
         commit('logout')
       })
+    },
+    setAutocompleteList ({ commit }) {
+      // API 통신해서 Product 리스트 받아오기
+      let product = {
+        beverage: ['아메리카노', '카페라떼', '바닐라 라떼', '자몽 에이드', '망고 에이드', '블루베리 에이드'],
+        topping: ['바닐라 시럽', '초코 시럽', '헤이즐넛 시럽', '자바칩', '스파클링']
+      }
+
+      commit('setAutocompleteList', product)
     },
     settingAlertMsg ({ commit }, { message, type }) {
       commit('alertSetting', {

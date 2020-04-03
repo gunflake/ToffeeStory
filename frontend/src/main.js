@@ -19,6 +19,7 @@ new Vue({
   store,
   beforeCreate () {
     this.$store.dispatch('getMemberInfo')
+    this.$store.dispatch('setAutocompleteList')
   },
   render: h => h(App)
 }).$mount('#app')

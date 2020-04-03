@@ -22,7 +22,7 @@
     </div>
     <!-- Search Toffee Component-->
     <!-- Toffee List Component-->
-    <ToffeeList></ToffeeList>
+    <ToffeeList v-bind:sortFlag = 0 :valueCode = 2></ToffeeList>
   </div>
 </template>
 <script>
