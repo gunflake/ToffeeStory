@@ -60,6 +60,7 @@
                   <div class="ml-2 my-auto">{{topping}}</div>
                 </a>
               </div>
+              <div v-if="matchingList.beverage.length == 0 && matchingList.topping.length == 0" class="p-2 text-2xl text-center">"{{searchTag}}" 에 관한 정보가 없습니다.</div>
             </div>
           </div>
         </div>
