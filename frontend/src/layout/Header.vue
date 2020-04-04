@@ -33,7 +33,9 @@
                    aria-label="search input"  dir="auto"
                    v-on:keyup.enter="search"
                    v-on:keyup="setAutocompleteList"
-                   v-model="searchTag">
+                   v-model="searchTag"
+                   v-on:focus="showAutoComplete"
+                   v-on:blur="hideAutoComplete">
           </span>
           <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
             <svg class="fill-current pointer-events-none text-gray-600 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +46,7 @@
           </div>
         </div>
         <!-- Auto Complete -->
-        <div v-if="searchTag.length > 0" class="ml-8">
+        <div v-if="searchTag.length > 0 && autoCompleteView" class="ml-8">
           <div class="bg-white mt-2 rotateSquare"></div>
           <div class="mt-4 fontDoHyeon text-xl" style="z-index: 1; position:absolute;">
             <div class="border-black w-56 bg-white completeBox">
@@ -60,6 +62,7 @@
                   <div class="ml-2 my-auto">{{topping}}</div>
                 </a>
               </div>
+              <div v-if="matchingList.beverage.length == 0 && matchingList.topping.length == 0" class="p-2 text-2xl text-center">"{{searchTag}}" 에 관한 정보가 없습니다.</div>
             </div>
           </div>
         </div>
@@ -112,6 +115,7 @@
     name: 'Header',
     data: function () {
       return {
+        autoCompleteView: false,
         matchingList: {
           beverage: [],
           topping: []
@@ -187,6 +191,12 @@
           }
         })
         this.matchingList = list
+      },
+      showAutoComplete () {
+        this.autoCompleteView = true
+      },
+      hideAutoComplete () {
+        this.autoCompleteView = false
       }
     }
   }
