@@ -208,13 +208,19 @@ public class AccountController {
                                        @AuthenticationPrincipal Account account) {
         List<Post> posts = new ArrayList<>();
 
-        if(valueCode == 3) {
+        if(valueCode == 3) {    //my menu
             posts = postRepository.findAllByAccount(account);
         } else {
-            List<InterestPost> likePosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), valueCode);
+            List<InterestPost> interestPosts;
 
-            for (int i = 0; i < likePosts.size(); i++) {
-                posts.add(postRepository.findByPostNo(likePosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+            if(valueCode == 0) {
+                interestPosts = interestPostRepository.findByAccountNoAndLikeState(account.getAccountNo(), true);
+            } else {
+                interestPosts = interestPostRepository.findByAccountNoAndBookmarkState(account.getAccountNo(), true);
+            }
+
+            for (int i = 0; i < interestPosts.size(); i++) {
+                posts.add(postRepository.findByPostNo(interestPosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
             }
         }
 

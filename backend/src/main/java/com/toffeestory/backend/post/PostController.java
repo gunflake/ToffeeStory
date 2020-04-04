@@ -178,15 +178,17 @@ public class PostController {
 
         post.setTags(tagNames);
 
-        Byte likeFlag     = 0;
-        Byte bookmarkFlag = 0;
+        Boolean likeState     = false;
+        Boolean bookmarkState = false;
 
-        if(account != null) {
-            likeFlag     = interestPostRepository.selectUseFlag(postNo, account.getAccountNo(), (byte)0);
-            bookmarkFlag = interestPostRepository.selectUseFlag(postNo, account.getAccountNo(), (byte)1);
+        if(account != null && interestPostRepository.findByPostNoAndAccountNo(postNo, account.getAccountNo()).isPresent()) {
+            InterestPost interestPost = interestPostRepository.findByPostNoAndAccountNo(postNo, account.getAccountNo()).orElseThrow(() -> new RuntimeException());
+
+            likeState     = interestPost.getLikeState();
+            bookmarkState = interestPost.getBookmarkState();
         }
 
-        ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getSrc(), likeFlag, bookmarkFlag);
+        ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getSrc(), likeState, bookmarkState);
 
         return ok(responsePost);
     }
@@ -233,20 +235,19 @@ public class PostController {
     }
 
     /*-------------------------------
-       - update linkCnt
+       - update Interest
      -------------------------------*/
     @PutMapping("/{postNo}/interest")
     public ResponseEntity updateInterest(@PathVariable("postNo") Integer postNo,
                                          @RequestParam("valueCode") Byte valueCode,
-                                         @RequestParam("useFlag") Byte useFlag,
+                                         @RequestParam("useFlag") Boolean useState,
                                          @AuthenticationPrincipal Account account) {
 
-        postService.updateInterest(postNo, account.getAccountNo(), valueCode, useFlag);
+        postService.updateInterest(postNo, account.getAccountNo(), valueCode, useState);
 
         Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
         if(valueCode == 0) {
-
-            if(useFlag == 0) {
+            if(useState) {
                 post.setLikeCnt(post.getLikeCnt() + 1);
             } else {
                 post.setLikeCnt(post.getLikeCnt() - 1);

@@ -71,4 +71,13 @@ public class Post {
         this.likeCnt = 0;
         this.useStateCode = 1;
     }
+    public enum PostCode {
+        NEW(0), BEST(1), HOT(2);
+
+        private int value;
+
+        PostCode(int value){
+            this.value = value;
+        }
+    }
 }
