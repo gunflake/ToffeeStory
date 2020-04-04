@@ -66,4 +66,10 @@ public class RestExceptionHandler {
         log.error(ex.getMessage());
         return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
+
+    @ExceptionHandler(value = {EmailSendException.class})
+    public ResponseEntity emailSendException(EmailSendException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
 }

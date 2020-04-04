@@ -1,5 +1,6 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.exception.EmailSendException;
 import com.toffeestory.backend.exception.InvalidAccountException;
 import com.toffeestory.backend.exception.InvalidImageException;
 import com.toffeestory.backend.exception.NotFoundAccountException;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -103,6 +105,18 @@ public class AccountController {
         } catch (AuthenticationException e) {
             throw new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요.");
         }
+    }
+
+    @PostMapping(path = "/reset/password")
+    public ResponseEntity checkEmail(@RequestParam("email") String email){
+        // check email
+        try {
+            accountRepository.findByEmail(email).ifPresent(account -> accountService.sendEmail(account));
+        } catch (Exception ex) {
+            throw new EmailSendException();
+        }
+
+        return ok("입력하신 이메일 주소로 가입한 회원정보가 존재한다면, 비밀번호 재설정할 수 있는 메일을 몇 분 안에 받을 수 있습니다.");
     }
 
     @GetMapping(path = "/me")
