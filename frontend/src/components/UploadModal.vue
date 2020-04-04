@@ -213,8 +213,8 @@
               this.settingAlertMsg(this.alert)
               this.$emit('close')
             })
-            .catch(() => {
-              this.alert.message = '글 등록에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+            .catch(error => {
+              this.alert.message = error.response.data.message
               this.alert.type = 'red'
               this.settingAlertMsg(this.alert)
               this.$emit('close')

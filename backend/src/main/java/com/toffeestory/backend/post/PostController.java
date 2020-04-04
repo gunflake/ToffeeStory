@@ -3,6 +3,7 @@ package com.toffeestory.backend.post;
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountRepository;
 import com.toffeestory.backend.exception.InvalidImageException;
+import com.toffeestory.backend.exception.MaxUploadSizeExceededException;
 import com.toffeestory.backend.exception.NotFoundPostException;
 import com.toffeestory.backend.exception.RestApiError;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +85,8 @@ public class PostController {
         Post post = new Post();
 
         try{
+            if(multipartFile.getSize() > 5120000) throw new MaxUploadSizeExceededException();
+
             String rootPath = Paths.get("").toAbsolutePath().toString();
             rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
             String fileName = multipartFile.getOriginalFilename();
@@ -91,7 +94,7 @@ public class PostController {
             Files.write(fileNameAndPath, multipartFile.getBytes());
             post.setSrc(defaultUrl+fileName);
         }catch (IOException e){
-            throw new InvalidImageException("이미지 업로드에 실패했습니다.");
+            throw new InvalidImageException("이미지 업로드에 실패했습니다. 작성한 글 내용을 확인해주세요.");
         }
 
         account.setPosts(postRepository.findAllByAccount(account));
