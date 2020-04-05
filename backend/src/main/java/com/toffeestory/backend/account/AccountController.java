@@ -1,16 +1,13 @@
 package com.toffeestory.backend.account;
 
-import com.toffeestory.backend.exception.EmailSendException;
-import com.toffeestory.backend.exception.InvalidAccountException;
-import com.toffeestory.backend.exception.InvalidImageException;
-import com.toffeestory.backend.exception.NotFoundAccountException;
-import com.toffeestory.backend.post.PostRepository;
-import com.toffeestory.backend.post.Post;
-import com.toffeestory.backend.post.InterestPostRepository;
+import com.toffeestory.backend.exception.*;
 import com.toffeestory.backend.post.InterestPost;
+import com.toffeestory.backend.post.InterestPostRepository;
+import com.toffeestory.backend.post.Post;
+import com.toffeestory.backend.post.PostRepository;
 import com.toffeestory.backend.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,39 +23,30 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/accounts")
 public class AccountController {
 
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private InterestPostRepository interestPostRepository;
+    private final AccountRepository accountRepository;
+    private final AccountService accountService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PostRepository postRepository;
+    private final InterestPostRepository interestPostRepository;
+    private final AccountKeyRepository accountKeyRepository;
 
     @Value("${url}")
     String defaultUrl;
@@ -107,16 +95,28 @@ public class AccountController {
         }
     }
 
-    @PostMapping(path = "/reset/password")
-    public ResponseEntity checkEmail(@RequestParam("email") String email){
+    @PostMapping(path = "/{email}/reset-password-token")
+    public ResponseEntity checkEmailAndSendRestPasswordEmail(@PathVariable("email") String email){
         // check email
         try {
-            accountRepository.findByEmail(email).ifPresent(account -> accountService.sendEmail(account));
+            accountRepository.findByEmail(email).ifPresent(accountService::sendEmail);
         } catch (Exception ex) {
             throw new EmailSendException();
         }
 
         return ok("입력하신 이메일 주소로 가입한 회원정보가 존재한다면, 비밀번호 재설정할 수 있는 메일을 몇 분 안에 받을 수 있습니다.");
+    }
+
+    @GetMapping(path = "/reset-password-token/{token}")
+    public ResponseEntity checkResetPasswordToken(@PathVariable("token") String token){
+
+        //토큰 생성 시간 1시간 이내 유효값만 검색하는 로직
+        LocalDateTime validTime = LocalDateTime.now().minusHours(1);
+        AccountKey accountKey = accountKeyRepository.findByTokenAndRegDateAfter(token, validTime).orElseThrow(NotFoundPasswordToken::new);
+
+        //찾은 토큰으로 Account 계정 정보 반환
+        //TODO : 계정 번호만 넘겨주는게 맞는가... 생각해보기
+        return ok(accountKey.getAccountNo());
     }
 
     @GetMapping(path = "/me")

@@ -72,4 +72,11 @@ public class RestExceptionHandler {
         log.error(ex.getMessage());
         return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
+
+    @ExceptionHandler(value = {NotFoundPasswordToken.class})
+    public ResponseEntity notFoundPasswordToken(NotFoundPasswordToken ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
 }

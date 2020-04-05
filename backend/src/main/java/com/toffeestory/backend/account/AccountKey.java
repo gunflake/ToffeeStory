@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,15 +22,13 @@ public class AccountKey {
     private Integer accountNo;
 
     @NotNull
-    @Column(unique = true)
+    @Column(unique = true, length = 100)
     private String token;
 
-    @Temporal(TemporalType.DATE)
     @CreationTimestamp
-    private Date regDate;
+    private LocalDateTime regDate;
 
-    @Temporal(TemporalType.DATE)
-    private Date updDate;
+    private LocalDateTime updDate;
 
     @NotNull
     private Byte useState;

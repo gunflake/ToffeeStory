@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 @Slf4j
 @Service
 public class AccountService implements UserDetailsService {
@@ -108,8 +106,6 @@ public class AccountService implements UserDetailsService {
 
         UUID uuid = UUID.randomUUID();
         String randomToken = uuid.toString();
-
-        log.info(randomToken);
 
         AccountKey accountKey = new AccountKey();
         accountKey.setAccountNo(account.getAccountNo());
