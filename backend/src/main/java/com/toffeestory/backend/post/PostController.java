@@ -247,7 +247,7 @@ public class PostController {
 
         Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
         if(valueCode == 0) {
-            if(useState) {
+            if(!useState) {
                 post.setLikeCnt(post.getLikeCnt() + 1);
             } else {
                 post.setLikeCnt(post.getLikeCnt() - 1);
