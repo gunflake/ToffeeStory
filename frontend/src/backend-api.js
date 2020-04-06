@@ -61,5 +61,11 @@ export default {
         'keyword': keyword
       }
     })
+  },
+  checkResetPasswordToken (resetToken) {
+    return AXIOS.get('/accounts/reset-password-token/' + resetToken)
+  },
+  resetAccountPassword (resetToken, data) {
+    return AXIOS.patch('/accounts/reset-password-token/' + resetToken, data)
   }
 }
