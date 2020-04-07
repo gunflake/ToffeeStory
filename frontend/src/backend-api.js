@@ -62,6 +62,9 @@ export default {
       }
     })
   },
+  sendEmailForResetPassword (email) {
+    return AXIOS.get('/accounts/' + email + '/reset-password-token')
+  },
   checkResetPasswordToken (resetToken) {
     return AXIOS.get('/accounts/reset-password-token/' + resetToken)
   },

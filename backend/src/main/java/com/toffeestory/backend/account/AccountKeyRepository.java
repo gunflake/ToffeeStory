@@ -6,5 +6,5 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface AccountKeyRepository extends JpaRepository<AccountKey, Integer> {
-    Optional<AccountKey> findByTokenAndRegDateAfter(String token, LocalDateTime time);
+    Optional<AccountKey> findByTokenAndRegDateAfterAndKeyStatus(String token, LocalDateTime time, AccountKeyStatus keyStatus);
 }

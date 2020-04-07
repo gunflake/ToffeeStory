@@ -7,7 +7,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -31,10 +30,32 @@ public class AccountKey {
     private LocalDateTime updDate;
 
     @NotNull
-    private Byte useState;
+    @Enumerated(EnumType.ORDINAL)
+    private AccountKeyStatus keyStatus;
 
     public AccountKey() {
-        this.useState = 1;
+        this.keyStatus = AccountKeyStatus.NOT_USED;
     }
 }
 
+enum AccountKeyStatus {
+
+    NOT_USED(0, "Not Used"),
+    USED(1, "Used");
+
+    private final int value;
+    private final String description;
+
+    AccountKeyStatus(int value, String description) {
+        this.value = value;
+        this.description = description;
+    }
+
+    public int value() {
+        return this.value;
+    }
+
+    public String getReasonPhrase() {
+        return this.description;
+    }
+}

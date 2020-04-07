@@ -6,7 +6,7 @@
         <img src="@/assets/image/logo.png" class="h-24 w-24 mx-auto" />
         <div class="my-4 font-bold text-2xl text-center">Change your password</div>
         <InputBox title="New password" type="password" name="password" id="password" @sendVal="updatePassword"/>
-        <button class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3" @click="changePassword">
+        <button class="w-full bg-gray-800 hover:bg-blue-700 text-white font-bold py-2 rounded mt-3" @click="resetPassword">
           Change password
         </button>
       </div>
@@ -14,7 +14,7 @@
         <div class="my-4 font-bold text-3xl text-center">Bad Token</div>
         <div class="text-base py-2 px-10">
           The password reset link was invalid, possibly because it has already been used.
-          Please request a <span class="text-blue-600 cursor-pointer" @click="goResetPassword">new password reset.</span>
+          Please request a <span class="text-blue-600 cursor-pointer" @click="goResetPasswordPage">new password reset.</span>
         </div>
       </div>
     </div>
@@ -61,10 +61,10 @@
       updatePassword (val) {
         this.newPassword = val
       },
-      changePassword () {
-        this.$router.push('/login')
+      goResetPasswordPage () {
+        this.$router.push('/find/password')
       },
-      goResetPassword () {
+      resetPassword () {
         // Todo: 토큰값 보내서 비밀번호 리셋하기
         let formData = new FormData()
         formData.append('password', this.newPassword)
@@ -74,7 +74,7 @@
             this.alert.message = '비밀번호가 변경되었습니다.'
             this.alert.type = 'green'
             this.settingAlertMsg(this.alert)
-            this.$router.push('/find/password')
+            this.$router.push('/login')
           })
           .catch(() => {
             // password 토큰이 유효하지 않는 경우
