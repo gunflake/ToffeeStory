@@ -2,7 +2,7 @@
   <div class="inputBox">
     <div class="text-base pb-2 text-left">
       {{ title }}
-      <a v-show="visible" class="no-underline border-b border-blue text-blue-700 font-semibold" v-bind:href="url">
+      <a v-show="visible" class="no-underline border-b border-blue text-blue-700 font-semibold" style="cursor: pointer" @click="goFindPassword">
         Forgot?
       </a>
     </div>
@@ -40,6 +40,9 @@
       },
       submit () {
         this.$emit('submit')
+      },
+      goFindPassword () {
+        this.$router.push(this.url)
       }
     }
   }

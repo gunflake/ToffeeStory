@@ -1,7 +1,6 @@
 package com.toffeestory.backend.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileUploadBase;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MultipartException;
-
-import javax.naming.SizeLimitExceededException;
 
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -66,4 +62,23 @@ public class RestExceptionHandler {
         log.error(ex.getMessage());
         return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
+
+    @ExceptionHandler(value = {EmailSendException.class})
+    public ResponseEntity emailSendException(EmailSendException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {InvalidPasswordTokenException.class})
+    public ResponseEntity notFoundPasswordToken(InvalidPasswordTokenException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {NotfoundEmailException.class})
+    public ResponseEntity notfoundEmailException(NotfoundEmailException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
 }

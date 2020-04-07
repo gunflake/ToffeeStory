@@ -34,7 +34,7 @@
                    v-on:keyup.enter="search"
                    v-on:keyup="setAutocompleteList"
                    v-model="searchTag"
-                   v-on:focus="showAutoComplete"
+                   v-on:focus="autoCompleteView = true"
                    v-on:blur="hideAutoComplete">
           </span>
           <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
@@ -51,13 +51,13 @@
           <div class="mt-4 fontDoHyeon text-xl" style="z-index: 1; position:absolute;">
             <div class="border-black w-56 bg-white completeBox">
               <div v-for="beverage in matchingList.beverage" :key="beverage">
-                <a href="#" class="flex p-2 border-b-2 border-gray-300">
+                <a class="flex p-2 border-b-2 border-gray-300" v-bind:href="'/search?keyword='+beverage">
                   <img src="../assets/image/beverage.png" class="w-10 h-10" alt=""/>
                   <div class="ml-2 my-auto">{{beverage}}</div>
                 </a>
               </div>
               <div v-for="topping in matchingList.topping" :key="topping">
-                <a href="#" class="flex p-2 border-b-2 border-gray-300">
+                <a class="flex p-2 border-b-2 border-gray-300" v-bind:href="'/search?keyword='+topping">
                   <img src="../assets/image/topping.png" class="w-10 h-10" alt=""/>
                   <div class="ml-2 my-auto">{{topping}}</div>
                 </a>
@@ -192,11 +192,13 @@
         })
         this.matchingList = list
       },
-      showAutoComplete () {
-        this.autoCompleteView = true
-      },
       hideAutoComplete () {
-        this.autoCompleteView = false
+        const sleep = (milliseconds) => {
+          return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
+        sleep(100).then(() => {
+          this.autoCompleteView = false
+        })
       }
     }
   }
