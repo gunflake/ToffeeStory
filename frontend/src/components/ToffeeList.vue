@@ -34,6 +34,7 @@
   import Post from '@/components/Post'
   import api from '@/backend-api'
   import { mapGetters } from 'vuex'
+  import config from '../config.js'
 
   export default {
     name: 'ToffeeList',
@@ -49,7 +50,8 @@
         page: 1,
         pageSize: 9,
         images: [],
-        posts: []
+        posts: [],
+        new: config.PostMethods.NEW
       }
     },
     computed: {
