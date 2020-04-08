@@ -10,19 +10,20 @@ import javax.persistence.*;
 @Setter
 public class SubTopping {
     @Id
+    @Column(name = "subToppingNo")
     @GeneratedValue
-    private Integer subToppingNo; // PK, Auto Increase
-
-    @Column(length = 3)
-    private String subToppingGroupCode;
-
-    @Column
-    private Integer subToppingOrder;
-
-    @Column(length = 20)
-    private String subToppingName;
+    private Integer subToppingNo;
 
     @ManyToOne
     @JoinColumn(name = "toppingNo")
     private Topping topping;
+
+    @Column(length = 20)
+    private String subToppingName;
+
+    @Column
+    private Integer displayOrder;
+
+    @Column
+    private Byte useStateCode;
 }

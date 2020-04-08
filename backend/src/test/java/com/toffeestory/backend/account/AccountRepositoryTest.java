@@ -24,6 +24,19 @@ public class AccountRepositoryTest {
         accountRepository.save(account);
     }
 
+    //중복키 삽입 테스트 > 에러 발생
+    @Test
+    void duplicateConstraint(){
+        Account account = new Account();
+        account.setEmail("gunflake09@gmail.com");
+        account.setAccountId("gunflake09");
+        account.setAccountPwd("qwer1234");
+        account.setAccountName("Vincent Nam");
+        accountRepository.save(account);
+
+        Account account1 = accountRepository.findByAccountId("gunflake09").orElseThrow(() -> new NotFoundAccountException("gunflake09"));
+    }
+
     @Test
     void findByAccountId() {
         Account account = accountRepository.findByAccountId("gunflake09").orElseThrow(() -> new NotFoundAccountException("gunflake09"));

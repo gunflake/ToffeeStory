@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
     <div class="modal-mask overflow-auto">
-      <div class="w-full md:w-5/6 md:my-8 lg:w-2/3 mx-auto lg:my-8">
+      <div class="w-2/3 mx-auto my-8">
         <div class="bg-white p-8">
           <!-- Close Button -->
           <div class="flex justify-between mb-2">

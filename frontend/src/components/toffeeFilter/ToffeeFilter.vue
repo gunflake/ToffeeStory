@@ -20,117 +20,43 @@
         </td>
       </tr>
       <!--   product area   -->
-      <tr v-if="productVisible">
+      <tr v-show="productVisible">
         <td class="border px-4 py-2">
           <div class="mb-3">
             <nav class="bg-white flex">
               <div class="-mb-px flex justify-left">
-                <a :id="'category'+category.no" v-for="category in categories" :key="category.no" @click="selectProductCategory($event, category.no)" role="button" class="product-category no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
-                  {{category.name}}
+                <a :id="'productCategory'+productCategory.no" v-for="productCategory in productCategories" :key="productCategory.no" @click="selectProductCategory($event, productCategory.no)" role="button" class="product-category no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
+                  {{productCategory.name}}
                 </a>
               </div>
             </nav>
           </div>
           <div class="mb-1">
             <div v-for="product in products" :key="product.no" class="inline-flex">
-              <div role="button" v-if="product.categoryNo == selectedCategoryNo" @click="selectProduct($event, product)" class="mr-3 mb-2 p-2 bg-gray-300 items-center text-gray-900 text-sm leading-none rounded-full">
+              <div role="button" v-if="product.categoryNo == selectedProductCategoryNo" @click="selectProduct($event, product)" class="mr-3 mb-2 p-2 bg-gray-300 items-center text-gray-900 text-sm leading-none rounded-full">
                 <a class="mx-2 text-left flex-auto">{{product.name}}</a>
               </div>
             </div>
           </div>
         </td>
       </tr>
-      <!--   toffing area   -->
-      <tr v-if="toppingVisible">
+      <!--   topping area   -->
+      <tr v-show="toppingVisible">
         <td class="border px-4 py-2">
           <div class="mb-3">
             <nav class="bg-white flex">
               <div class="-mb-px flex justify-left">
-                <a v-for="item in toppingCategories" :key="item.no" v-on:click="selectTopping(item.no)" role="button" class="no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
-                  {{item.name}}
+                <a :id="'toppingCategory'+toppingCategory.no" v-for="toppingCategory in toppingCategories" :key="toppingCategory.no" @click="selectToppingCategory($event, toppingCategory.no)"
+                   role="button" class="topping-category no-underline text-black border-b-2 border-transparent hover:border-black tracking-wide font-semibold text-sm py-3 mr-8">
+                  {{toppingCategory.name}}
                 </a>
               </div>
             </nav>
           </div>
-          <!-- 세부 토핑 선택 : 호출되는 곳에 따라 다르게 출력(0:검색, 1:등록/수정) -->
           <div class="mb-1">
-            <!-- 검색 -->
-            <div v-if="filterMode == 0" class="w-full max-w-sm ml-3">
-              <div class="mb-3">
-                <label class="flex items-center font-semibold">
-                  <div class="w-1/3">
-                    <span class="text-sm">
-                      프라푸치노용 시럽
-                    </span>
-                  </div>
-                  <div class="w-2/3">
-                    <input class="leading-tight" type="checkbox" checked="checked" disabled="disabled">
-                  </div>
-                </label>
-              </div>
-              <div class="mb-3">
-                <label class="flex items-center font-semibold">
-                  <div class="w-1/3">
-                    <span class="text-sm">
-                      바닐라 시럽
-                    </span>
-                  </div>
-                  <div class="w-2/3">
-                    <input class="leading-tight" type="checkbox">
-                  </div>
-                </label>
-              </div>
-              <div class="mb-3">
-                <label class="flex items-center font-semibold">
-                  <div class="w-1/3">
-                    <span class="text-sm">
-                      헤이즐넛 시럽
-                    </span>
-                  </div>
-                  <div class="w-2/3">
-                    <input class="leading-tight" type="checkbox">
-                  </div>
-                </label>
-              </div>
-            </div>
-            <!-- 등록/수정 -->
-            <div v-else class="w-full max-w-sm ml-3">
-              <div class="mb-3 flex items-center">
-                <div class="w-1/3">
-                  <span class="font-semibold text-sm">
-                    프라푸치노용 시럽
-                  </span>
-                </div>
-                <div class="w-2/3">
-                  <label class="inline-flex items-center mr-3">
-                    <input type="radio" class="form-radio" name="radio" value="1" checked="checked">
-                    <span class="ml-2 text-sm">일반</span>
-                  </label>
-                  <label class="inline-flex items-center mr-3">
-                    <input type="radio" class="form-radio" name="radio" value="2">
-                    <span class="ml-2 text-sm">라이트 (휘핑없이 추천)</span>
-                  </label>
-                </div>
-              </div>
-              <div class="mb-3 flex items-center">
-                <div class="w-1/3">
-                  <span class="font-semibold text-sm">
-                    바닐라 시럽
-                  </span>
-                </div>
-                <div class="w-2/3">
-                  <number-counter></number-counter>
-                </div>
-              </div>
-              <div class="mb-3 flex items-center">
-                <div class="w-1/3">
-                  <span class="font-semibold text-sm">
-                    헤이즐넛 시럽
-                  </span>
-                </div>
-                <div class="w-2/3">
-                  <number-counter></number-counter>
-                </div>
+            <div class="w-full max-w-sm ml-3">
+              <div v-for="topping in toppings" :key="topping.no">
+                <topping v-show="topping.categoryNo == selectedToppingCategoryNo" :topping="topping" :productTopping="productTopping"></topping>
               </div>
             </div>
           </div>
@@ -143,104 +69,220 @@
 <script>
   import NumberCounter from '@/components/toffeeFilter/NumberCounter'
   import ButtonWithX from '@/components/toffeeFilter/ButtonWithX'
+  import Topping from '@/components/toffeeFilter/Topping'
   export default {
     name: 'ToffeeFilter',
-    components: { NumberCounter, ButtonWithX },
-    props: {
-      filterMode: Number
-    },
+    components: { NumberCounter, ButtonWithX, Topping },
     data () {
       return {
-        categories: [
-          { no: 1, name: '에스프레소' },
-          { no: 2, name: '프라푸치노' },
-          { no: 3, name: '블렌디드' },
-          { no: 4, name: '피지오' },
-          { no: 5, name: '티바나' },
-          { no: 6, name: '기타 제조음료' },
-          { no: 7, name: '병음료' }
+        productCategories: [
+          { no: 1, name: '콜드브루' },
+          { no: 2, name: '에스프레소' },
+          { no: 3, name: '디카페인 커피' },
+          { no: 4, name: '프라푸치노' },
+          { no: 5, name: '블렌디드' },
+          { no: 6, name: '피지오' },
+          { no: 7, name: '티(티바나)' },
+          { no: 8, name: '기타' }
         ],
         products: [
-          { categoryNo: 1, no: 1, name: '카페 아메리카노' },
-          { categoryNo: 1, no: 2, name: '아이스 카페 아메리카노' },
-          { categoryNo: 1, no: 3, name: '카페 모카' },
-          { categoryNo: 1, no: 4, name: '아이스 카페 모카' },
-          { categoryNo: 1, no: 5, name: '카페 라떼' },
-          { categoryNo: 1, no: 6, name: '아이스 카페 라떼' },
-          { categoryNo: 1, no: 7, name: '카푸치노' },
-          { categoryNo: 1, no: 8, name: '아이스 카푸치노' },
-          { categoryNo: 1, no: 9, name: '화이트 초콜릿 모카' },
-          { categoryNo: 1, no: 10, name: '아이스 화이트 초콜릿 모카' },
-          { categoryNo: 1, no: 11, name: '스타벅스 돌체 라떼' },
-          { categoryNo: 1, no: 12, name: '아이스 스타벅스 돌체 라떼' },
-          { categoryNo: 4, no: 13, name: '핑크 자몽 피지오' },
-          { categoryNo: 4, no: 14, name: '쿨 라임 피지오' },
-          { categoryNo: 4, no: 15, name: '블랙 티 레모네이드 피지오' },
-          { categoryNo: 4, no: 16, name: '패션 탱고 티 레모네이드 피지오' }
+          { categoryNo: 1, no: 1, name: '돌체 콜드 브루' },
+          { categoryNo: 1, no: 2, name: '콜드 폼 콜드브루' },
+          { categoryNo: 1, no: 3, name: '바닐라 크림 콜드 브루' },
+          { categoryNo: 1, no: 4, name: '콜드 브루' },
+          { categoryNo: 1, no: 5, name: '나이트로 바닐라 크림' },
+          { categoryNo: 1, no: 6, name: '나이트로쇼콜라 클라우드' },
+          { categoryNo: 1, no: 7, name: '나이트로 콜드 브루' },
+          { categoryNo: 2, no: 8, name: '카페 아메리카노' },
+          { categoryNo: 2, no: 9, name: '카페 라떼' },
+          { categoryNo: 2, no: 10, name: '카푸치노' },
+          { categoryNo: 2, no: 11, name: '카라멜 마키아또' },
+          { categoryNo: 2, no: 12, name: '화이트 초콜릿 모카' },
+          { categoryNo: 2, no: 13, name: '커피 스타벅스 더블 샷' },
+          { categoryNo: 2, no: 14, name: '바닐라 스타벅스 더블샷' },
+          { categoryNo: 2, no: 15, name: '커라멜 스타벅스 더블 샷' },
+          { categoryNo: 2, no: 16, name: '헤이즐넛 스타벅스 더블 샷' },
+          { categoryNo: 2, no: 17, name: '에스프레소' },
+          { categoryNo: 2, no: 18, name: '에스프레소 마키아또' },
+          { categoryNo: 2, no: 19, name: '에스크레소 콘 파나' },
+          { categoryNo: 2, no: 20, name: '바닐라 플랫 화이트' },
+          { categoryNo: 2, no: 21, name: '스타벅스 돌체 라떼' },
+          { categoryNo: 3, no: 22, name: '디카페인 스타벅스 돌체 라떼' },
+          { categoryNo: 3, no: 23, name: '디카페인 카라멜 마키아또' },
+          { categoryNo: 3, no: 24, name: '디카페인 카페 라떼' },
+          { categoryNo: 3, no: 25, name: '디카페인 카페 아메리카노' },
+          { categoryNo: 3, no: 26, name: '1/2디카페인 스타벅스 돌체 라떼' },
+          { categoryNo: 3, no: 27, name: '1/2디카페인 카라멜 마키아또' },
+          { categoryNo: 3, no: 28, name: '1/2디카페인 카페 라떼' },
+          { categoryNo: 3, no: 29, name: '1/2디카페인 카페 아메리카노' },
+          { categoryNo: 4, no: 30, name: '블론드 카라멜 클라우드 마키아또' },
+          { categoryNo: 4, no: 31, name: '블론드 코코아 클라우드 마키아또' },
+          { categoryNo: 4, no: 32, name: '블론드 리스트레토 마키아또' },
+          { categoryNo: 4, no: 33, name: '블론드 에스프레소 토닉' },
+          { categoryNo: 4, no: 34, name: '블론드 스타벅스 돌체 라떼' },
+          { categoryNo: 4, no: 35, name: '블론드 카페 라떼' },
+          { categoryNo: 4, no: 36, name: '블론드 카페 아메리카노' },
+          { categoryNo: 5, no: 37, name: '이천 햅쌀 커피 프라푸치노' },
+          { categoryNo: 5, no: 38, name: '자파칩 프라푸치노' },
+          { categoryNo: 5, no: 39, name: '화이트 초콜릿 모카 프라푸치노' },
+          { categoryNo: 5, no: 40, name: '카라멜 프라푸치노' },
+          { categoryNo: 5, no: 41, name: '모카 프라푸치노' },
+          { categoryNo: 5, no: 42, name: '에스프레소 프라푸치노' },
+          { categoryNo: 5, no: 43, name: '이천 햅쌀 크림 프라푸치노' },
+          { categoryNo: 5, no: 44, name: '그린 티 크림 프라푸치노' },
+          { categoryNo: 5, no: 45, name: '초콜릿 크림 칩 프라푸치노' },
+          { categoryNo: 5, no: 46, name: '초콜릿 크림 프라푸치노' },
+          { categoryNo: 5, no: 47, name: '바닐라 크림 프라푸치노' },
+          { categoryNo: 5, no: 48, name: '제주 까망 크림 프라푸치노' },
+          { categoryNo: 5, no: 49, name: '제주 쑥떡 크림 프라푸치노' },
+          { categoryNo: 5, no: 50, name: '제주 말차샷 크림 프라푸치노' },
+          { categoryNo: 5, no: 51, name: '화이트 타이거 프라푸치노' },
+          { categoryNo: 6, no: 52, name: '망고 바나나 블렌디드' },
+          { categoryNo: 6, no: 53, name: '자몽 셔벗 블렌디드' },
+          { categoryNo: 6, no: 54, name: '딸기 요거트 블렌디드' },
+          { categoryNo: 6, no: 55, name: '망고 패션 후르츠 블렌디드' },
+          { categoryNo: 6, no: 56, name: '익스트림 티 블렌디드' },
+          { categoryNo: 7, no: 57, name: '핑크 자몽 피지오' },
+          { categoryNo: 7, no: 58, name: '쿨 라임 피지오' },
+          { categoryNo: 7, no: 59, name: '블랙 티 레모네이드 피지오' },
+          { categoryNo: 7, no: 60, name: '패션 탱고 티 레모네이드 피지오' },
+          { categoryNo: 7, no: 61, name: '매직 팝 스플래쉬 피지오' },
+          { categoryNo: 8, no: 62, name: '그린 티 라떼' },
+          { categoryNo: 8, no: 63, name: '라임 패션 티' },
+          { categoryNo: 8, no: 64, name: '자몽 허니 블랙 티' },
+          { categoryNo: 8, no: 65, name: '차이 티 라떼' },
+          { categoryNo: 8, no: 66, name: '제주 유기 녹차' },
+          { categoryNo: 8, no: 67, name: '잉글리쉬 프렉퍼스트 티' },
+          { categoryNo: 8, no: 68, name: '차이 티' },
+          { categoryNo: 8, no: 69, name: '유스베리 티' },
+          { categoryNo: 8, no: 70, name: '히비스커스 블렌드 티' },
+          { categoryNo: 8, no: 71, name: '민트 블렌드 티' },
+          { categoryNo: 8, no: 72, name: '캐모마일 블렌드 티' },
+          { categoryNo: 8, no: 73, name: '제주 유자 탱고 티' },
+          { categoryNo: 8, no: 74, name: '제주 말차샷 라떼' },
+          { categoryNo: 8, no: 75, name: '그랜마 애플 블랙 티' },
+          { categoryNo: 8, no: 76, name: '그랜마 애플 블랙 밀크 티' },
+          { categoryNo: 8, no: 77, name: '돌체 블랙 밀크 티' },
+          { categoryNo: 8, no: 78, name: '유자 민트 티' },
+          { categoryNo: 9, no: 79, name: '시크니처 핫 초콜릿' },
+          { categoryNo: 9, no: 80, name: '스팀 우유' },
+          { categoryNo: 9, no: 81, name: '우유' },
+          { categoryNo: 9, no: 82, name: '제주 노랑 고구마 라떼' },
+          { categoryNo: 9, no: 83, name: '제주 쑥쑥 라떼' },
+          { categoryNo: 9, no: 84, name: '제주 까망 라떼' },
+          { categoryNo: 9, no: 85, name: '플러피 판다 핫 초콜릿' },
+          { categoryNo: 9, no: 86, name: '매직 윈터 트로피컬 핫 펀치' }
         ],
         toppingCategories: [
           { no: 1, name: '커피' },
           { no: 2, name: '시럽' },
           { no: 3, name: '베이스' },
-          { no: 4, name: '기타' },
-          { no: 5, name: '얼음' },
-          { no: 6, name: '휘핑크림' },
-          { no: 7, name: '드리즐' }
+          { no: 4, name: '우유/음료 온도' },
+          { no: 5, name: '기타' },
+          { no: 6, name: '과일&채소' },
+          { no: 7, name: '얼음' },
+          { no: 8, name: '자바칩' },
+          { no: 9, name: '휘핑 크림' },
+          { no: 10, name: '드리즐' },
+          { no: 11, name: '토핑' }
         ],
         toppings: [
-          { categoryNo: 1, no: 1, name: '에스프레소 샷', subFlag: 0 },
-          { categoryNo: 2, no: 2, name: '바닐라 시럽', subFlag: 1 },
-          { categoryNo: 2, no: 3, name: '헤이즐넛 시럽', subFlag: 1 },
-          { categoryNo: 2, no: 4, name: '카라멜 시럽', subFlag: 1 },
-          { categoryNo: 3, no: 5, name: '물', subFlag: 1 },
-          { categoryNo: 4, no: 6, name: '기타', subFlag: 1 },
-          { categoryNo: 5, no: 7, name: '얼음', subFlag: 1 },
-          { categoryNo: 5, no: 7, name: '얼음', subFlag: 1 }
+          // 커피
+          { categoryNo: 1, no: 1, name: '에스프레소 샷', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 1, no: 2, name: '디카페인', toppingPrice: 0, quantityType: 0 },
+          { categoryNo: 1, no: 3, name: '프라푸치노 로스트', toppingPrice: 0, quantityType: 1 },
+          // 시럽
+          { categoryNo: 2, no: 4, name: '클래식 시럽', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 2, no: 5, name: '바닐라 시럽', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 2, no: 6, name: '헤이즐넛 시럽', toppingPrice: 0, quantityType: 1 },
+          { categoryNo: 2, no: 7, name: '카라멜 시럽', toppingPrice: 0, quantityType: 1 },
+          // 베이스
+          { categoryNo: 3, no: 8, name: '물', subFlag: 1 },
+          // 우유/음료 온도
+          { categoryNo: 4, no: 9, name: '우유종류', toppingPrice: 0, quantityType: 0 },
+          // 기타
+          { categoryNo: 5, no: 10, name: '저지방 요거트', toppingPrice: 0, quantityType: 0 },
+          // 얼음
+          { categoryNo: 6, no: 11, name: '얼음', toppingPrice: 0, quantityType: 2 },
+          // 자바칩
+          { categoryNo: 7, no: 12, name: '자바칩', toppingPrice: 0, quantityType: 0 },
+          { categoryNo: 7, no: 13, name: '프라푸치노 자바칩', toppingPrice: 0, quantityType: 1 },
+          // 휘핑크림
+          { categoryNo: 8, no: 14, name: '휘핑크림', toppingPrice: 0, quantityType: 3 },
+          // 드리즐
+          { categoryNo: 9, no: 15, name: '카라멜 드리즐', toppingPrice: 0, quantityType: 3 },
+          { categoryNo: 9, no: 16, name: '초콜릿 드리즐', toppingPrice: 0, quantityType: 3 }
         ],
+        productTopping:
+          { subToppingNo: 1, quantityCode: 1, value: 0, optionType: 1 },
         productVisible: true,
         toppingVisible: false,
-        selectedCategoryNo: 1,
+        selectedProductCategoryNo: 1,
         selectedProductNo: 0,
         selectedProductName: '',
+        selectedToppingCategoryNo: 1,
         filter: ''
       }
     },
     mounted () {
-      document.getElementById('category' + this.selectedCategoryNo).classList.add('border-black')
+      // 첫번째 탭에 밑줄
+      document.getElementById('productCategory' + this.selectedProductCategoryNo).classList.add('border-black')
+      document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
     },
     methods: {
-      selectTopping (itemNo) {
-        console.log(itemNo)
+      // 상품 카테고리 선택
+      selectProductCategory (event, productCategoryNo) {
+        this.selectedProductCategoryNo = productCategoryNo
+        this.tabUnderline(true, event.target, '.product-category')
       },
-      selectProductCategory (event, categoryNo) {
-        // 선택된 카테고리 번호로 업데이트
-        this.selectedCategoryNo = categoryNo
-
-        let tabs = document.querySelectorAll('.product-category')
-
-        // 탭 밑줄 설정
-        for (let i = 0; i < tabs.length; i++) {
-          if (tabs[i] === event.target) {
-            event.target.classList.add('border-black')
-          } else {
-            tabs[i].classList.remove('border-black')
-          }
-        }
+      // 토핑 카테고리 선택
+      selectToppingCategory (event, toppingCategoryNo) {
+        this.selectedToppingCategoryNo = toppingCategoryNo
+        this.tabUnderline(true, event.target, '.topping-category')
       },
+      // 상품 선택
       selectProduct (event, product) {
         this.selectedProductNo = product.no
         this.selectedProductName = product.name
         this.productVisible = false
         this.toppingVisible = true
         this.filter = 'button-with-x'
+
+        document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
+
+        // ProductTopping
+        // 상품의 토핑 목록 조회
+        // this.toppings = ''
+        // 상품 토핑 초기값 세팅
+        // this.productTopping = ''
       },
+      // 필터에서 상품 삭제
       deleteProduct () {
-        this.selectedCategoryNo = 1
+        this.selectedProductCategoryNo = 1
+        this.selectedToppingCategoryNo = 1
         this.productVisible = true
         this.toppingVisible = false
+        this.tabUnderline(false, 'productCategory', '.product-category')
+        this.tabUnderline(false, 'toppingCategory', '.topping-category')
+      },
+      // 탭 밑줄 설정
+      tabUnderline (isSelectMode, element, selector) {
+        let tabs = document.querySelectorAll(selector)
 
-        // 필터에서 지우고 첫번째 탭에 밑줄 - 안
-        document.getElementById('category' + this.selectedCategoryNo).classList.add('border-black')
+        if (isSelectMode) { // select
+          for (let i = 0; i < tabs.length; i++) {
+            if (tabs[i] === element) {
+              element.classList.add('border-black')
+            } else {
+              tabs[i].classList.remove('border-black')
+            }
+          }
+        } else { // delete
+          for (let i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('border-black')
+          }
+          document.getElementById(element + this.selectedProductCategoryNo).classList.add('border-black')
+        }
       }
     }
   }
