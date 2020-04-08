@@ -30,14 +30,9 @@
               </div>
             </div>
           </label>
-          <!-- toffing select space -->
-<!--          <div class="bg-blue-100 h-64 w-full mt-8">-->
-<!--            <div class="text-center vertical-center text-xl">-->
-<!--              여기는 토핑 선택 칸입니다.(대체 예정)-->
-<!--            </div>-->
-<!--          </div>-->
+          <!-- toffee filter -->
           <div>
-            <toffee-filter :filter-mode="1"></toffee-filter>
+            <toffee-filter></toffee-filter>
           </div>
           <div class="mt-4 flex justify-between">
             <div class="flex">

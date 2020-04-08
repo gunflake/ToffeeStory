@@ -40,24 +40,23 @@
     },
     methods: {
       decrement (e) {
-        const btn = e.target.parentNode.parentElement.querySelector(
-          'button[data-action="decrement"]'
-        )
+        const btn = e.target.parentNode.parentElement.querySelector('button[data-action="decrement"]')
         const target = btn.nextElementSibling
         let value = Number(target.value)
 
         if (value > 0) {
           value--
+
           target.value = value
         }
       },
       increment (e) {
-        const btn = e.target.parentNode.parentElement.querySelector(
-          'button[data-action="decrement"]'
-        )
+        const btn = e.target.parentNode.parentElement.querySelector('button[data-action="decrement"]')
         const target = btn.nextElementSibling
         let value = Number(target.value)
+
         value++
+
         target.value = value
       },
       checkValue (e) {

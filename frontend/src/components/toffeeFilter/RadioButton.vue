@@ -1,6 +1,6 @@
 <template>
-  <label @click="clickFunction" class="bg-transparent hover:bg-gray-500 text-black text-sm hover:text-white py-1 px-4 border border-black-500 hover:border-transparent rounded inline-flex items-center mr-3" style="cursor: pointer">
-    <input type="radio" class="hidden" :name="name" :value="value" :checked="checked"> {{ title }}
+  <label oncontextmenu="return false" ondragstart="return false" onselectstart="return false" class="bg-transparent text-gray-600 text-sm py-1 px-4 border border-gray-400 hover:border-gray-600 rounded inline-flex items-center mr-3" style="cursor: pointer">
+    <input type="radio" class="hidden" :name="name" :value="value" :checked="checked" @click="clickFunction"> {{ title }}
   </label>
 </template>
 <script>
@@ -21,8 +21,8 @@
       }
     },
     methods: {
-      clickFunction () {
-        this.$emit('clickEvent')
+      clickFunction (e) {
+        this.$emit('clickEvent', e.target)
       }
     }
   }
