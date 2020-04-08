@@ -76,9 +76,6 @@
               </div>
             </div>
           </div>
-          <!--<scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
-                         loader-color="rgba(102,102,102,.5)">
-          </scroll-loader>-->
           <div class="modal-footer">
             <slot name="footer">
             </slot>
@@ -164,7 +161,6 @@
           } else {
             this.bookmarkState = !useFlag
           }
-          console.log(formData.valueCode)
 
           api.modifyInterest(this.postNo, formData, this.getToken)
             .then(response => {

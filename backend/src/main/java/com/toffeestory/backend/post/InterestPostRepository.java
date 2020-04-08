@@ -10,6 +10,6 @@ public interface InterestPostRepository extends JpaRepository<InterestPost, Inte
     Optional<InterestPost> findByPostNoAndAccountNo(Integer postNo, Integer accountNo);
 
     //interest list of account
-    List<InterestPost> findByAccountNoAndLikeState(Integer accountNo, Boolean likeState);
-    List<InterestPost> findByAccountNoAndBookmarkState(Integer accountNo, Boolean bookmarkState);
+    List<InterestPost> findByAccountNoAndLikeState(Integer accountNo, InterestPost.UseType likeState);
+    List<InterestPost> findByAccountNoAndBookmarkState(Integer accountNo, InterestPost.UseType bookmarkState);
 }

@@ -90,7 +90,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl = new PostDtl();
         postdtl.setPostNo(1);
-        postdtl.setFlag((byte)1);
+        postdtl.setFlag(PostDtl.ToffeeType.PRODUCT);
         postdtl.setToffeeKey(1);
         postdtl.setTagName("아메리카노");
 
@@ -98,7 +98,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl1 = new PostDtl();
         postdtl1.setPostNo(1);
-        postdtl1.setFlag((byte)1);
+        postdtl1.setFlag(PostDtl.ToffeeType.PRODUCT);
         postdtl1.setToffeeKey(2);
         postdtl1.setTagName("카페라떼");
 
@@ -121,7 +121,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl2 = new PostDtl();
         postdtl2.setPostNo(2);
-        postdtl2.setFlag((byte)1);
+        postdtl2.setFlag(PostDtl.ToffeeType.PRODUCT);
         postdtl2.setToffeeKey(1);
         postdtl2.setTagName("아메리카노");
 
@@ -146,7 +146,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl3 = new PostDtl();
         postdtl3.setPostNo(3);
-        postdtl3.setFlag((byte)1);
+        postdtl3.setFlag(PostDtl.ToffeeType.PRODUCT);
         postdtl3.setToffeeKey(3);
         postdtl3.setTagName("바닐라 라떼");
 
@@ -154,7 +154,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl4 = new PostDtl();
         postdtl4.setPostNo(3);
-        postdtl4.setFlag((byte)2);
+        postdtl4.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl4.setToffeeKey(1);
         postdtl4.setValue(3);
         postdtl4.setTagName("바닐라 시럽");
@@ -180,7 +180,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl5 = new PostDtl();
         postdtl5.setPostNo(4);
-        postdtl5.setFlag((byte)1);
+        postdtl5.setFlag(PostDtl.ToffeeType.PRODUCT);
         postdtl5.setToffeeKey(4);
         postdtl5.setTagName("화이트 초콜릿 모카");
 
@@ -188,7 +188,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl6 = new PostDtl();
         postdtl6.setPostNo(4);
-        postdtl6.setFlag((byte)2);
+        postdtl6.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl6.setToffeeKey(2);
         postdtl6.setValue(3);
         postdtl6.setTagName("화이트모카 시럽");
@@ -197,7 +197,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl7 = new PostDtl();
         postdtl7.setPostNo(4);
-        postdtl7.setFlag((byte)2);
+        postdtl7.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl7.setToffeeKey(3);
         postdtl7.setSubToppingNo(4);
         postdtl7.setQuantityNo(2);
@@ -223,7 +223,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl8 = new PostDtl();
         postdtl8.setPostNo(5);
-        postdtl8.setFlag((byte)1);
+        postdtl8.setFlag(PostDtl.ToffeeType.PRODUCT);
         postdtl8.setToffeeKey(5);
         postdtl8.setTagName("콜드 브루");
 
@@ -231,7 +231,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl9 = new PostDtl();
         postdtl9.setPostNo(5);
-        postdtl9.setFlag((byte)2);
+        postdtl9.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl9.setToffeeKey(4);
         postdtl9.setSubToppingNo(1);
         postdtl9.setTagName("디카페인");
@@ -256,7 +256,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl10 = new PostDtl();
         postdtl10.setPostNo(6);
-        postdtl10.setFlag((byte)1);
+        postdtl10.setFlag(PostDtl.ToffeeType.PRODUCT);
         postdtl10.setToffeeKey(6);
         postdtl10.setTagName("스타벅스 돌체 라떼");
 
@@ -264,7 +264,7 @@ public class SampleData implements ApplicationRunner {
 
         PostDtl postdtl11 = new PostDtl();
         postdtl11.setPostNo(6);
-        postdtl11.setFlag((byte)2);
+        postdtl11.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl11.setToffeeKey(5);
         postdtl11.setValue(3);
         postdtl11.setTagName("돌체 시럽");

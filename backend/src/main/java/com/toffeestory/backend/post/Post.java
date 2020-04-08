@@ -50,8 +50,9 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updDate;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column
-    private Byte useStateCode;
+    private UseType useStateCode;
 
 	@Transient
     private List<String> tags;
@@ -69,15 +70,9 @@ public class Post {
 		this.tags = new ArrayList<>();
         this.tags.add("");
         this.likeCnt = 0;
-        this.useStateCode = 1;
+        this.useStateCode = UseType.USE;
     }
-    public enum PostCode {
-        NEW(0), BEST(1), HOT(2);
-
-        private int value;
-
-        PostCode(int value){
-            this.value = value;
-        }
+    public enum UseType {
+        USE, UNUSED;
     }
 }

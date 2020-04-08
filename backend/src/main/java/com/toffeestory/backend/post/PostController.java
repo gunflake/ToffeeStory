@@ -178,14 +178,14 @@ public class PostController {
 
         post.setTags(tagNames);
 
-        Boolean likeState     = false;
-        Boolean bookmarkState = false;
+        int likeState     = 0;
+        int bookmarkState = 0;
 
         if(account != null && interestPostRepository.findByPostNoAndAccountNo(postNo, account.getAccountNo()).isPresent()) {
             InterestPost interestPost = interestPostRepository.findByPostNoAndAccountNo(postNo, account.getAccountNo()).orElseThrow(() -> new RuntimeException());
 
-            likeState     = interestPost.getLikeState();
-            bookmarkState = interestPost.getBookmarkState();
+            likeState     = interestPost.getLikeState().ordinal();
+            bookmarkState = interestPost.getBookmarkState().ordinal();
         }
 
         ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getSrc(), likeState, bookmarkState);

@@ -16,8 +16,9 @@ public class PostDtl {
     @Column(nullable = false)
     private Integer postNo;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Byte flag;
+    private ToffeeType flag;  //0: product, 1: topping
 
     @Column(nullable = false)
     private Integer toffeeKey;
@@ -39,5 +40,9 @@ public class PostDtl {
 
     public PostDtl() {
         this.useState = 1;
+    }
+
+    public enum ToffeeType {
+        PRODUCT, TOPPING;
     }
 }

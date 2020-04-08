@@ -11,14 +11,18 @@ public class PostService {
     public void updateInterest(Integer postNo, Integer accountNo, Byte valueCode, Boolean useState) {
         InterestPost interestPost;
 
+        InterestPost.UseType useType = InterestPost.UseType.UNINTERESTED;
+
+        if(!useState) useType = InterestPost.UseType.INTEREST;
+
         //해당 정보가 있으면 찾아서 상태 값 변경
         if(interestPostRepository.findByPostNoAndAccountNo(postNo, accountNo).isPresent()) {
             interestPost = interestPostRepository.findByPostNoAndAccountNo(postNo, accountNo).orElseThrow(() -> new RuntimeException());
 
             if(valueCode == 0) {
-                interestPost.setLikeState(!useState);
+                interestPost.setLikeState(useType);
             } else {
-                interestPost.setBookmarkState(!useState);
+                interestPost.setBookmarkState(useType);
             }
         } else {
             interestPost = new InterestPost();
@@ -27,9 +31,9 @@ public class PostService {
             interestPost.setAccountNo(accountNo);
 
             if(valueCode == 0) {
-                interestPost.setLikeState(!useState);
+                interestPost.setLikeState(useType);
             } else {
-                interestPost.setBookmarkState(!useState);
+                interestPost.setBookmarkState(useType);
             }
         }
 

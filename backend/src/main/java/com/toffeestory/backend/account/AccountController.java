@@ -214,9 +214,9 @@ public class AccountController {
             List<InterestPost> interestPosts;
 
             if(valueCode == 0) {
-                interestPosts = interestPostRepository.findByAccountNoAndLikeState(account.getAccountNo(), true);
+                interestPosts = interestPostRepository.findByAccountNoAndLikeState(account.getAccountNo(), InterestPost.UseType.INTEREST);
             } else {
-                interestPosts = interestPostRepository.findByAccountNoAndBookmarkState(account.getAccountNo(), true);
+                interestPosts = interestPostRepository.findByAccountNoAndBookmarkState(account.getAccountNo(), InterestPost.UseType.INTEREST);
             }
 
             for (int i = 0; i < interestPosts.size(); i++) {

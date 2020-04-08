@@ -9,10 +9,10 @@ public class ResponsePost {
     private Post   post;
     private String accountId;
     private String accountPic;
-    private Boolean likeState;
-    private Boolean bookmarkState;
+    private Integer likeState;
+    private Integer bookmarkState;
 
-    public ResponsePost(Post post, String accountId, String accountPic, Boolean likeState, Boolean bookmarkState) {
+    public ResponsePost(Post post, String accountId, String accountPic, Integer likeState, Integer bookmarkState) {
         this.post          = post;
         this.accountId     = accountId;
         this.accountPic    = accountPic;
