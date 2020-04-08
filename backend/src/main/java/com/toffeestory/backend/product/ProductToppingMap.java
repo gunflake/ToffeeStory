@@ -4,33 +4,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Setter
-public class ProductTopping {
+public class ProductToppingMap implements Serializable {
     @Id
-    @GeneratedValue
-    @Column(name = "productToppingId")
-    private Integer productToppingId;
-
     @ManyToOne
     @JoinColumn(name = "productNo")
     private Product product;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "toppingNo")
     private Topping topping;
 
     @Column
-    private Integer subToppingNo;
+    private Integer defaultValue;
 
     @Column
-    private Byte quantityCode;
-
-    @Column
-    private Integer value;
-
-    @Column
-    private Integer optionType;
+    private Boolean checkFlag;
 }

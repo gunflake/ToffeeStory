@@ -1,6 +1,5 @@
 package com.toffeestory.backend.product;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,18 +13,21 @@ import java.util.List;
 @Setter
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer productNo;
 
     @ManyToOne
     @JoinColumn(name = "productCategoryNo")
     private ProductCategory productCategory;
 
+//    @Column
+//    private Integer productCategoryNo;
+
     @Column(length = 20)
     private String productName;
 
     @Column
-    private Byte useSateCode;
+    private Boolean useSateCode;
 
     @Column
     private Date regDate;
@@ -34,8 +36,5 @@ public class Product {
     private Integer price;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductTopping> productToppings = new ArrayList<>();
-
-    @Transient
-    private Integer productCategoryNo;
+    private List<ProductToppingMap> productToppingMapList = new ArrayList<>();
 }

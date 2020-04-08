@@ -10,6 +10,7 @@ import com.toffeestory.backend.post.InterestPost;
 import com.toffeestory.backend.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,6 +57,9 @@ public class AccountController {
 
     @Autowired
     private InterestPostRepository interestPostRepository;
+
+    @Value("${url}")
+    String defaultUrl;
 
     /**
      * 회원 생성
@@ -156,7 +160,7 @@ public class AccountController {
 
                 // 계정 업데이트
                 Account accountFromDb = accountRepository.findByAccountNo(account.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(account.getAccountNo()+"를 찾을 수 없습니다"));;
-                accountFromDb.setSrc(profilePic.getOriginalFilename());
+                accountFromDb.setSrc(defaultUrl+profilePic.getOriginalFilename());
                 accountRepository.save(accountFromDb);
             } catch (IOException e) {
                 throw new InvalidImageException("이미지 업로드에 실패했습니다.");
@@ -197,32 +201,29 @@ public class AccountController {
     }
 
     /*-------------------------------
-        - select Bookmark Post List
+        - select My Menu List
     -------------------------------*/
-    @GetMapping("/me/{accountId}/likePosts")
-    public List<Post> likePostList(@AuthenticationPrincipal Account account) {
+    @GetMapping("/me/myMenu/{valueCode}")
+    public ResponseEntity interestList(@PathVariable("valueCode") Byte valueCode,
+                                       @AuthenticationPrincipal Account account) {
         List<Post> posts = new ArrayList<>();
-        List<InterestPost> likePosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), (byte) 0);
 
-        for (int i = 0; i < likePosts.size(); i++) {
-            posts.add(postRepository.findByPostNo(likePosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+        if(valueCode == 3) {    //my menu
+            posts = postRepository.findAllByAccount(account);
+        } else {
+            List<InterestPost> interestPosts;
+
+            if(valueCode == 0) {
+                interestPosts = interestPostRepository.findByAccountNoAndLikeState(account.getAccountNo(), InterestPost.UseType.INTEREST);
+            } else {
+                interestPosts = interestPostRepository.findByAccountNoAndBookmarkState(account.getAccountNo(), InterestPost.UseType.INTEREST);
+            }
+
+            for (int i = 0; i < interestPosts.size(); i++) {
+                posts.add(postRepository.findByPostNo(interestPosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+            }
         }
 
-        return posts;
-    }
-
-    /*-------------------------------
-        - select Bookmark Post List
-    -------------------------------*/
-    @GetMapping("/me/{accountId}/bookmarkPosts")
-    public List<Post> bookmarkPostList(@AuthenticationPrincipal Account account) {
-        List<Post> posts = new ArrayList<>();
-        List<InterestPost> bookmarkPosts = interestPostRepository.findByAccountNoAndValueCode(account.getAccountNo(), (byte) 1);
-
-        for (int i = 0; i < bookmarkPosts.size(); i++) {
-            posts.add(postRepository.findByPostNo(bookmarkPosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
-        }
-
-        return posts;
+        return ok(posts);
     }
 }

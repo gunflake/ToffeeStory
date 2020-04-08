@@ -7,6 +7,7 @@ import com.toffeestory.backend.exception.NotFoundPostException;
 import com.toffeestory.backend.exception.RestApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,17 +43,33 @@ public class PostController {
     @Autowired
     PostService postService;
 
+    @Value("${url}")
+    String defaultUrl;
+
     /*-------------------------------
        -select Post List (new / best / hot)
      -------------------------------*/
     @GetMapping(path = "")
-    public List<Post> initPage(@RequestParam("flag") Integer flag) {
+    public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword, @RequestParam("flag") Integer flag) {
         if(flag == 0){                      // New
-            return postRepository.findAll();
+            // keyword가 존재할 떄
+            if(keyword != null){
+                return postRepository.findAllSearchKeywordPostOrderByPostNoDesc(keyword);
+            }else{
+                return postRepository.findAllByOrderByPostNoDesc();
+            }
         } else if(flag == 1) {              // Best
-            return postRepository.findAllByOrderByScoreDesc();
+            if(keyword != null){
+                return postRepository.findAllSearchKeywordPostOrderByScoreDesc(keyword);
+            }else{
+                return postRepository.findAllByOrderByScoreDesc();
+            }
         } else {                            // Hot
-            return postRepository.findAllByOrderByLikeCntDesc();
+            if(keyword != null){
+                return postRepository.findAllSearchKeywordPostOrderByLikeCntDesc(keyword);
+            }else{
+                return postRepository.findAllByOrderByLikeCntDesc();
+            }
         }
     }
 
@@ -67,10 +84,12 @@ public class PostController {
         Post post = new Post();
 
         try{
+            String rootPath = Paths.get("").toAbsolutePath().toString();
+            rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
             String fileName = multipartFile.getOriginalFilename();
-            Path fileNameAndPath = Paths.get("./images/", fileName);
+            Path fileNameAndPath = Paths.get(rootPath +"/images/", fileName);
             Files.write(fileNameAndPath, multipartFile.getBytes());
-            post.setSrc(fileName);
+            post.setSrc(defaultUrl+fileName);
         }catch (IOException e){
             throw new InvalidImageException("이미지 업로드에 실패했습니다.");
         }
@@ -116,7 +135,7 @@ public class PostController {
             } catch (IOException e) {
                 throw new InvalidImageException("이미지 업로드에 실패했습니다.");
             }
-            post.setSrc(fileName);
+            post.setSrc(defaultUrl+fileName);
         }
 
         post.setContent(content);

@@ -1,6 +1,7 @@
 package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.exception.NotFoundImageException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,21 +14,29 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/images")
+@Slf4j
 public class ImageController {
 
     @GetMapping(path = "/{imageName}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity getImageName(@PathVariable("imageName") String imageName) throws IOException {
         //TODO : postName으로 받아서 처리하기
         InputStream in = null;
+        String rootPath = Paths.get("").toAbsolutePath().toString();
+        rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
+
+        log.info(rootPath);
         try{
+            log.info(rootPath +"/images/" + imageName);
             in = new BufferedInputStream(
-                    new FileInputStream("./images/" + imageName));
+                    new FileInputStream(rootPath +"/images/" + imageName));
         }catch (Exception e){
+            log.error(e.getMessage());
             throw new NotFoundImageException(imageName);
         }
 

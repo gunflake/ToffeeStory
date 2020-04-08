@@ -75,8 +75,4 @@ public class Post {
     public enum UseType {
         USE, UNUSED;
     }
-
-    public void setSrc(String postPic) {
-        this.src = "http://localhost:8098/api/images/" + postPic;
-    }
 }

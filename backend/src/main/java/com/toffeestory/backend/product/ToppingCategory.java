@@ -12,16 +12,12 @@ import java.util.List;
 @Setter
 public class ToppingCategory {
     @Id
-    @Column(name = "toppingCategoryNo")
     @GeneratedValue
-    private Integer toppingCategoryNo;
+    private Integer toppingCategoryNo; // PK, Auto Increase
 
     @Column(length = 20)
     private String toppingCategoryName;
 
-    @Column
-    private Byte useStateCode;
-
     @OneToMany(mappedBy = "toppingCategory")
-    private List<Topping> toppings = new ArrayList<>();
+    private List<Topping> toppingList = new ArrayList<>();
 }

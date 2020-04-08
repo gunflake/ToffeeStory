@@ -13,19 +13,18 @@ import java.util.List;
 @Setter
 public class ProductCategory {
     @Id
-    @Column(name = "productCategoryNo")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer productCategoryNo;
+    @GeneratedValue
+    private Integer productCategoryNo; // PK, Auto Increase
 
     @Column(length = 20)
     private String productCategoryName;
 
     @Column
-    private Byte useStateCode;
+    private Boolean useStateCode;
 
     @Column
     private Date regDate;
 
     @OneToMany(mappedBy = "productCategory")
-    private List<Product> products = new ArrayList<>();
+    private List<Product> productList = new ArrayList<>();
 }
