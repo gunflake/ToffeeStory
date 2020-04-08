@@ -19,9 +19,9 @@
     <div class="hidden md:flex flex-grow">
       <!-- Logo -->
       <img src="../assets/image/logo.png" class="h-12 w-12" @click="goHomePage()" style="cursor: pointer"/>
-      <div class="hidden lg:block ml-3">
-        <div class="font-bold font-sans pt-1">Toffee Story</div>
-        <div class="text-sm font-sans" style="line-height: 1; white-space: nowrap;">Toppings for everyone</div>
+      <div class="hidden lg:block ml-6" style="margin-left: 1%;">
+        <div class="font-sans pt-1" style="white-space: nowrap; font-family: 'Roboto Slab', serif; font-size: larger; color:#1f845b;">TOFFEE STORY</div>
+        <div class="text-sm font-sans" style="white-space: nowrap;font-family: 'Special Elite', cursive; color: gray;">Toppings for everyone</div>
       </div>
       <!-- Search -->
       <div class="w-full items-center ml-3 pt-1">

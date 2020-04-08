@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Sort Component -->
-    <div v-if="sortFlag == 0">
+    <div v-if="sortFlag === 0">
       <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
         <ol class="list-reset flex text-grey-dark">
           <li><a href="#" class="text-blue font-bold" @click="getPosts(0)">NEW</a></li>
@@ -20,8 +20,6 @@
       </div>
     </div>
     <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
-    <!--<scroll-loader :loader-method="getPosts" :loader-enable="loadMore" loader-color="rgba(102,102,102,.5)">
-    </scroll-loader>-->
     <div class="flex flex-wrap lg:px-10 xl:px-20">
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
           <img class="w-full h-image object-cover" :src="image.urls.small">

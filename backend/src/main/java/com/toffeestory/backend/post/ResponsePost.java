@@ -9,15 +9,15 @@ public class ResponsePost {
     private Post   post;
     private String accountId;
     private String accountPic;
-    private Byte   likeFlag;
-    private Byte   bookmarkFlag;
+    private Integer likeState;
+    private Integer bookmarkState;
 
-    public ResponsePost(Post post, String accountId, String accountPic, Byte likeFlag, Byte bookmarkFlag) {
-        this.post         = post;
-        this.accountId    = accountId;
-        this.accountPic   = accountPic;
-        this.likeFlag     = likeFlag;
-        this.bookmarkFlag = bookmarkFlag;
+    public ResponsePost(Post post, String accountId, String accountPic, Integer likeState, Integer bookmarkState) {
+        this.post          = post;
+        this.accountId     = accountId;
+        this.accountPic    = accountPic;
+        this.likeState     = likeState;
+        this.bookmarkState = bookmarkState;
     }
 }
 

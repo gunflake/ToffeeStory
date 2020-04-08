@@ -28,12 +28,12 @@
               </div>
             </div>
             <div class="flex">
-              <a v-if="likeFlag == 0 || likeFlag == null" @click="modifyInterest(0,0)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
-              <a v-else @click="modifyInterest(0,1)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart fa-2x"
+              <a v-if="!likeState" @click="modifyInterest(0,false)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart-o fa-2x"></i></a>
+              <a v-else @click="modifyInterest(0,true)" class="flex items-center" style="cursor: pointer"><i class="fa fa-heart fa-2x"
                                                                                 style="color:red;"></i></a>
               <span class="ml-2 mr-4 text-2xl text-center">{{ likeCnt }}</span>
-              <a v-if="bookmarkFlag == 0 || bookmarkFlag == null" @click="modifyInterest(1,0)" class="flex items-center mr-6" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
-              <a v-else @click="modifyInterest(1,1)" class="flex items-center mr-6" style="cursor: pointer"><i
+              <a v-if="!bookmarkState" @click="modifyInterest(1,false)" class="flex items-center mr-6" style="cursor: pointer"><i class="fa fa-bookmark-o fa-2x"></i></a>
+              <a v-else @click="modifyInterest(1,true)" class="flex items-center mr-6" style="cursor: pointer"><i
                 class="fa fa-bookmark fa-2x" style="color:green;"></i></a>
             </div>
           </div>
@@ -76,9 +76,6 @@
               </div>
             </div>
           </div>
-          <!--<scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore"
-                         loader-color="rgba(102,102,102,.5)">
-          </scroll-loader>-->
           <div class="modal-footer">
             <slot name="footer">
             </slot>
@@ -111,8 +108,8 @@
         post: [],
         relatedPost: [],
         likeCnt: null,
-        likeFlag: 0,
-        bookmarkFlag: 0,
+        likeState: false,
+        bookmarkState: false,
         accountId: '',
         accountPic: '',
         accessPossible: false,
@@ -129,10 +126,11 @@
       ...mapActions(['settingAlertMsg']),
       getPostInfo (postNo) {
         api.getPostInfo(postNo, this.getToken).then(response => {
+          console.log(response.data)
           this.post = response.data.post
           this.likeCnt = response.data.post.likeCnt
-          this.likeFlag = response.data.likeFlag
-          this.bookmarkFlag = response.data.bookmarkFlag
+          this.likeState = response.data.likeState
+          this.bookmarkState = response.data.bookmarkState
           this.accountId = response.data.accountId
           this.accountPic = response.data.accountPic
           if (this.accountId === this.getUserName) this.accessPossible = true
@@ -159,9 +157,9 @@
           formData.append('useFlag', useFlag)
 
           if (valueCode === 0) {
-            this.likeFlag = useFlag === 0 ? 1 : 0
+            this.likeState = !useFlag
           } else {
-            this.bookmarkFlag = useFlag === 0 ? 1 : 0
+            this.bookmarkState = !useFlag
           }
 
           api.modifyInterest(this.postNo, formData, this.getToken)

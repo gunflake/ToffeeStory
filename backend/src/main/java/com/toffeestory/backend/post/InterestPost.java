@@ -19,13 +19,21 @@ public class InterestPost {
     @Column(nullable = false)
     private Integer accountNo;
 
-    @Column(nullable = false)
-    private Byte valueCode; // 0: like, 1: bookmark
+    @Enumerated(EnumType.STRING)
+    @Column
+    private UseType likeState;
 
-    @Column(nullable = false)
-    private Byte useFlag;   // 1: use
+    @Enumerated(EnumType.STRING)
+    @Column
+    private UseType bookmarkState;
+
+    @Getter
+    public enum UseType {
+        UNINTERESTED, INTEREST;
+    }
 
     public InterestPost() {
-        this.useFlag = 1;
+        this.likeState = UseType.UNINTERESTED;
+        this.bookmarkState = UseType.UNINTERESTED;
     }
 }
