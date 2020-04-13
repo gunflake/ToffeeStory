@@ -36,11 +36,7 @@ export default {
     return AXIOS.get('/accounts/secured/getAccount', token)
   },
   getPostList (flag) {
-    return AXIOS.get('/posts', {
-      params: {
-        'flag': flag
-      }
-    })
+    return AXIOS.get('/posts')
   },
   getPostInfo (postNo, token) {
     return AXIOS.get('/posts/' + postNo, token)
@@ -54,10 +50,9 @@ export default {
   getInterestPosts (valueCode, token) {
     return AXIOS.get('/accounts/me/myMenu/' + valueCode, token)
   },
-  searchPostList (flag, keyword) {
+  searchPostList (keyword) {
     return AXIOS.get('/posts', {
       params: {
-        'flag': flag,
         'keyword': keyword
       }
     })

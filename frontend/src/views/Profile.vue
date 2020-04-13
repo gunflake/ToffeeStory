@@ -52,7 +52,7 @@
         </a>
       </div>
     </nav>
-    <ToffeeList v-bind:sortFlag = 1 :valueCode = this.valueCode></ToffeeList>
+    <ToffeeList v-bind:sortFlag = false :valueCode = this.valueCode></ToffeeList>
   </div>
 </template>
 

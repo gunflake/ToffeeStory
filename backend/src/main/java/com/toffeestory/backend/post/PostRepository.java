@@ -21,22 +21,12 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("select p from Post p where p.postNo in(select distinct postNo from PostDtl where tagName like concat('%',:keyword,'%')) order by p.postNo desc ")
     List<Post> findAllSearchKeywordPostOrderByPostNoDesc(String keyword);
 
-    // Best
-    List<Post> findAllByOrderByScoreDesc();
-
     @Query("select p from Post p where p.postNo in(select distinct postNo from PostDtl where tagName like concat('%',:keyword,'%')) order by p.score desc ")
     List<Post> findAllSearchKeywordPostOrderByScoreDesc(String keyword);
-    // Hot
-
-    List<Post> findAllByOrderByLikeCntDesc();
 
     @Query("select p from Post p where p.postNo in(select distinct postNo from PostDtl where tagName like concat('%',:keyword,'%')) order by p.likeCnt desc ")
     List<Post> findAllSearchKeywordPostOrderByLikeCntDesc(String keyword);
 
     List<Post> findAllByAccount(Account account);
-    // Best
-    List<Post> findAllByAccountOrderByScoreDesc(Account account);
-    // Hot
-    List<Post> findAllByAccountOrderByLikeCntDesc(Account account);
 
 }

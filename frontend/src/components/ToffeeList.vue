@@ -1,19 +1,19 @@
 <template>
   <div>
     <!-- Sort Component -->
-    <div v-if="sortFlag === 0">
+    <div v-if="sortFlag">
       <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
         <ol class="list-reset flex text-grey-dark">
-          <li><a href="#" class="text-blue font-bold" @click="getPosts(0)">NEW</a></li>
+          <li><a href="#" class="text-blue font-bold" @click="setSortKey('postNo')">NEW</a></li>
           <li><span class="mx-2">|</span></li>
-          <li><a href="#" class="text-blue font-bold" @click="getPosts(1)">BEST</a></li>
+          <li><a href="#" class="text-blue font-bold" @click="setSortKey('likeCnt')">BEST</a></li>
           <li><span class="mx-2">|</span></li>
-          <li><a href="#" class="text-blue font-bold" @click="getPosts(2)">HOT</a></li>
+          <li><a href="#" class="text-blue font-bold" @click="setSortKey('score')">HOT</a></li>
         </ol>
       </nav>
     </div>
     <div class="flex flex-wrap lg:px-10 xl:px-20">
-      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of posts" :key="index">
+      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
           <a @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
         </div>
@@ -34,7 +34,7 @@
   import Post from '@/components/Post'
   import api from '@/backend-api'
   import { mapGetters } from 'vuex'
-  import config from '../config.js'
+  import _ from 'lodash'
 
   export default {
     name: 'ToffeeList',
@@ -44,28 +44,32 @@
     },
     data: function () {
       return {
-        flag: 0,
         showModal: false,
         loadMore: true,
         page: 1,
         pageSize: 9,
         images: [],
         posts: [],
-        new: config.PostMethods.NEW
+        sortOrder: 'postNo'
       }
     },
     computed: {
-      ...mapGetters(['getToken'])
+      ...mapGetters(['getToken']),
+      orderedList: function () {
+        return _.orderBy(this.posts, this.sortOrder, 'desc')
+      }
     },
     methods: {
-      getPosts (flag) {
-        this.flag = flag
-        api.getPostList(this.flag).then(response => {
+      getPosts () {
+        api.getPostList().then(response => {
           this.posts = response.data
         })
           .catch(e => {
             console.log(e)
           })
+      },
+      setSortKey (sortKey) {
+        this.sortOrder = sortKey
       },
       getInterestPost (valueCode) {
         api.getInterestPosts(valueCode, this.getToken).then(response => {
@@ -106,7 +110,7 @@
     },
     mounted () {
       if (this.valueCode === 2) {
-        this.getPosts(this.flag)
+        this.getPosts()
       } else {
         this.getInterestPost(this.valueCode)
       }
