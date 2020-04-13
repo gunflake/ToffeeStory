@@ -2,15 +2,10 @@
   <div>
     <!-- Sort Component -->
     <div v-if="sortFlag">
-      <nav class="bg-grey-light p-3 rounded font-sans w-full m-4">
-        <ol class="list-reset flex text-grey-dark">
-          <li><a href="#" class="text-blue font-bold" @click="setSortKey('postNo')">NEW</a></li>
-          <li><span class="mx-2">|</span></li>
-          <li><a href="#" class="text-blue font-bold" @click="setSortKey('likeCnt')">BEST</a></li>
-          <li><span class="mx-2">|</span></li>
-          <li><a href="#" class="text-blue font-bold" @click="setSortKey('score')">HOT</a></li>
-        </ol>
-      </nav>
+      <div class="sort-list bg-grey-light p-3 rounded font-sans w-full m-4">
+        <span>|</span>
+        <a v-for="sortkey in Object.keys(sortList)" :key="sortkey" v-on:click="sortOrder = sortkey" v-bind:class="{active: sortOrder === sortkey}"> {{ sortkey }} <span style="color: black;font-weight: normal;">|</span></a>
+      </div>
     </div>
     <div class="flex flex-wrap lg:px-10 xl:px-20">
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
@@ -51,13 +46,22 @@
         pageSize: 9,
         images: [],
         posts: [],
-        sortOrder: 'postNo'
+        sortOrder: 'NEW',
+        orderByKey: 'postNo'
       }
     },
     computed: {
       ...mapGetters(['getToken']),
+      sortList: function () {
+        return {
+          'NEW': 'postNo',
+          'BEST': 'likeCnt',
+          'HOT': 'score'
+        }
+      },
       orderedList: function () {
-        return _.orderBy(this.posts, this.sortOrder, 'desc')
+        this.setSortKey(this.sortOrder)
+        return _.orderBy(this.posts, this.orderByKey, 'desc')
       }
     },
     methods: {
@@ -70,7 +74,9 @@
           })
       },
       setSortKey (sortKey) {
-        this.sortOrder = sortKey
+        if (sortKey === 'NEW') this.orderByKey = 'postNo'
+        else if (sortKey === 'BEST') this.orderByKey = 'likeCnt'
+        else this.orderByKey = 'score'
       },
       getInterestPost (valueCode) {
         api.getInterestPosts(valueCode, this.getToken).then(response => {
@@ -119,3 +125,13 @@
     }
   }
 </script>
+<style>
+  .sort-list a {
+    color: black;
+    cursor: pointer;
+  }
+  .sort-list a.active {
+    color: red;
+    font-weight: bold;
+  }
+</style>
