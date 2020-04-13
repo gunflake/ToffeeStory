@@ -1,6 +1,9 @@
 export default {
   PostMethods: {
-    NEW: 1
+    LIKE: 0,
+    BOOKMARK: 1,
+    ALL: 2,
+    MYMENU: 3
   },
 
   AccountMethods: {

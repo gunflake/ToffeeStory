@@ -35,6 +35,7 @@
   import api from '@/backend-api'
   import { mapGetters } from 'vuex'
   import _ from 'lodash'
+  import config from '../config'
 
   export default {
     name: 'ToffeeList',
@@ -109,7 +110,7 @@
       }
     },
     mounted () {
-      if (this.valueCode === 2) {
+      if (this.valueCode === config.PostMethods.ALL) {
         this.getPosts()
       } else {
         this.getInterestPost(this.valueCode)

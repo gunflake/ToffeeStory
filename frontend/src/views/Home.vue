@@ -22,17 +22,23 @@
     </div>
     <!-- Search Toffee Component-->
     <!-- Toffee List Component-->
-    <ToffeeList v-bind:sortFlag = true :valueCode = 2></ToffeeList>
+    <ToffeeList v-bind:sortFlag = true :valueCode = this.valueCode></ToffeeList>
   </div>
 </template>
 <script>
   import ToffeeList from '@/components/ToffeeList'
   import { mapMutations } from 'vuex'
+  import config from '../config'
 
   export default {
     name: 'home',
     components: {
       ToffeeList
+    },
+    data () {
+      return {
+        valueCode: config.PostMethods.ALL
+      }
     },
     mounted () {
       this.showHeader()

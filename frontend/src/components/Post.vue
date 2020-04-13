@@ -126,7 +126,6 @@
       ...mapActions(['settingAlertMsg']),
       getPostInfo (postNo) {
         api.getPostInfo(postNo, this.getToken).then(response => {
-          console.log(response.data)
           this.post = response.data.post
           this.likeCnt = response.data.post.likeCnt
           this.likeState = response.data.likeState
