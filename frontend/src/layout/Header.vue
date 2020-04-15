@@ -32,7 +32,10 @@
                    spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
                    aria-label="search input"  dir="auto"
                    v-on:keyup.enter="search"
-                   v-model="searchTag">
+                   v-on:keyup="setAutocompleteList"
+                   v-model="searchTag"
+                   v-on:focus="autoCompleteView = true"
+                   v-on:blur="hideAutoComplete">
           </span>
           <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
             <svg class="fill-current pointer-events-none text-gray-600 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
@@ -42,19 +45,24 @@
             </svg>
           </div>
         </div>
-        <div v-if="searchTag.length > 0 " class="relative">
-          <div class="VR6_Q"></div>
-          <div class="drKGC">
-            <div class="fuqBx">
-              <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
-                <span class="Ap253 py-8"># 아메리카노</span>
-              </a>
-              <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
-                <span class="Ap253 py-8"># 흑당 카페라떼</span>
-              </a>
-              <a class="yCE8d  JvDyy" href="/explore/tags/swt/">
-                <span class="Ap253 py-8"># 밀크티</span>
-              </a>
+        <!-- Auto Complete -->
+        <div v-if="searchTag.length > 0 && autoCompleteView" class="ml-8">
+          <div class="bg-white mt-2 rotateSquare"></div>
+          <div class="mt-4 fontDoHyeon text-xl" style="z-index: 1; position:absolute;">
+            <div class="border-black w-56 bg-white completeBox">
+              <div v-for="beverage in matchingList.beverage" :key="beverage">
+                <a class="flex p-2 border-b-2 border-gray-300" v-bind:href="'/search?keyword='+beverage">
+                  <img src="../assets/image/beverage.png" class="w-10 h-10" alt=""/>
+                  <div class="ml-2 my-auto">{{beverage}}</div>
+                </a>
+              </div>
+              <div v-for="topping in matchingList.topping" :key="topping">
+                <a class="flex p-2 border-b-2 border-gray-300" v-bind:href="'/search?keyword='+topping">
+                  <img src="../assets/image/topping.png" class="w-10 h-10" alt=""/>
+                  <div class="ml-2 my-auto">{{topping}}</div>
+                </a>
+              </div>
+              <div v-if="matchingList.beverage.length == 0 && matchingList.topping.length == 0" class="p-2 text-2xl text-center">"{{searchTag}}" 에 관한 정보가 없습니다.</div>
             </div>
           </div>
         </div>
@@ -107,6 +115,11 @@
     name: 'Header',
     data: function () {
       return {
+        autoCompleteView: false,
+        matchingList: {
+          beverage: [],
+          topping: []
+        },
         showModal: false,
         searchTag: '',
         alert: {
@@ -123,7 +136,7 @@
       UploadModal
     },
     computed: {
-      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserSrc'])
+      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserSrc', 'getAutocompleteList'])
     },
     methods: {
       ...mapActions(['settingAlertMsg']),
@@ -155,7 +168,59 @@
       },
       search () {
         location.href = '/search?keyword=' + this.searchTag
+      },
+      setAutocompleteList () {
+        let list = {
+          beverage: [],
+          topping: []
+        }
+        let product = this.getAutocompleteList
+        let keyword = this.searchTag
+
+        if (keyword.length < 1) { return }
+
+        product.beverage.forEach(function (item) {
+          if (item.includes(keyword)) {
+            list.beverage.push(item)
+          }
+        })
+
+        product.topping.forEach(function (item) {
+          if (item.includes(keyword)) {
+            list.topping.push(item)
+          }
+        })
+        this.matchingList = list
+      },
+      hideAutoComplete () {
+        const sleep = (milliseconds) => {
+          return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
+        sleep(100).then(() => {
+          this.autoCompleteView = false
+        })
       }
     }
   }
 </script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
+  .rotateSquare{
+    margin-left: 6.5rem;
+    position: absolute;
+    transform: rotate(45deg);
+    width: 16px;
+    z-index: 2;
+    height: 16px;
+    background-color: white;
+    border-top: solid 1px;
+    border-left: solid 1px;
+  }
+  .completeBox{
+    border: solid 1px;
+    box-shadow: 0 0 5px;
+  }
+  .fontDoHyeon{
+    font-family: 'Do Hyeon', sans-serif;
+  }
+</style>

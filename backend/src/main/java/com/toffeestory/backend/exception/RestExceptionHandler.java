@@ -57,4 +57,28 @@ public class RestExceptionHandler {
         return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
+    @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
+    public ResponseEntity maxUploadSizeExceededException(MaxUploadSizeExceededException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {EmailSendException.class})
+    public ResponseEntity emailSendException(EmailSendException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {InvalidPasswordTokenException.class})
+    public ResponseEntity notFoundPasswordToken(InvalidPasswordTokenException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {NotfoundEmailException.class})
+    public ResponseEntity notfoundEmailException(NotfoundEmailException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
 }
