@@ -47,13 +47,14 @@ public class PostController {
     String defaultUrl;
 
     /*-------------------------------
-       -select Post List (new / best / hot)
+       -select Post List
      -------------------------------*/
     @GetMapping(path = "")
     public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword) {
         // keyword가 존재할 떄
         if(keyword != null){
-            return postRepository.findAllSearchKeywordPostOrderByPostNoDesc(keyword);
+            //return postRepository.findAllSearchKeywordPost(keyword);
+            return postRepository.findAll();
         }else{
             return postRepository.findAll();
         }
@@ -156,7 +157,7 @@ public class PostController {
                                      @AuthenticationPrincipal Account account) {
         Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
         List<String>  tagNames = new ArrayList<>();
-        List<PostDtl> postDtls = postDtlRepository.findByPostNo(postNo);
+        List<PostDtl> postDtls = postDtlRepository.findByPost(post);
 
         for (int i = 0; i < postDtls.size(); i++) {
             tagNames.add(postDtls.get(i).getTagName());
@@ -186,18 +187,17 @@ public class PostController {
     public ResponseEntity relatedPostList(@PathVariable("postNo") Integer postNo) {
         List<Post> posts = new ArrayList<>();
 
+        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
         //해당 게시글이 가지고 있는 토핑, 상품 조회
-        List<PostDtl> postDtls = postDtlRepository.findByPostNo(postNo);
+        List<PostDtl> postDtls = postDtlRepository.findByPost(post);
 
         for (int i = 0; i < postDtls.size(); i++) {
             // 토핑, 상품을 가지고 있는 게시글 넘버 가져옴
-            List<PostDtl> setPostNo = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
+            List<PostDtl> setPost = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
 
-            for (int j = 0; j < setPostNo.size(); j++) {
-                int getPostNo = setPostNo.get(j).getPostNo();
-
-                if(!posts.contains(getPostNo) && getPostNo != postNo) {
-                    posts.add(postRepository.findByPostNo(getPostNo).orElseThrow(() -> new RuntimeException()));
+            for (int j = 0; j < setPost.size(); j++) {
+                if(!posts.contains(setPost.get(j).getPost()) && post != setPost.get(j).getPost()) {
+                    posts.add(setPost.get(j).getPost());
                 }
             }
         }
@@ -211,10 +211,10 @@ public class PostController {
     @GetMapping("/tag/{tagName}")
     public List<Post> tagPostList(@PathVariable("tagName") String tagName) {
         List<Post> posts = new ArrayList<>();
-        List<PostDtl> postNo = postDtlRepository.findByTagName(tagName);
+        List<PostDtl> post = postDtlRepository.findByTagName(tagName);
 
-        for (int i = 0; i < postNo.size(); i++) {
-            posts.add(postRepository.findByPostNo(postNo.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+        for (int i = 0; i < post.size(); i++) {
+            posts.add(postRepository.findByPostNo(post.get(i).getPost().getPostNo()).orElseThrow(() -> new RuntimeException()));
         }
 
         return posts;

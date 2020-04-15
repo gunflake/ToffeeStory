@@ -1,5 +1,6 @@
 package com.toffeestory.backend.post;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.account.Account;
@@ -56,6 +57,10 @@ public class Post {
 
 	@Transient
     private List<String> tags;
+
+	@OneToMany(mappedBy = "post")
+    @JsonBackReference
+    private List<PostDtl> postDtls = new ArrayList<>();
 
     public void setAccount(Account account) {
         if(this.account != null){
