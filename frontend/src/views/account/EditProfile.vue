@@ -49,6 +49,7 @@
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
   import { mapActions } from 'vuex'
+  import config from '../config.js'
 
   export default {
     name: 'editProfile',
@@ -101,13 +102,13 @@
     methods: {
       ...mapActions(['settingAlertMsg']),
       onFileSelected (event) {
-        let maxsize = 5 * 1024 * 1024 // 최대용량 5MB
+        let maxsize = config.AccSettingsMethods.MAX_SIZE
         this.selectedFile = event.target.files[0]
 
         if (this.selectedFile.size > maxsize) {
           this.alert = {
-            message: 'Profile image must be less than 1MB. Try reducing the size of image.',
-            type: 'red'
+            message: config.AccSettingsMethods.FILE_OVERSIZE_MSG,
+            type: config.AccSettingsMethods.TYPE_ERROR
           }
           this.settingAlertMsg(this.alert)
         } else {
@@ -137,8 +138,8 @@
           axios.post(`/api/accounts/secured/updateProfilePic`, formData, config).then(response => {
             if (response.status === 200) {
               this.alert = {
-                message: 'Profile image updated',
-                type: 'green'
+                message: config.AccSettingsMethods.IMG_UPLOAD_MSG,
+                type: config.AccSettingsMethods.TYPE_OK
               }
               this.settingAlertMsg(this.alert)
             }
@@ -150,22 +151,22 @@
       validFullName (value) {
         this.account.accountName = value
 
-        let regex = /^[가-힣a-zA-Z\s]{2,30}$/
+        let regex = config.AccSettingsMethods.FULL_NAME_REGEX
 
         if (regex.test(value)) {
           this.fullNameMsgVisible = false
         } else {
-          this.fullNameMsg = 'Full Name is invalid (2 - 30 characters)' // TODO : 메세지 상수화
+          this.fullNameMsg = config.AccSettingsMethods.FULL_NAME_MSG
           this.fullNameMsgVisible = true
         }
       },
       checkUserName (value) {
         this.account.accountId = value
 
-        let regex = /^[가-힣a-zA-Z0-9_]{2,30}$/
+        let regex = config.AccSettingsMethods.USER_NAME_REGEX
 
         if (!regex.test(value)) {
-          this.userNameMsg = 'User Name is invalid (2 - 30 characters)' // TODO : 메세지 상수화
+          this.userNameMsg = config.AccSettingsMethods.USER_NAME_MSG
           this.userNameMsgVisible = true
         } else {
           let token = localStorage.getItem('token')
@@ -195,17 +196,17 @@
       updateAccount () {
         if (this.account.accountName === '' || this.account.accountId === '') {
           this.alert = {
-            message: 'Full Name and User Name are required.',
+            message: config.AccSettingsMethods.REQUIRED_VAL_MSG,
             type: 'red'
           }
           this.settingAlertMsg(this.alert)
         } else if (this.fullNameMsgVisible || this.userNameMsgVisible || this.instagramMsgVisible || this.twitterMsgVisible) {
           this.alert = {
-            message: 'Please check your input again.',
+            message: config.AccSettingsMethods.INPUT_CHK_MSG,
             type: 'red'
           }
           this.settingAlertMsg(this.alert)
-        } else if (confirm('Are you sure?')) {
+        } else if (confirm(config.AccSettingsMethods.CONFIRM_MSG)) {
           let token = localStorage.getItem('token')
           if (token == null) { return }
 

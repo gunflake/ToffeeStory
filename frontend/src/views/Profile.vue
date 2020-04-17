@@ -20,13 +20,13 @@
           </div>
         </div>
         <div class="flex items-center pb-3">
-          <a v-if="account.instagram != null" class="flex pr-5 items-center text-sm text-gray-600 hover:text-black fill-current" :href="instagramLink + account.instagram" target="_blank" rel="nofollow">
+          <a v-if="account.instagram != null" class="flex pr-5 items-center text-sm text-gray-600 hover:text-black fill-current" :href="instagramURL + account.instagram" target="_blank" rel="nofollow">
             <svg class="mr-1" version="1.1" viewBox="0 0 32 32" width="24" height="24" aria-hidden="false">
               <path d="M16 5.34c3.47 0 3.88 0 5.25.08a7.22 7.22 0 0 1 2.42.45 3.89 3.89 0 0 1 1.49 1 3.89 3.89 0 0 1 1 1.49 7.22 7.22 0 0 1 .45 2.42c.06 1.37.08 1.78.08 5.25s0 3.88-.08 5.25a7.22 7.22 0 0 1-.45 2.42 4.3 4.3 0 0 1-2.46 2.46 7.22 7.22 0 0 1-2.42.45c-1.37.06-1.78.08-5.25.08s-3.88 0-5.25-.08a7.22 7.22 0 0 1-2.42-.45 3.89 3.89 0 0 1-1.49-1 3.89 3.89 0 0 1-1-1.49 7.22 7.22 0 0 1-.45-2.42c-.06-1.37-.08-1.78-.08-5.25s0-3.88.08-5.25a7.22 7.22 0 0 1 .45-2.42 3.89 3.89 0 0 1 1-1.49 3.89 3.89 0 0 1 1.49-1 7.22 7.22 0 0 1 2.42-.45c1.37-.06 1.78-.08 5.25-.08m-.03-2.31c-3.53 0-4 0-5.36.08a9.57 9.57 0 0 0-3.16.6 6.66 6.66 0 0 0-3.8 3.8 9.57 9.57 0 0 0-.6 3.16c-.08 1.36-.08 1.83-.08 5.36s0 4 .08 5.36a9.57 9.57 0 0 0 .6 3.16 6.66 6.66 0 0 0 3.8 3.8 9.57 9.57 0 0 0 3.16.6c1.36.08 1.83.08 5.36.08s4 0 5.36-.08a9.57 9.57 0 0 0 3.16-.6 6.66 6.66 0 0 0 3.8-3.8 9.57 9.57 0 0 0 .6-3.16c.08-1.36.08-1.83.08-5.36s0-4-.08-5.36a9.57 9.57 0 0 0-.6-3.16 6.66 6.66 0 0 0-3.8-3.8 9.57 9.57 0 0 0-3.16-.6c-1.36-.08-1.83-.08-5.36-.08zm0 6.32a6.68 6.68 0 1 0 6.68 6.68 6.68 6.68 0 0 0-6.68-6.68zm0 11a4.33 4.33 0 1 1 4.33-4.32 4.33 4.33 0 0 1-4.33 4.33zm6.94-12.82a1.56 1.56 0 1 0 1.56 1.56 1.56 1.56 0 0 0-1.56-1.56z"></path>
             </svg>
             {{ account.instagram }}
           </a>
-          <a v-if="account.twitter != null" class="flex pr-5 items-center text-sm text-gray-600 hover:text-black fill-current" :href="twitterLink + account.twitter" target="_blank" rel="nofollow">
+          <a v-if="account.twitter != null" class="flex pr-5 items-center text-sm text-gray-600 hover:text-black fill-current" :href="twitterURL + account.twitter" target="_blank" rel="nofollow">
             <svg class="mr-1" version="1.1" viewBox="0 0 32 32" width="24" height="24" aria-hidden="false">
               <path d="M30 7.3c-1 .5-2.1.8-3.3.9 1.2-.7 2.1-1.8 2.5-3.2-1.1.7-2.3 1.1-3.6 1.4-1-1.1-2.5-1.8-4.2-1.8-3.2 0-5.7 2.6-5.7 5.7 0 .5.1.9.1 1.3-4.8-.2-9-2.5-11.8-6-.5.9-.8 1.9-.8 3 0 2 1 3.8 2.6 4.8-.9 0-1.8-.3-2.6-.7v.1c0 2.8 2 5.1 4.6 5.6-.5.1-1 .2-1.5.2-.4 0-.7 0-1.1-.1.7 2.3 2.9 3.9 5.4 4-2 1.5-4.4 2.5-7.1 2.5-.5 0-.9 0-1.4-.1 2.5 1.6 5.6 2.6 8.8 2.6 10.6 0 16.3-8.8 16.3-16.3v-.7c1.1-1 2-2 2.8-3.2z"></path>
             </svg>
@@ -41,13 +41,13 @@
     <!-- 네비게이션 -->
     <nav class="bg-white px-8 pt-2 shadow-md">
       <div class="-mb-px flex justify-left">
-        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(3)">
+        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(this.config.ProfileMethods.CODE_MY_MENU)">
           My Menu
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(0)">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(this.config.ProfileMethods.CODE_LIKES)">
           Likes
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(1)">
+        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(this.config.ProfileMethods.CODE_BOOKMARKS)">
           Bookmarks
         </a>
       </div>
@@ -60,6 +60,7 @@
   import { mapActions, mapGetters } from 'vuex'
   import axios from 'axios'
   import ToffeeList from '@/components/ToffeeList'
+  import config from '../config.js'
 
   export default {
     name: 'profile',
@@ -69,11 +70,11 @@
     data () {
       return {
         account: [],
-        instagramLink: 'https://www.instagram.com/',
-        twitterLink: 'https://www.twitter.com/',
+        instagramURL: config.ProfileMethods.INSTAGRAM_URL,
+        twitterURL: config.ProfileMethods.TWITTER_URL,
         errors: [],
         isMyProfile: true,
-        valueCode: 3
+        valueCode: config.ProfileMethods.CODE_MY_MENU
       }
     },
     mounted () {

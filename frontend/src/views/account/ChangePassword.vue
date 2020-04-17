@@ -21,6 +21,7 @@
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
   import { mapActions } from 'vuex'
+  import config from '../config.js'
 
   export default {
     name: 'changePassword',
@@ -79,12 +80,12 @@
       validPwd (value) {
         this.account.accountNewPwd = value
 
-        let regex = /(?=.*\d{1,50})(?=.*[~`!@#$%^&*()-+=]{1,50})(?=.*[a-zA-Z]{1,50}).{8,20}$/
+        let regex = config.AccSettingsMethods.PWD_REGEX
 
         if (regex.test(value)) {
           this.newPwdMsgVisible = false
         } else {
-          this.newPwdMsg = 'New Password is invalid (8 - 20 characters, include alphabets, numbers and special characters)' // TODO : 메세지 상수화
+          this.newPwdMsg = config.AccSettingsMethods.NEW_PWD_MSG
           this.newPwdMsgVisible = true
         }
       },
@@ -94,24 +95,24 @@
         if (value === this.account.accountNewPwd) {
           this.confirmPwdMsgVisible = false
         } else {
-          this.confirmPwdMsg = 'Password confirmation doesn\'t match New Password'
+          this.confirmPwdMsg = config.AccSettingsMethods.CONFIRM_PWD_MSG
           this.confirmPwdMsgVisible = true
         }
       },
       changePwd () {
         if (this.account.accountPwd === '' || this.account.accountNewPwd === '' || this.account.accountConfirmPwd === '') {
           this.alert = {
-            message: 'Please enter all the information.',
-            type: 'red'
+            message: config.AccSettingsMethods.ENTER_ALL_INFO_MSG,
+            type: config.AccSettingsMethods.TYPE_ERROR
           }
           this.settingAlertMsg(this.alert)
         } else if (this.currentPwdMsgVisible || this.newPwdMsgVisible || this.confirmPwdMsgVisible) {
           this.alert = {
-            message: 'Please check your input again.',
-            type: 'red'
+            message: config.AccSettingsMethods.INPUT_CHK_MSG,
+            type: config.AccSettingsMethods.TYPE_ERROR
           }
           this.settingAlertMsg(this.alert)
-        } else if (confirm('Are you sure?')) {
+        } else if (confirm(config.AccSettingsMethods.CONFIRM_MSG)) {
           let token = localStorage.getItem('token')
           if (token == null) { return }
 
@@ -128,7 +129,7 @@
             if (response.status === 200) {
               this.alert = {
                 message: response.data,
-                type: 'green'
+                type: config.AccSettingsMethods.TYPE_OK
               }
               this.settingAlertMsg(this.alert)
               this.$router.push('/settings')
