@@ -38,7 +38,7 @@
         this.$router.push('/')
       },
       search () {
-        alert('검색 기능 구현중입니다.')
+        location.href = '/search?keyword=' + this.searchTag
       }
     }
   }

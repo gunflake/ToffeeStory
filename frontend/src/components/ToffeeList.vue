@@ -13,17 +13,19 @@
       </nav>
     </div>
     <div class="flex flex-wrap lg:px-10 xl:px-20">
+      <!-- Our Database Images -->
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of posts" :key="index">
         <div class="w-full h-image object-cover">
           <a @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
         </div>
       </div>
+      <!-- Unsplash Starbucks Images -->
+      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
+        <img class="w-full h-image object-cover" :src="image.urls.small">
+      </div>
     </div>
     <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
     <div class="flex flex-wrap lg:px-10 xl:px-20">
-      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
-          <img class="w-full h-image object-cover" :src="image.urls.small">
-      </div>
     </div>
     <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore" loader-color="rgba(102,102,102,.5)">
     </scroll-loader>

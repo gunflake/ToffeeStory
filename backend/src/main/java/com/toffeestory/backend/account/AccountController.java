@@ -1,15 +1,13 @@
 package com.toffeestory.backend.account;
 
-import com.toffeestory.backend.exception.InvalidAccountException;
-import com.toffeestory.backend.exception.InvalidImageException;
-import com.toffeestory.backend.exception.NotFoundAccountException;
-import com.toffeestory.backend.post.PostRepository;
-import com.toffeestory.backend.post.Post;
-import com.toffeestory.backend.post.InterestPostRepository;
+import com.toffeestory.backend.exception.*;
 import com.toffeestory.backend.post.InterestPost;
+import com.toffeestory.backend.post.InterestPostRepository;
+import com.toffeestory.backend.post.Post;
+import com.toffeestory.backend.post.PostRepository;
 import com.toffeestory.backend.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,38 +23,29 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.*;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/accounts")
 public class AccountController {
 
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private InterestPostRepository interestPostRepository;
+    private final AccountRepository accountRepository;
+    private final AccountService accountService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PostRepository postRepository;
+    private final InterestPostRepository interestPostRepository;
+    private final AccountKeyRepository accountKeyRepository;
 
     @Value("${url}")
     String defaultUrl;
@@ -103,6 +92,54 @@ public class AccountController {
         } catch (AuthenticationException e) {
             throw new InvalidAccountException("ID / PW 입력 정보를 다시 확인해주세요.");
         }
+    }
+
+    @GetMapping(path = "/{email}/reset-password-token")
+    public ResponseEntity checkEmailAndSendRestPasswordEmail(@PathVariable("email") String email){
+        // check email
+        try {
+            // 회원정보 확인하지 않고 보낼 때...
+            // accountRepository.findByEmail(email).ifPresent(accountService::sendEmail);
+
+            // 회원 정보 확인하고 보낼때
+            Account getAccount = accountRepository.findByEmail(email).orElseThrow(() -> new NotfoundEmailException(email));
+            accountService.sendEmail(getAccount);
+        } catch (Exception ex) {
+            throw new EmailSendException();
+        }
+
+        // 회원정보 확인하지 않고 보낼 때...
+        //return ok("입력하신 이메일 주소로 가입한 회원정보가 존재한다면, 비밀번호 재설정할 수 있는 메일을 몇 분 안에 받을 수 있습니다.");
+        return ok("이메일을 전송했습니다.");
+    }
+
+    @GetMapping(path = "/reset-password-token/{token}")
+    public ResponseEntity checkResetPasswordToken(@PathVariable("token") String token){
+
+        //토큰 생성 시간 1시간 이내 유효값만 검색하는 로직
+        LocalDateTime validTime = LocalDateTime.now().minusHours(1);
+        AccountKey accountKey = accountKeyRepository.findByTokenAndRegDateAfterAndKeyStatus(token, validTime, AccountKeyStatus.NOT_USED).orElseThrow(InvalidPasswordTokenException::new);
+
+        //찾은 토큰으로 Account 계정 정보 반환
+        //TODO : 계정 번호만 넘겨주는게 맞는가... 생각해보기
+        return ok("Valid Token");
+    }
+
+    @PatchMapping(path = "/reset-password-token/{token}")
+    public ResponseEntity resetPassword(@PathVariable("token") String token, @RequestParam("password") String password){
+        LocalDateTime validTime = LocalDateTime.now().minusHours(1);
+
+        // TODO: Account 사용완료되었을 떄 따로 메세지 보여줘야하나 토론하기
+        AccountKey accountKey = accountKeyRepository.findByTokenAndRegDateAfterAndKeyStatus(token, validTime, AccountKeyStatus.NOT_USED).orElseThrow(InvalidPasswordTokenException::new);
+
+        Account account = accountRepository.findById(accountKey.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(accountKey.getAccountNo()+"번"));
+        account.setAccountPwd(password);
+        accountService.saveAccount(account);
+
+        accountKey.setKeyStatus(AccountKeyStatus.USED);
+        accountKeyRepository.save(accountKey);
+
+        return noContent().build();
     }
 
     @GetMapping(path = "/me")
