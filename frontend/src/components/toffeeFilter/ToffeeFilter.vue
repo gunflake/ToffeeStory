@@ -1,27 +1,27 @@
 <template>
-  <div>
-    <table class="table-fixed table w-full">
+  <div @click="closeSearchList">
+    <table class="table-fixed table border w-full">
       <tbody>
-      <!--   search area   -->
-<!--      <tr>-->
-<!--        <td class="border px-4 py-2">-->
-<!--          <form>-->
-<!--            <div class="flex items-center border border-gray-500">-->
-<!--              <input class="appearance-none bg-transparent border-none w-full text-gray-700 text-xs mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="음료를 검색하세요." aria-label="Full name">-->
-<!--              <button class="flex-shrink-0 bg-gray-500 border-gray-500 text-xs border-4 text-white py-1 px-2" type="button">검색</button>-->
-<!--            </div>-->
-<!--          </form>-->
-<!--        </td>-->
-<!--      </tr>-->
-      <!--   filter area   -->
-      <tr v-if="toppingVisible">
-        <td id="toffeeFilter" class="border px-4 py-2">
-          <component :is="filter" :productName="selectedProductName" :productNo="selectedProductNo" v-on:deleteEvent="deleteProduct"></component>
+      <tr class="border">
+        <td class="flex items-center px-2 py-2">
+          <!--   filter area   -->
+          <div class="w-3/4">
+            <component v-if="toppingVisible" :is="filter" :productName="selectedProductName" :productNo="selectedProductNo" v-on:deleteEvent="deleteProduct"></component>
+          </div>
+          <!--   search area   -->
+          <div class="search-area flex items-center border border-gray-500 w-1/4 h-8" style="position: relative">
+            <svg version="1.1" viewBox="0 0 32 32" width="32" height="32" aria-hidden="false" class="_2-tlh _1azRR _1mPD6"><path d="M31 28.64l-7.57-7.57a12.53 12.53 0 1 0-2.36 2.36l7.57 7.57zm-17.5-6a9.17 9.17 0 1 1 6.5-2.64 9.11 9.11 0 0 1-6.5 2.67z"></path></svg>
+            <input @keyup="openSearchList" class="search-area appearance-none bg-transparent border-none w-full text-gray-700 text-xs mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="음료를 검색하세요." aria-label="Full name" v-model="searchQuery">
+            <div v-show="isSearching" class="search-area search-list w-full h-40 overflow-scroll">
+              <div v-for="product in filteredList" :key="product.no" @click="selectProduct(product)"
+                  class="search-area cursor-pointer select-none text-xs text-gray-800 bg-gray-100 hover:bg-gray-300 px-3 py-1">{{ product.name }}</div>
+            </div>
+          </div>
         </td>
       </tr>
       <!--   product area   -->
-      <tr v-show="productVisible">
-        <td class="border px-4 py-2">
+      <tr v-show="productVisible" class="flex">
+        <td class="flex-1 px-4 py-2">
           <div class="mb-3">
             <nav class="bg-white flex">
               <div class="-mb-px flex justify-left">
@@ -33,7 +33,7 @@
           </div>
           <div class="mb-1">
             <div v-for="product in products" :key="product.no" class="inline-flex">
-              <div role="button" v-if="product.categoryNo == selectedProductCategoryNo" @click="selectProduct($event, product)" class="mr-3 mb-2 p-2 bg-gray-300 items-center text-gray-900 text-sm leading-none rounded-full">
+              <div role="button" v-if="product.categoryNo == selectedProductCategoryNo" @click="selectProduct(product)" class="mr-3 mb-2 p-2 bg-gray-300 items-center text-gray-900 text-sm leading-none rounded-full">
                 <a class="mx-2 text-left flex-auto">{{product.name}}</a>
               </div>
             </div>
@@ -41,8 +41,8 @@
         </td>
       </tr>
       <!--   topping area   -->
-      <tr v-show="toppingVisible">
-        <td class="border px-4 py-2">
+      <tr v-show="toppingVisible" class="flex">
+        <td class="flex-1 px-4 py-2">
           <div class="mb-3">
             <nav class="bg-white flex">
               <div class="-mb-px flex justify-left">
@@ -66,6 +66,13 @@
     </table>
   </div>
 </template>
+<style>
+  .search-list {
+    position: absolute;
+    left: 0;
+    top: 2rem;
+  }
+</style>
 <script>
   import NumberCounter from '@/components/toffeeFilter/NumberCounter'
   import ButtonWithX from '@/components/toffeeFilter/ButtonWithX'
@@ -221,7 +228,9 @@
         selectedProductNo: 0,
         selectedProductName: '',
         selectedToppingCategoryNo: 1,
-        filter: ''
+        filter: '',
+        searchQuery: '',
+        isSearching: false
       }
     },
     mounted () {
@@ -229,7 +238,29 @@
       document.getElementById('productCategory' + this.selectedProductCategoryNo).classList.add('border-black')
       document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
     },
+    computed: {
+      // 검색 결과 리스트
+      filteredList () {
+        if (this.searchQuery !== '') {
+          return this.products.filter(product => {
+            return product.name.includes(this.searchQuery)
+          })
+        } else {
+          return null
+        }
+      }
+    },
     methods: {
+      // 상품 검색 리스트 활성화
+      openSearchList () {
+        this.isSearching = true
+      },
+      // 상품 검색 리스트 비활성화
+      closeSearchList (event) {
+        if (!event.target.matches('.search-area')) {
+          this.isSearching = false
+        }
+      },
       // 상품 카테고리 선택
       selectProductCategory (event, productCategoryNo) {
         this.selectedProductCategoryNo = productCategoryNo
@@ -241,12 +272,14 @@
         this.tabUnderline(true, event.target, '.topping-category')
       },
       // 상품 선택
-      selectProduct (event, product) {
+      selectProduct (product) {
         this.selectedProductNo = product.no
         this.selectedProductName = product.name
         this.productVisible = false
         this.toppingVisible = true
         this.filter = 'button-with-x'
+        this.searchQuery = ''
+        this.isSearching = false
 
         document.getElementById('toppingCategory' + this.selectedToppingCategoryNo).classList.add('border-black')
 
