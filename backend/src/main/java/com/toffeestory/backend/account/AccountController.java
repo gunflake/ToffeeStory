@@ -118,7 +118,7 @@ public class AccountController {
 
         //토큰 생성 시간 1시간 이내 유효값만 검색하는 로직
         LocalDateTime validTime = LocalDateTime.now().minusHours(1);
-        AccountKey accountKey = accountKeyRepository.findByTokenAndRegDateAfterAndKeyStatus(token, validTime, AccountKeyStatus.NOT_USED).orElseThrow(InvalidPasswordTokenException::new);
+        AccountKey accountKey = accountKeyRepository.findByTokenAndRegDateAfterAndKeyStatus(token, validTime, AccountKeyStatus.UNUSED).orElseThrow(InvalidPasswordTokenException::new);
 
         //찾은 토큰으로 Account 계정 정보 반환
         //TODO : 계정 번호만 넘겨주는게 맞는가... 생각해보기
@@ -130,13 +130,13 @@ public class AccountController {
         LocalDateTime validTime = LocalDateTime.now().minusHours(1);
 
         // TODO: Account 사용완료되었을 떄 따로 메세지 보여줘야하나 토론하기
-        AccountKey accountKey = accountKeyRepository.findByTokenAndRegDateAfterAndKeyStatus(token, validTime, AccountKeyStatus.NOT_USED).orElseThrow(InvalidPasswordTokenException::new);
+        AccountKey accountKey = accountKeyRepository.findByTokenAndRegDateAfterAndKeyStatus(token, validTime, AccountKeyStatus.UNUSED).orElseThrow(InvalidPasswordTokenException::new);
 
         Account account = accountRepository.findById(accountKey.getAccountNo()).orElseThrow(() -> new NotFoundAccountException(accountKey.getAccountNo()+"번"));
         account.setAccountPwd(password);
         accountService.saveAccount(account);
 
-        accountKey.setKeyStatus(AccountKeyStatus.USED);
+        accountKey.setKeyStatus(AccountKeyStatus.USE);
         accountKeyRepository.save(accountKey);
 
         return noContent().build();
