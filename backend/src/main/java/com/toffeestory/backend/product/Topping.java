@@ -29,4 +29,14 @@ public class Topping {
 
     @Column
     private Byte useStateCode;
+
+    // 토핑 초기값 관련 필드
+    @Transient
+    private Byte quantityCode;
+
+    @Transient
+    private Integer value;
+
+    @Transient
+    private Integer optionType;
 }
