@@ -1,5 +1,5 @@
 <template>
-  <label oncontextmenu="return false" ondragstart="return false" onselectstart="return false" class="bg-transparent text-gray-600 text-sm py-1 px-4 border border-gray-400 hover:border-gray-600 rounded inline-flex items-center mr-3 select-none cursor-pointer">
+  <label class="bg-transparent text-gray-600 text-sm py-1 px-4 border border-gray-400 hover:border-gray-600 rounded inline-flex items-center mr-3 select-none cursor-pointer">
     <input type="radio" class="hidden" :name="name" :value="value" :checked="checked" @click="clickFunction"> {{ title }}
   </label>
 </template>
