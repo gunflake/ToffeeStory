@@ -19,7 +19,7 @@
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
   import { mapActions } from 'vuex'
-  import config from '../config.js'
+  // import config from '../config.js'
 
   export default {
     name: 'closeAccount',
@@ -73,17 +73,17 @@
       closeAccount () {
         if (this.account.accountPwd === '') {
           this.alert = {
-            message: config.AccSettingsMethods.ENTER_PWD_MSG,
-            type: config.AccSettingsMethods.TYPE_ERROR
+            message: 'Please enter password.',
+            type: 'red'
           }
           this.settingAlertMsg(this.alert)
         } else if (this.currentPwdMsgVisible) {
           this.alert = {
-            message: config.AccSettingsMethods.INPUT_CHK_MSG,
-            type: config.AccSettingsMethods.TYPE_ERROR
+            message: 'Please check your input again.',
+            type: 'red'
           }
           this.settingAlertMsg(this.alert)
-        } else if (confirm(config.AccSettingsMethods.UNDONE_CONFIRM_MSG)) {
+        } else if (confirm('Are you sure?')) {
           let token = localStorage.getItem('token')
           if (token == null) { return }
 
@@ -100,7 +100,7 @@
             if (response.status === 200) {
               this.alert = {
                 message: response.data,
-                type: config.AccSettingsMethods.TYPE_OK
+                type: 'green'
               }
               this.$router.push('/')
               this.settingAlertMsg(this.alert)
