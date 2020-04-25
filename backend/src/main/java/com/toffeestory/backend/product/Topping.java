@@ -32,11 +32,15 @@ public class Topping {
     private Integer toppingPrice;
 
     @Column
-    private Boolean useStateCode;
+    private Byte useStateCode;
 
-    @OneToMany(mappedBy = "topping")
-    private List<SubTopping> subToppingList = new ArrayList<>();
+    // 토핑 초기값 관련 필드
+    @Transient
+    private Byte quantityCode;
 
-    @OneToMany(mappedBy = "topping")
-    private List<ProductToppingMap> productToppingMapList = new ArrayList<>();
+    @Transient
+    private Integer value;
+
+    @Transient
+    private Integer optionType;
 }
