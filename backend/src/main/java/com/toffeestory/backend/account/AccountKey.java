@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 public class AccountKey {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer seqNo;
 
     @NotNull
@@ -34,28 +34,6 @@ public class AccountKey {
     private AccountKeyStatus keyStatus;
 
     public AccountKey() {
-        this.keyStatus = AccountKeyStatus.NOT_USED;
-    }
-}
-
-enum AccountKeyStatus {
-
-    NOT_USED(0, "Not Used"),
-    USED(1, "Used");
-
-    private final int value;
-    private final String description;
-
-    AccountKeyStatus(int value, String description) {
-        this.value = value;
-        this.description = description;
-    }
-
-    public int value() {
-        return this.value;
-    }
-
-    public String getReasonPhrase() {
-        return this.description;
+        this.keyStatus = AccountKeyStatus.UNUSED;
     }
 }

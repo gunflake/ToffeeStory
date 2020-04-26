@@ -2,10 +2,12 @@ package com.toffeestory.backend.product;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,28 +15,30 @@ import java.util.List;
 @Setter
 public class Product {
     @Id
-    @GeneratedValue
     private Integer productNo;
 
     @ManyToOne
     @JoinColumn(name = "productCategoryNo")
     private ProductCategory productCategory;
 
-//    @Column
-//    private Integer productCategoryNo;
-
     @Column(length = 20)
+    @NotNull
     private String productName;
 
-    @Column
-    private Boolean useSateCode;
+    @NotNull
+    @Enumerated(EnumType.ORDINAL)
+    private ProductStatus useStateCode;
 
-    @Column
-    private Date regDate;
+    @CreationTimestamp
+    private LocalDateTime regDate;
 
     @Column
     private Integer price;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductToppingMap> productToppingMapList = new ArrayList<>();
+    private List<ProductTopping> productToppingList = new ArrayList<>();
+
+    public Product() {
+        this.useStateCode = ProductStatus.USE;
+    }
 }

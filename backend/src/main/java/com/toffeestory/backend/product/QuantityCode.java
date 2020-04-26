@@ -13,25 +13,17 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Topping {
+public class QuantityCode {
     @Id
-    private Integer toppingNo; // PK, Auto Increase
+    private Integer quantityCodeNo;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "quantityTypeNo")
-    private ToppingCategory toppingCategory;
+    @Column(length = 30)
+    private String quantityName;
 
     @NotNull
-    @Column(length = 20)
-    private String toppingName;
-
-    @ManyToOne
-    @JoinColumn(name = "toppingCategoryNo")
-    private QuantityType quantityType;
-
-    @Column
-    private Integer toppingPrice;
+    @Column(length = 30)
+    private String quantityType;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
@@ -40,11 +32,10 @@ public class Topping {
     @CreationTimestamp
     private LocalDateTime regDate;
 
-    @OneToMany(mappedBy = "topping")
-    private List<SubTopping> subToppingList = new ArrayList<>();
+    @OneToMany(mappedBy = "quantityCode")
+    private List<ProductTopping> productToppingList = new ArrayList<>();
 
-    public Topping() {
+    public QuantityCode() {
         this.useStateCode = ProductStatus.USE;
     }
-
 }
