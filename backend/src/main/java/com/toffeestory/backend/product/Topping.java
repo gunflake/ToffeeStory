@@ -19,7 +19,7 @@ public class Topping {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "quantityTypeNo")
+    @JoinColumn(name = "toppingCategoryNo")
     private ToppingCategory toppingCategory;
 
     @NotNull
@@ -27,7 +27,7 @@ public class Topping {
     private String toppingName;
 
     @ManyToOne
-    @JoinColumn(name = "toppingCategoryNo")
+    @JoinColumn(name = "quantityTypeNo")
     private QuantityType quantityType;
 
     @Column
