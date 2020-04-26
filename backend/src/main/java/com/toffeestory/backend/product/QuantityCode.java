@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,6 +31,9 @@ public class QuantityCode {
 
     @CreationTimestamp
     private LocalDateTime regDate;
+
+    @OneToMany(mappedBy = "quantityCode")
+    private List<ProductTopping> productToppingList = new ArrayList<>();
 
     public QuantityCode() {
         this.useStateCode = ProductStatus.USE;

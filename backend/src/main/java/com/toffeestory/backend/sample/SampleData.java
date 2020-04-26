@@ -40,6 +40,7 @@ public class SampleData implements ApplicationRunner {
     private final QuantityCodeRepository quantityCodeRepository;
     private final QuantityTypeRepository quantityTypeRepository;
     private final SubToppingRepository subToppingRepository;
+    private final ProductToppingRepository productToppingRepository;
 
     @Value("${url}")
     private String defaultUrl;
@@ -66,7 +67,47 @@ public class SampleData implements ApplicationRunner {
         createToppingData(productExcelData);
         createSubToppingData(productExcelData);
 
-        // Todo : productTopping Data 나머지 추가하기
+        // ProductTopping Data
+        createProductToppingData(productExcelData);
+    }
+
+    private void createProductToppingData(String productExcelData) {
+        try {
+            List<ProductTopping> productToppingList = new LinkedList<>();
+
+            FileInputStream excelFile = new FileInputStream(productExcelData);
+            XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
+            XSSFSheet sheet = workbook.getSheet("ProductTopping");
+
+            for (int rowIndex = 1; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++) {
+                // 행 읽기
+                XSSFRow row = sheet.getRow(rowIndex);
+
+                if (row == null)
+                    break;
+
+                try {
+                    ProductTopping productTopping = new ProductTopping();
+                    productTopping.setSeqNo((int)row.getCell(0).getNumericCellValue());
+                    productTopping.setProduct(productRepository.getOne((int)row.getCell(1).getNumericCellValue()));
+                    productTopping.setTopping(toppingRepository.getOne((int)row.getCell(2).getNumericCellValue()));
+                    productTopping.setSubTopping(row.getCell(3) != null ? subToppingRepository.getOne((int)row.getCell(3).getNumericCellValue()) : null);
+                    productTopping.setQuantityCode(row.getCell(4) != null ? quantityCodeRepository.getOne((int)row.getCell(4).getNumericCellValue()) : null);
+                    productTopping.setValue(row.getCell(5) != null ? (int)row.getCell(5).getNumericCellValue() : null);
+                    productTopping.setOptionType(row.getCell(6) != null ? (int)row.getCell(6).getNumericCellValue() : null);
+                    productToppingList.add(productTopping);
+
+                } catch (Exception error) {
+                    log.error(error.toString());
+                }
+            }
+
+            productToppingRepository.saveAll(productToppingList);
+
+        } catch (Exception ignored) {
+            log.error(ignored.toString());
+        }
+
     }
 
     private void createSubToppingData(String productExcelData) {

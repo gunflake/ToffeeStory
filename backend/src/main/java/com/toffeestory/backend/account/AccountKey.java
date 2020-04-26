@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 public class AccountKey {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer seqNo;
 
     @NotNull

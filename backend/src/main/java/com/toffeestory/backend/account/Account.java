@@ -3,7 +3,6 @@ package com.toffeestory.backend.account;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.toffeestory.backend.post.Post;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,7 +13,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
@@ -27,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 @JsonIgnoreProperties("post")
 public class Account implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountNo;
 
     @NotNull

@@ -36,7 +36,7 @@ public class Product {
     private Integer price;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductToppingMap> productToppingMapList = new ArrayList<>();
+    private List<ProductTopping> productToppingList = new ArrayList<>();
 
     public Product() {
         this.useStateCode = ProductStatus.USE;

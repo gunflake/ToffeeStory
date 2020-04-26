@@ -7,29 +7,38 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class SubTopping {
+public class ProductTopping {
 
     @Id
-    private Integer subToppingNo; // PK, Auto Increase
+    private Integer seqNo;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "productNo")
+    private Product product;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "toppingNo")
     private Topping topping;
 
-    @NotNull
-    @Column(length = 20)
-    private String subToppingName;
+    @ManyToOne
+    @JoinColumn(name = "subToppingNo")
+    private SubTopping subTopping;
 
-    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "quantityCodeNo")
+    private QuantityCode quantityCode;
+
     @Column
-    private Integer displayOrder;
+    private Integer value;
+
+    @Column
+    private Integer optionType;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
@@ -38,10 +47,7 @@ public class SubTopping {
     @CreationTimestamp
     private LocalDateTime regDate;
 
-    @OneToMany(mappedBy = "subTopping")
-    private List<ProductTopping> productToppingList = new ArrayList<>();
-
-    public SubTopping() {
+    public ProductTopping() {
         this.useStateCode = ProductStatus.USE;
     }
 }
