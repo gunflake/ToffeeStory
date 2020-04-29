@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class ProductTopping {
+public class BeverageTopping {
 
     @Id
     private Integer seqNo;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "productNo")
-    private Product product;
+    @JoinColumn(name = "beverageNo")
+    private Beverage beverage;
 
     @NotNull
     @ManyToOne
@@ -47,7 +47,7 @@ public class ProductTopping {
     @CreationTimestamp
     private LocalDateTime regDate;
 
-    public ProductTopping() {
+    public BeverageTopping() {
         this.useStateCode = ProductStatus.USE;
     }
 }

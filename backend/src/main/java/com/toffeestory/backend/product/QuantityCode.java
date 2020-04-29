@@ -33,7 +33,7 @@ public class QuantityCode {
     private LocalDateTime regDate;
 
     @OneToMany(mappedBy = "quantityCode")
-    private List<ProductTopping> productToppingList = new ArrayList<>();
+    private List<BeverageTopping> beverageToppingList = new ArrayList<>();
 
     public QuantityCode() {
         this.useStateCode = ProductStatus.USE;

@@ -13,17 +13,17 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Product {
+public class Beverage {
     @Id
-    private Integer productNo;
+    private Integer beverageNo;
 
     @ManyToOne
-    @JoinColumn(name = "productCategoryNo")
-    private ProductCategory productCategory;
+    @JoinColumn(name = "beverageCategoryNo")
+    private BeverageCategory beverageCategory;
 
     @Column(length = 20)
     @NotNull
-    private String productName;
+    private String beverageName;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
@@ -35,10 +35,10 @@ public class Product {
     @Column
     private Integer price;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductTopping> productToppingList = new ArrayList<>();
+    @OneToMany(mappedBy = "beverage")
+    private List<BeverageTopping> beverageToppingList = new ArrayList<>();
 
-    public Product() {
+    public Beverage() {
         this.useStateCode = ProductStatus.USE;
     }
 }

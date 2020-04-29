@@ -39,7 +39,7 @@ public class SubTopping {
     private LocalDateTime regDate;
 
     @OneToMany(mappedBy = "subTopping")
-    private List<ProductTopping> productToppingList = new ArrayList<>();
+    private List<BeverageTopping> beverageToppingList = new ArrayList<>();
 
     public SubTopping() {
         this.useStateCode = ProductStatus.USE;

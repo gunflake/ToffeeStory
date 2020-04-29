@@ -14,13 +14,13 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class ProductCategory {
+public class BeverageCategory {
     @Id
-    private Integer productCategoryNo; // PK, Auto Increase
+    private Integer beverageCategoryNo; // PK, Auto Increase
 
     @NotNull
     @Column(length = 20)
-    private String productCategoryName;
+    private String beverageCategoryName;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
@@ -29,11 +29,11 @@ public class ProductCategory {
     @CreationTimestamp
     private LocalDateTime regDate;
 
-    @OneToMany(mappedBy = "productCategory")
+    @OneToMany(mappedBy = "beverageCategory")
     @JsonBackReference
-    private List<Product> productList = new ArrayList<>();
+    private List<Beverage> beverageList = new ArrayList<>();
 
-    public ProductCategory() {
+    public BeverageCategory() {
         this.useStateCode = ProductStatus.USE;
     }
 }
