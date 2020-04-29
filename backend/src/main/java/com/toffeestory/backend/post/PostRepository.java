@@ -15,11 +15,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Transactional
     Optional<Post> findByPostNo(Integer postNo);
 
-    // New
-    List<Post> findAllByOrderByPostNoDesc();
-
-   /* @Query("select p from Post p where p.post in(select distinct post from PostDtl where tagName like concat('%',:keyword,'%'))")
-    List<Post> findAllSearchKeywordPost(String keyword);*/
+    @Query("select distinct post from PostDtl where tagName like concat('%',:keyword,'%')")
+    List<Post> findAllSearchKeywordPost(String keyword);
 
     List<Post> findAllByAccount(Account account);
 

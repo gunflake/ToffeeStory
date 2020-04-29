@@ -1,5 +1,6 @@
 package com.toffeestory.backend.post;
 
+import com.toffeestory.backend.account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

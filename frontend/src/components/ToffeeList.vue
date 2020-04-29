@@ -34,7 +34,7 @@
 
   export default {
     name: 'ToffeeList',
-    props: ['sortFlag', 'valueCode'],
+    props: ['sortFlag', 'valueCode', 'keyword'],
     components: {
       Post
     },
@@ -78,6 +78,16 @@
         else if (sortKey === 'BEST') this.orderByKey = 'likeCnt'
         else this.orderByKey = 'score'
       },
+      searchPosts (keyword) {
+        console.log(keyword)
+        api.searchPostList(keyword)
+          .then(response => {
+            this.posts = response.data
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      },
       getInterestPost (valueCode) {
         api.getInterestPosts(valueCode, this.getToken).then(response => {
           this.posts = response.data
@@ -118,6 +128,8 @@
     mounted () {
       if (this.valueCode === config.PostMethods.ALL) {
         this.getPosts()
+      } else if (this.valueCode === config.PostMethods.SEARCH) {
+        this.searchPosts(this.keyword)
       } else {
         this.getInterestPost(this.valueCode)
       }

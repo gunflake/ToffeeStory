@@ -1,5 +1,7 @@
 package com.toffeestory.backend.post;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.toffeestory.backend.account.Account;
 import lombok.Getter;
 import lombok.Setter;
 

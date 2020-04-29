@@ -2,6 +2,7 @@ package com.toffeestory.backend.post;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.toffeestory.backend.product.SubTopping;
 import lombok.Getter;
 import lombok.Setter;
 

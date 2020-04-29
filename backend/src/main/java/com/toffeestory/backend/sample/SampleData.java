@@ -199,7 +199,7 @@ public class SampleData implements ApplicationRunner {
         postdtl7.setPost(post4);
         postdtl7.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl7.setToffeeKey(3);
-        postdtl7.setSubToppingNo(4);
+        //postdtl7.setSubToppingNo(4);
         postdtl7.setQuantityNo(2);
         postdtl7.setTagName("휘핑크림");
 
@@ -233,7 +233,7 @@ public class SampleData implements ApplicationRunner {
         postdtl9.setPost(post5);
         postdtl9.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl9.setToffeeKey(4);
-        postdtl9.setSubToppingNo(1);
+        //postdtl9.setSubToppingNo(1);
         postdtl9.setTagName("디카페인");
 
         postDtlRepository.save(postdtl9);

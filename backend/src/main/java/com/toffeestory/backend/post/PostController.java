@@ -50,14 +50,15 @@ public class PostController {
        -select Post List
      -------------------------------*/
     @GetMapping(path = "")
-    public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword) {
-        // keyword가 존재할 떄
-        if(keyword != null){
-            //return postRepository.findAllSearchKeywordPost(keyword);
+    public List<Post> initPage() {
+
             return postRepository.findAll();
-        }else{
-            return postRepository.findAll();
-        }
+    }
+
+    @GetMapping(path = "/search/{keyword}")
+    public List<Post> searchKeyword(@PathVariable("keyword") String keyword) {
+        log.info(keyword);
+        return postRepository.findAllSearchKeywordPost(keyword);
     }
 
 	@PostMapping("")

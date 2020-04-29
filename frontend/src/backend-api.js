@@ -51,10 +51,6 @@ export default {
     return AXIOS.get('/accounts/me/myMenu/' + valueCode, token)
   },
   searchPostList (keyword) {
-    return AXIOS.get('/posts', {
-      params: {
-        'keyword': keyword
-      }
-    })
+    return AXIOS.get('/posts/search/' + keyword)
   }
 }
