@@ -3,10 +3,11 @@ package com.toffeestory.backend.post;
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountRepository;
 import com.toffeestory.backend.exception.InvalidImageException;
+import com.toffeestory.backend.exception.MaxUploadSizeExceededException;
 import com.toffeestory.backend.exception.NotFoundPostException;
 import com.toffeestory.backend.exception.RestApiError;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,27 +22,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.http.ResponseEntity.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/posts")
+@RequiredArgsConstructor
 public class PostController {
-    @Autowired
-    PostRepository postRepository;
-
-    @Autowired
-    AccountRepository accountRepository;
-
-    @Autowired
-    PostDtlRepository postDtlRepository;
-
-    @Autowired
-    InterestPostRepository interestPostRepository;
-
-    @Autowired
-    PostService postService;
+    final PostRepository postRepository;
+    final AccountRepository accountRepository;
+    final PostDtlRepository postDtlRepository;
+    final InterestPostRepository interestPostRepository;
+    final PostService postService;
 
     @Value("${url}")
     String defaultUrl;
@@ -72,14 +66,18 @@ public class PostController {
         Post post = new Post();
 
         try{
+            if(multipartFile.getSize() > 5120000) throw new MaxUploadSizeExceededException();
+
+            UUID uuid = UUID.randomUUID();
+            String fileName = uuid.toString();
+
             String rootPath = Paths.get("").toAbsolutePath().toString();
             rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
-            String fileName = multipartFile.getOriginalFilename();
             Path fileNameAndPath = Paths.get(rootPath +"/images/", fileName);
             Files.write(fileNameAndPath, multipartFile.getBytes());
             post.setSrc(defaultUrl+fileName);
         }catch (IOException e){
-            throw new InvalidImageException("이미지 업로드에 실패했습니다.");
+            throw new InvalidImageException("이미지 업로드에 실패했습니다. 작성한 글 내용을 확인해주세요.");
         }
 
         account.setPosts(postRepository.findAllByAccount(account));
@@ -115,7 +113,8 @@ public class PostController {
         }
 
         if (multipartFile != null) {
-            String fileName = multipartFile.getOriginalFilename();
+            UUID uuid = UUID.randomUUID();
+            String fileName = uuid.toString();
 
             Path fileNameAndPath = Paths.get("./images/", fileName);
             try {

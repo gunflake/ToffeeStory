@@ -19,6 +19,7 @@
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
   import { mapActions } from 'vuex'
+  // import config from '../config.js'
 
   export default {
     name: 'closeAccount',
@@ -82,7 +83,7 @@
             type: 'red'
           }
           this.settingAlertMsg(this.alert)
-        } else if (confirm('Are you sure? This action cannot be undone.')) {
+        } else if (confirm('Are you sure?')) {
           let token = localStorage.getItem('token')
           if (token == null) { return }
 

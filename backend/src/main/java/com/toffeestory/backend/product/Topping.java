@@ -2,8 +2,11 @@ package com.toffeestory.backend.product;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,31 +15,36 @@ import java.util.List;
 @Setter
 public class Topping {
     @Id
-    @GeneratedValue
     private Integer toppingNo; // PK, Auto Increase
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "toppingCategoryNo")
     private ToppingCategory toppingCategory;
 
+    @NotNull
     @Column(length = 20)
     private String toppingName;
 
-    @Column
-    private boolean subFlag;
-
-    @Column(length = 3)
-    private Integer subToppingGroupNo;
+    @ManyToOne
+    @JoinColumn(name = "quantityTypeNo")
+    private QuantityType quantityType;
 
     @Column
     private Integer toppingPrice;
 
-    @Column
-    private Boolean useStateCode;
+    @NotNull
+    @Enumerated(EnumType.ORDINAL)
+    private ProductStatus useStateCode;
+
+    @CreationTimestamp
+    private LocalDateTime regDate;
 
     @OneToMany(mappedBy = "topping")
     private List<SubTopping> subToppingList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "topping")
-    private List<ProductToppingMap> productToppingMapList = new ArrayList<>();
+    public Topping() {
+        this.useStateCode = ProductStatus.USE;
+    }
+
 }

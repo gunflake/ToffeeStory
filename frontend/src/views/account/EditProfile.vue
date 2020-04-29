@@ -49,6 +49,7 @@
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
   import { mapActions } from 'vuex'
+  // import config from '../config.js'
 
   export default {
     name: 'editProfile',
@@ -101,12 +102,12 @@
     methods: {
       ...mapActions(['settingAlertMsg']),
       onFileSelected (event) {
-        let maxsize = 5 * 1024 * 1024 // 최대용량 5MB
+        let maxsize = 5 * 1024 * 1024
         this.selectedFile = event.target.files[0]
 
         if (this.selectedFile.size > maxsize) {
           this.alert = {
-            message: 'Profile image must be less than 1MB. Try reducing the size of image.',
+            message: 'Profile image must be less than 5MB. Try reducing the size of image.',
             type: 'red'
           }
           this.settingAlertMsg(this.alert)
@@ -155,7 +156,7 @@
         if (regex.test(value)) {
           this.fullNameMsgVisible = false
         } else {
-          this.fullNameMsg = 'Full Name is invalid (2 - 30 characters)' // TODO : 메세지 상수화
+          this.fullNameMsg = 'Full Name is invalid (2 - 30 characters)'
           this.fullNameMsgVisible = true
         }
       },
@@ -165,7 +166,7 @@
         let regex = /^[가-힣a-zA-Z0-9_]{2,30}$/
 
         if (!regex.test(value)) {
-          this.userNameMsg = 'User Name is invalid (2 - 30 characters)' // TODO : 메세지 상수화
+          this.userNameMsg = 'User Name is invalid (2 - 30 characters)'
           this.userNameMsgVisible = true
         } else {
           let token = localStorage.getItem('token')

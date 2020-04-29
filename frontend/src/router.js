@@ -53,6 +53,16 @@ const routes = [
     path: '/search',
     name: 'searchList',
     component: () => import('@/views/SearchList.vue')
+  },
+  {
+    path: '/reset/password/:token',
+    name: 'resetPassword',
+    component: () => import('@/views/account/ResetPassword.vue')
+  },
+  {
+    path: '*',
+    name: 'pageNotFound',
+    component: () => import('@/views/PageNotFound.vue')
   }
 ]
 

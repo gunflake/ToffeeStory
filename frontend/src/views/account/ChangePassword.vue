@@ -21,6 +21,7 @@
   import axios from 'axios'
   import InputWithError from '@/components/InputWithError'
   import { mapActions } from 'vuex'
+  // import config from '../config.js'
 
   export default {
     name: 'changePassword',
@@ -84,7 +85,7 @@
         if (regex.test(value)) {
           this.newPwdMsgVisible = false
         } else {
-          this.newPwdMsg = 'New Password is invalid (8 - 20 characters, include alphabets, numbers and special characters)' // TODO : 메세지 상수화
+          this.newPwdMsg = 'New Password is invalid (8 - 20 characters, include alphabets, numbers and special characters)'
           this.newPwdMsgVisible = true
         }
       },
