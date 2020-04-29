@@ -62,6 +62,12 @@ export default {
       }
     })
   },
+  getBeverageNameArray () {
+    return AXIOS.get('/products/beverages/names')
+  },
+  getToppingNameArray () {
+    return AXIOS.get('/products/toppings/names')
+  },
   sendEmailForResetPassword (email) {
     return AXIOS.get('/accounts/' + email + '/reset-password-token')
   },
