@@ -60,10 +60,13 @@
   import { mapActions } from 'vuex'
   import axios from 'axios'
   import ToffeeList from '@/components/ToffeeList'
-  import config from '../config'
+  import config from '../config.js'
 
   export default {
     name: 'profile',
+    components: {
+      ToffeeList
+    },
     data () {
       return {
         account: [],
