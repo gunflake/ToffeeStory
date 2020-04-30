@@ -45,13 +45,11 @@ public class PostController {
      -------------------------------*/
     @GetMapping(path = "")
     public List<Post> initPage() {
-
-            return postRepository.findAll();
+        return postRepository.findAll();
     }
 
     @GetMapping(path = "/search/{keyword}")
     public List<Post> searchKeyword(@PathVariable("keyword") String keyword) {
-        log.info(keyword);
         return postRepository.findAllSearchKeywordPost(keyword);
     }
 
@@ -168,8 +166,8 @@ public class PostController {
         int likeState     = 0;
         int bookmarkState = 0;
 
-        if(account != null && interestPostRepository.findByPostNoAndAccountNo(postNo, account.getAccountNo()).isPresent()) {
-            InterestPost interestPost = interestPostRepository.findByPostNoAndAccountNo(postNo, account.getAccountNo()).orElseThrow(() -> new RuntimeException());
+        if(account != null && interestPostRepository.findAllByPostAndAccount(post, account).isPresent()) {
+            InterestPost interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new RuntimeException());
 
             likeState     = interestPost.getLikeState().ordinal();
             bookmarkState = interestPost.getBookmarkState().ordinal();
@@ -229,9 +227,11 @@ public class PostController {
                                          @RequestParam("useFlag") Boolean useState,
                                          @AuthenticationPrincipal Account account) {
 
-        postService.updateInterest(postNo, account.getAccountNo(), valueCode, useState);
-
         Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+
+        // set InterestPost
+        postService.updateInterest(post, account, valueCode, useState);
+
         if(valueCode == 0) {
             if(!useState) {
                 post.setLikeCnt(post.getLikeCnt() + 1);

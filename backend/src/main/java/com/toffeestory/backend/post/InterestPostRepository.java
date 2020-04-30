@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface InterestPostRepository extends JpaRepository<InterestPost, Integer> {
 
-    Optional<InterestPost> findByPostNoAndAccountNo(Integer postNo, Integer accountNo);
+    Optional<InterestPost> findAllByPostAndAccount(Post post, Account accountNo);
 
     //interest list of account
-    List<InterestPost> findByAccountNoAndLikeState(Integer accountNo, InterestPost.UseType likeState);
-    List<InterestPost> findByAccountNoAndBookmarkState(Integer accountNo, InterestPost.UseType bookmarkState);
+    List<InterestPost> findAllByAccountAndLikeState(Account account, InterestPost.UseType likeState);
+    List<InterestPost> findAllByAccountAndBookmarkState(Account account, InterestPost.UseType bookmarkState);
 }
