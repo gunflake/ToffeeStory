@@ -2,6 +2,8 @@ package com.toffeestory.backend.post;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.toffeestory.backend.product.QuantityCode;
 import com.toffeestory.backend.product.SubTopping;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +21,7 @@ public class PostDtl {
 
     @ManyToOne
     @JoinColumn(name = "postNo")
-    @JsonBackReference
+    @JsonBackReference(value = "post")
     private Post post;
 
     @Enumerated(EnumType.STRING)
@@ -29,11 +31,15 @@ public class PostDtl {
     @Column(nullable = false)
     private Integer toffeeKey;
 
-    @Column
-    private Integer subToppingNo;
+    @ManyToOne
+    @JoinColumn(name = "subToppingNo")
+    @JsonBackReference(value = "subTopping")
+    private SubTopping subTopping;
 
-    @Column
-    private Integer quantityNo;
+    @ManyToOne
+    @JoinColumn(name = "quantityCodeNo")
+    @JsonBackReference(value = "quantityCode")
+    private QuantityCode quantityCode;
 
     @Column(length = 20)
     private Integer value;

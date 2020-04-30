@@ -251,13 +251,13 @@ public class AccountController {
             List<InterestPost> interestPosts;
 
             if(valueCode == 0) {
-                interestPosts = interestPostRepository.findByAccountNoAndLikeState(account.getAccountNo(), InterestPost.UseType.INTEREST);
+                interestPosts = interestPostRepository.findAllByAccountAndLikeState(account, InterestPost.UseType.INTEREST);
             } else {
-                interestPosts = interestPostRepository.findByAccountNoAndBookmarkState(account.getAccountNo(), InterestPost.UseType.INTEREST);
+                interestPosts = interestPostRepository.findAllByAccountAndBookmarkState(account, InterestPost.UseType.INTEREST);
             }
 
             for (int i = 0; i < interestPosts.size(); i++) {
-                posts.add(postRepository.findByPostNo(interestPosts.get(i).getPostNo()).orElseThrow(() -> new RuntimeException()));
+                posts.add(interestPosts.get(i).getPost());
             }
         }
 

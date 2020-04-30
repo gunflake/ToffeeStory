@@ -512,7 +512,7 @@ public class SampleData implements ApplicationRunner {
         postdtl7.setFlag(PostDtl.ToffeeType.TOPPING);
         postdtl7.setToffeeKey(3);
         //postdtl7.setSubToppingNo(4);
-        postdtl7.setQuantityNo(2);
+        //postdtl7.setQuantityNo(2);
         postdtl7.setTagName("휘핑크림");
 
         postDtlRepository.save(postdtl7);

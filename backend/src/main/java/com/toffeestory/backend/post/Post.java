@@ -24,7 +24,7 @@ public class Post {
     private Integer postNo;
 
     @ManyToOne
-    @JsonManagedReference
+    @JsonBackReference(value = "account")
     @JoinColumn(name = "accountNo")
     private Account account;
 
@@ -59,8 +59,12 @@ public class Post {
     private List<String> tags;
 
 	@OneToMany(mappedBy = "post")
-    @JsonBackReference
-    private List<PostDtl> postDtls = new ArrayList<>();
+    @JsonManagedReference(value = "post")
+    private List<PostDtl> postDtlList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "post")
+    @JsonManagedReference(value = "post")
+    private List<InterestPost> interestPostList  = new ArrayList<>();
 
     public void setAccount(Account account) {
         if(this.account != null){

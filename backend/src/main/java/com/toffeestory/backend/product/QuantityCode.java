@@ -1,5 +1,7 @@
 package com.toffeestory.backend.product;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.toffeestory.backend.post.PostDtl;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +36,10 @@ public class QuantityCode {
 
     @OneToMany(mappedBy = "quantityCode")
     private List<ProductTopping> productToppingList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "quantityCode")
+    @JsonManagedReference(value = "quantityCode")
+    private List<PostDtl> postDtlList = new ArrayList<>();
 
     public QuantityCode() {
         this.useStateCode = ProductStatus.USE;

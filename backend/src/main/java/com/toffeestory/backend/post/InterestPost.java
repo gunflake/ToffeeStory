@@ -1,6 +1,7 @@
 package com.toffeestory.backend.post;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.account.Account;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,11 +16,15 @@ public class InterestPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer seqNo;
 
-    @Column(nullable = false)
-    private Integer postNo;
+    @ManyToOne
+    @JoinColumn(name = "postNo")
+    @JsonBackReference(value = "post")
+    private Post post;
 
-    @Column(nullable = false)
-    private Integer accountNo;
+    @ManyToOne
+    @JsonBackReference(value = "account")
+    @JoinColumn(name = "accountNo")
+    private Account account;
 
     @Enumerated(EnumType.STRING)
     @Column

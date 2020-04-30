@@ -9,7 +9,7 @@ public class PostService {
     @Autowired
     InterestPostRepository interestPostRepository;
 
-    public void updateInterest(Integer postNo, Integer accountNo, Byte valueCode, Boolean useState) {
+    public void updateInterest(Post post, Account account, Byte valueCode, Boolean useState) {
         InterestPost interestPost;
 
         InterestPost.UseType useType = InterestPost.UseType.UNINTERESTED;
@@ -17,8 +17,8 @@ public class PostService {
         if(!useState) useType = InterestPost.UseType.INTEREST;
 
         //해당 정보가 있으면 찾아서 상태 값 변경
-        if(interestPostRepository.findByPostNoAndAccountNo(postNo, accountNo).isPresent()) {
-            interestPost = interestPostRepository.findByPostNoAndAccountNo(postNo, accountNo).orElseThrow(() -> new RuntimeException());
+        if(interestPostRepository.findAllByPostAndAccount(post, account).isPresent()) {
+            interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new RuntimeException());
 
             if(valueCode == 0) {
                 interestPost.setLikeState(useType);
@@ -28,8 +28,8 @@ public class PostService {
         } else {
             interestPost = new InterestPost();
 
-            interestPost.setPostNo(postNo);
-            interestPost.setAccountNo(accountNo);
+            interestPost.setPost(post);
+            interestPost.setAccount(account);
 
             if(valueCode == 0) {
                 interestPost.setLikeState(useType);

@@ -2,6 +2,7 @@ package com.toffeestory.backend.account;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.post.InterestPost;
 import com.toffeestory.backend.post.Post;
 import lombok.Getter;
@@ -76,8 +77,12 @@ public class Account implements UserDetails {
     private String authority;
 
     @OneToMany(mappedBy = "account")
-    @JsonBackReference
+    @JsonManagedReference(value = "account")
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account")
+    @JsonManagedReference(value = "account")
+    private List<InterestPost> interestPostList = new ArrayList<>();
 
     @Transient
     private String accountNewPwd;
