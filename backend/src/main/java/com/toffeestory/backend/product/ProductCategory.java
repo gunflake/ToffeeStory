@@ -1,6 +1,7 @@
 package com.toffeestory.backend.product;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,7 +17,7 @@ import java.util.List;
 @Setter
 public class ProductCategory {
     @Id
-    private Integer productCategoryNo; // PK, Auto Increase
+    private Integer productCategoryNo;
 
     @NotNull
     @Column(length = 20)
@@ -30,7 +31,6 @@ public class ProductCategory {
     private LocalDateTime regDate;
 
     @OneToMany(mappedBy = "productCategory")
-    @JsonBackReference
     private List<Product> productList = new ArrayList<>();
 
     public ProductCategory() {
