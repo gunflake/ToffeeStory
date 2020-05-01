@@ -202,7 +202,7 @@
           return new Promise(resolve => setTimeout(resolve, milliseconds))
         }
         sleep(100).then(() => {
-            this.autoCompleteView = false
+          this.autoCompleteView = false
         })
       }
     }

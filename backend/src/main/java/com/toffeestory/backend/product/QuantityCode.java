@@ -1,6 +1,7 @@
 package com.toffeestory.backend.product;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.toffeestory.backend.post.PostDtl;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
