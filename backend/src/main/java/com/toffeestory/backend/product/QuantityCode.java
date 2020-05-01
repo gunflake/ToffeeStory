@@ -34,8 +34,9 @@ public class QuantityCode {
     @CreationTimestamp
     private LocalDateTime regDate;
 
+    @JsonManagedReference(value = "quantityCode")
     @OneToMany(mappedBy = "quantityCode")
-    private List<ProductTopping> productToppingList = new ArrayList<>();
+    private List<BeverageTopping> beverageToppingList = new ArrayList<>();
 
     @OneToMany(mappedBy = "quantityCode")
     @JsonManagedReference(value = "quantityCode")

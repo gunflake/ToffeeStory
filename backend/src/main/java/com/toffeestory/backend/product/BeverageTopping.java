@@ -1,5 +1,6 @@
 package com.toffeestory.backend.product;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,25 +12,29 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class ProductTopping {
+public class BeverageTopping {
 
     @Id
     private Integer seqNo;
 
+    @JsonBackReference(value = "beverage")
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "productNo")
-    private Product product;
+    @JoinColumn(name = "beverageNo")
+    private Beverage beverage;
 
+    @JsonBackReference(value = "topping")
     @NotNull
     @ManyToOne
     @JoinColumn(name = "toppingNo")
     private Topping topping;
 
+    @JsonBackReference(value = "subTopping")
     @ManyToOne
     @JoinColumn(name = "subToppingNo")
     private SubTopping subTopping;
 
+    @JsonBackReference(value = "quantityCode")
     @ManyToOne
     @JoinColumn(name = "quantityCodeNo")
     private QuantityCode quantityCode;
@@ -47,7 +52,7 @@ public class ProductTopping {
     @CreationTimestamp
     private LocalDateTime regDate;
 
-    public ProductTopping() {
+    public BeverageTopping() {
         this.useStateCode = ProductStatus.USE;
     }
 }

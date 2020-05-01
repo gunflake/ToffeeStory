@@ -162,9 +162,25 @@ export default new Vuex.Store({
     setAutocompleteList ({ commit }) {
       // API 통신해서 Product 리스트 받아오기
       let product = {
-        beverage: ['아메리카노', '카페라떼', '바닐라 라떼', '자몽 에이드', '망고 에이드', '블루베리 에이드'],
-        topping: ['바닐라 시럽', '초코 시럽', '헤이즐넛 시럽', '자바칩', '스파클링']
+        beverage: null,
+        topping: null
       }
+
+      api.getBeverageNameArray()
+        .then(response => {
+          product.beverage = response.data
+        })
+        .catch(() => {
+          // console.log(error)
+        })
+
+      api.getToppingNameArray()
+        .then(response => {
+          product.topping = response.data
+        })
+        .catch(() => {
+          // console.log(error)
+        })
 
       commit('setAutocompleteList', product)
     },

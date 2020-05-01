@@ -1,5 +1,6 @@
 package com.toffeestory.backend.product;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.post.PostDtl;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class SubTopping {
     @Id
     private Integer subToppingNo; // PK, Auto Increase
 
+    @JsonBackReference(value = "topping")
     @NotNull
     @ManyToOne
     @JoinColumn(name = "toppingNo")
@@ -40,8 +42,9 @@ public class SubTopping {
     @CreationTimestamp
     private LocalDateTime regDate;
 
+    @JsonManagedReference(value = "subTopping")
     @OneToMany(mappedBy = "subTopping")
-    private List<ProductTopping> productToppingList = new ArrayList<>();
+    private List<BeverageTopping> beverageToppingList = new ArrayList<>();
 
     @OneToMany(mappedBy = "subTopping")
     @JsonManagedReference(value = "subTopping")

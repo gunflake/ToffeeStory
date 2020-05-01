@@ -49,7 +49,7 @@
         <div v-if="searchTag.length > 0 && autoCompleteView" class="ml-8">
           <div class="bg-white mt-2 rotateSquare"></div>
           <div class="mt-4 fontDoHyeon text-xl" style="z-index: 1; position:absolute;">
-            <div class="border-black w-56 bg-white completeBox">
+            <div class="border-black min-w-64 max-h-64 overflow-scroll bg-white completeBox">
               <div v-for="beverage in matchingList.beverage" :key="beverage">
                 <a class="flex p-2 border-b-2 border-gray-300" v-bind:href="'/search?keyword='+beverage">
                   <img src="../assets/image/beverage.png" class="w-10 h-10" alt=""/>
@@ -190,6 +190,11 @@
             list.topping.push(item)
           }
         })
+
+        // 최대 5개만 보여주기 선택 1
+        // list.beverage = list.beverage.slice(0, 5)
+        // list.topping = list.topping.slice(0, 5)
+
         this.matchingList = list
       },
       hideAutoComplete () {
