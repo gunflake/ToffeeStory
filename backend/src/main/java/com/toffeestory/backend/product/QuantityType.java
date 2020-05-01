@@ -30,7 +30,7 @@ public class QuantityType {
     private LocalDateTime regDate;
 
     @OneToMany(mappedBy = "quantityType")
-    @JsonManagedReference
+    @JsonManagedReference(value = "quantityType")
     private List<Topping> toppingList = new ArrayList<>();
 
     public QuantityType() {
