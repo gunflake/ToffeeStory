@@ -53,6 +53,12 @@ export default {
   searchPostList (keyword) {
     return AXIOS.get('/posts/search/' + keyword)
   },
+  getBeverageNameArray () {
+    return AXIOS.get('/products/beverages/names')
+  },
+  getToppingNameArray () {
+    return AXIOS.get('/products/toppings/names')
+  },
   sendEmailForResetPassword (email) {
     return AXIOS.get('/accounts/' + email + '/reset-password-token')
   },

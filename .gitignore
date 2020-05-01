@@ -142,3 +142,5 @@ gradle-app.setting
 images/**
 !images/defaultProfile.png
 !images/postpic**
+
+data/~$ProductData.xlsx

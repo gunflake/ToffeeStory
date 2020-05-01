@@ -33,14 +33,14 @@ public class SampleData implements ApplicationRunner {
     private final AccountService accountService;
     private final PostRepository postRepository;
     private final PostDtlRepository postDtlRepository;
-    private final ProductCategoryRepository productCategoryRepository;
-    private final ProductRepository productRepository;
+    private final BeverageCategoryRepository beverageCategoryRepository;
+    private final BeverageRepository beverageRepository;
     private final ToppingCategoryRepository toppingCategoryRepository;
     private final ToppingRepository toppingRepository;
     private final QuantityCodeRepository quantityCodeRepository;
     private final QuantityTypeRepository quantityTypeRepository;
     private final SubToppingRepository subToppingRepository;
-    private final ProductToppingRepository productToppingRepository;
+    private final BeverageToppingRepository beverageToppingRepository;
 
     @Value("${url}")
     private String defaultUrl;
@@ -58,26 +58,26 @@ public class SampleData implements ApplicationRunner {
         createQuantityType(productExcelData);
         createQuantityCode(productExcelData);
 
-        // Product Data
-        createProductCategoryData(productExcelData);
-        createProductData(productExcelData);
+        // Beverage Data
+        createBeverageCategoryData(productExcelData);
+        createBeverageData(productExcelData);
 
         // Topping Data
         createToppingCategoryData(productExcelData);
         createToppingData(productExcelData);
         createSubToppingData(productExcelData);
 
-        // ProductTopping Data
-        createProductToppingData(productExcelData);
+        // BeverageTopping Data
+        createBeverageToppingData(productExcelData);
     }
 
-    private void createProductToppingData(String productExcelData) {
+    private void createBeverageToppingData(String productExcelData) {
         try {
-            List<ProductTopping> productToppingList = new LinkedList<>();
+            List<BeverageTopping> beverageToppingList = new LinkedList<>();
 
             FileInputStream excelFile = new FileInputStream(productExcelData);
             XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
-            XSSFSheet sheet = workbook.getSheet("ProductTopping");
+            XSSFSheet sheet = workbook.getSheet("BeverageTopping");
 
             for (int rowIndex = 1; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++) {
                 // 행 읽기
@@ -87,22 +87,22 @@ public class SampleData implements ApplicationRunner {
                     break;
 
                 try {
-                    ProductTopping productTopping = new ProductTopping();
-                    productTopping.setSeqNo((int)row.getCell(0).getNumericCellValue());
-                    productTopping.setProduct(productRepository.getOne((int)row.getCell(1).getNumericCellValue()));
-                    productTopping.setTopping(toppingRepository.getOne((int)row.getCell(2).getNumericCellValue()));
-                    productTopping.setSubTopping(row.getCell(3) != null ? subToppingRepository.getOne((int)row.getCell(3).getNumericCellValue()) : null);
-                    productTopping.setQuantityCode(row.getCell(4) != null ? quantityCodeRepository.getOne((int)row.getCell(4).getNumericCellValue()) : null);
-                    productTopping.setValue(row.getCell(5) != null ? (int)row.getCell(5).getNumericCellValue() : null);
-                    productTopping.setOptionType(row.getCell(6) != null ? (int)row.getCell(6).getNumericCellValue() : null);
-                    productToppingList.add(productTopping);
+                    BeverageTopping beverageTopping = new BeverageTopping();
+                    beverageTopping.setSeqNo((int)row.getCell(0).getNumericCellValue());
+                    beverageTopping.setBeverage(beverageRepository.getOne((int)row.getCell(1).getNumericCellValue()));
+                    beverageTopping.setTopping(toppingRepository.getOne((int)row.getCell(2).getNumericCellValue()));
+                    beverageTopping.setSubTopping(row.getCell(3) != null ? subToppingRepository.getOne((int)row.getCell(3).getNumericCellValue()) : null);
+                    beverageTopping.setQuantityCode(row.getCell(4) != null ? quantityCodeRepository.getOne((int)row.getCell(4).getNumericCellValue()) : null);
+                    beverageTopping.setValue(row.getCell(5) != null ? (int)row.getCell(5).getNumericCellValue() : null);
+                    beverageTopping.setOptionType(row.getCell(6) != null ? (int)row.getCell(6).getNumericCellValue() : null);
+                    beverageToppingList.add(beverageTopping);
 
                 } catch (Exception error) {
                     log.error(error.toString());
                 }
             }
 
-            productToppingRepository.saveAll(productToppingList);
+            beverageToppingRepository.saveAll(beverageToppingList);
 
         } catch (Exception ignored) {
             log.error(ignored.toString());
@@ -285,12 +285,12 @@ public class SampleData implements ApplicationRunner {
         }
     }
 
-    private void createProductData(String productExcelData) {
+    private void createBeverageData(String productExcelData) {
         try {
-            List<Product> productList = new LinkedList<>();
+            List<Beverage> beverageList = new LinkedList<>();
             FileInputStream excelFile = new FileInputStream(productExcelData);
             XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
-            XSSFSheet sheet = workbook.getSheet("Product");
+            XSSFSheet sheet = workbook.getSheet("Beverage");
 
             for (int rowIndex = 1; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++) {
                 // 행 읽기
@@ -300,32 +300,32 @@ public class SampleData implements ApplicationRunner {
                     break;
 
                 try {
-                    Product product = new Product();
-                    product.setProductNo((int) row.getCell(0).getNumericCellValue()); // ProductNo
-                    product.setProductName(row.getCell(1).getStringCellValue()); // ProductName
-                    product.setProductCategory(productCategoryRepository.getOne((int) row.getCell(2).getNumericCellValue())); // ProductCategoryNo
-                    product.setPrice(0); // ProductPrice
-                    productList.add(product);
+                    Beverage beverage = new Beverage();
+                    beverage.setBeverageNo((int) row.getCell(0).getNumericCellValue()); // BeverageNo
+                    beverage.setBeverageName(row.getCell(1).getStringCellValue()); // BeverageName
+                    beverage.setBeverageCategory(beverageCategoryRepository.getOne((int) row.getCell(2).getNumericCellValue())); // BeverageCategoryNo
+                    beverage.setPrice(0); // BeveragePrice
+                    beverageList.add(beverage);
                 } catch (Exception error) {
                     log.error(error.toString());
                 }
             }
 
-            productRepository.saveAll(productList);
+            beverageRepository.saveAll(beverageList);
         } catch (Exception ignored) {
             log.error(ignored.toString());
         }
 
     }
 
-    private void createProductCategoryData(String productExcelData) {
+    private void createBeverageCategoryData(String productExcelData) {
         try {
 
-            List<ProductCategory> productCategoryList = new LinkedList<>();
+            List<BeverageCategory> beverageCategoryList = new LinkedList<>();
 
             FileInputStream excelFile = new FileInputStream(productExcelData);
             XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
-            XSSFSheet sheet = workbook.getSheet("ProductCategory");
+            XSSFSheet sheet = workbook.getSheet("BeverageCategory");
 
             for (int rowIndex = 1; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++) {
                 // 행 읽기
@@ -335,10 +335,10 @@ public class SampleData implements ApplicationRunner {
                     break;
 
                 try {
-                    ProductCategory productCategory = new ProductCategory();
-                    productCategory.setProductCategoryNo((int) row.getCell(0).getNumericCellValue()); // ProductCategoryNo
-                    productCategory.setProductCategoryName(row.getCell(1).getStringCellValue()); // ProductCategoryName
-                    productCategoryList.add(productCategory);
+                    BeverageCategory beverageCategory = new BeverageCategory();
+                    beverageCategory.setBeverageCategoryNo((int) row.getCell(0).getNumericCellValue()); // BeverageCategoryNo
+                    beverageCategory.setBeverageCategoryName(row.getCell(1).getStringCellValue()); // BeverageCategoryName
+                    beverageCategoryList.add(beverageCategory);
 
 
                 } catch (Exception error) {
@@ -346,7 +346,7 @@ public class SampleData implements ApplicationRunner {
                 }
             }
 
-            productCategoryRepository.saveAll(productCategoryList);
+            beverageCategoryRepository.saveAll(beverageCategoryList);
 
         } catch (Exception ignored) {
             log.error(ignored.toString());
