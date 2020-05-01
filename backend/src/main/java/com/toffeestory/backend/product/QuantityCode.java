@@ -1,5 +1,6 @@
 package com.toffeestory.backend.product;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,6 +33,7 @@ public class QuantityCode {
     @CreationTimestamp
     private LocalDateTime regDate;
 
+    @JsonManagedReference(value = "quantityCode")
     @OneToMany(mappedBy = "quantityCode")
     private List<BeverageTopping> beverageToppingList = new ArrayList<>();
 

@@ -1,5 +1,7 @@
 package com.toffeestory.backend.product;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +20,7 @@ public class SubTopping {
     @Id
     private Integer subToppingNo; // PK, Auto Increase
 
+    @JsonBackReference(value = "topping")
     @NotNull
     @ManyToOne
     @JoinColumn(name = "toppingNo")
@@ -38,6 +41,7 @@ public class SubTopping {
     @CreationTimestamp
     private LocalDateTime regDate;
 
+    @JsonManagedReference(value = "subTopping")
     @OneToMany(mappedBy = "subTopping")
     private List<BeverageTopping> beverageToppingList = new ArrayList<>();
 

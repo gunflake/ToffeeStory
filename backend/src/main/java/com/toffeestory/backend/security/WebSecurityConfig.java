@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers("/api/accounts/**", "/api/test/**", "/api/images/**").permitAll() // '/api/account/**' 관련 요청만 인증 없이 조회 가능
                     .antMatchers("/api/posts/**").permitAll() // allow every URI, that begins with '/api/user/'
-                    .antMatchers("/api/products/toppings/names", "/api/products/beverages/names").permitAll() // 음료, 토핑 이름 인증 없지 조회 가능
+                    .antMatchers("/api/products/**").permitAll() // 음료, 토핑 이름 인증 없지 조회 가능
                     //.antMatchers("/api/secure/**").hasRole("USER") // 기본적으로 ROLE_* < 로 검색한다. 따라서 ROLE_ 을 붙여서 권한을 등록해줘야함
                     .anyRequest().authenticated() // '/api/account/**' 을 제외한 모든 요청에 인증이 필요함
                 .and()
