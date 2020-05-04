@@ -40,7 +40,7 @@ public class BeverageTopping {
     private QuantityCode quantityCode;
 
     @Column
-    private Integer value;
+    private Integer toppingValue;
 
     @Column
     private Integer optionType;

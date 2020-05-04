@@ -3,9 +3,7 @@ package com.toffeestory.backend.product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,8 +13,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
+    private final BeverageCategoryRepository beverageCategoryRepository;
+    private final ToppingCategoryRepository toppingCategoryRepository;
     private final BeverageRepository beverageRepository;
     private final ToppingRepository toppingRepository;
+    private final BeverageToppingRepository beverageToppingRepository;
+    private final QuantityCodeRepository quantityCodeRepository;
+    private final SubToppingRepository subToppingRepository;
 
     @GetMapping("/beverages/names")
     public ResponseEntity<Object> getProductName(){
@@ -44,5 +47,39 @@ public class ProductController {
         return ResponseEntity.ok().body(toppings);
     }
 
+    @GetMapping("/beverageCategories")
+    public ResponseEntity<Object> getBeverageCategoryList() {
+        return ResponseEntity.ok().body(beverageCategoryRepository.findAllByUseStateCode(ProductStatus.USE));
+    }
 
+    @GetMapping("/beverages")
+    public ResponseEntity<Object> getBeverageList() {
+        return ResponseEntity.ok().body(beverageRepository.findAllByUseStateCode(ProductStatus.USE));
+    }
+
+    @GetMapping("/toppingCategories")
+    public ResponseEntity<Object> getToppingCategoryList() {
+        return ResponseEntity.ok().body(toppingCategoryRepository.findAllByUseStateCode(ProductStatus.USE));
+    }
+
+    @GetMapping("/quantityCodes")
+    public ResponseEntity<Object> getQuantityCodeList() {
+        return ResponseEntity.ok().body(quantityCodeRepository.findAllByUseStateCode(ProductStatus.USE));
+    }
+
+    @PostMapping("/toppings")
+    public ResponseEntity<Object> getToppingList(@RequestParam("beverageNo") Integer beverageNo) {
+        Beverage beverage = new Beverage();
+        beverage.setBeverageNo(beverageNo);
+
+        return ResponseEntity.ok().body(beverageToppingRepository.findAllByBeverage(beverage));
+    }
+
+    @PostMapping("/subToppings")
+    public ResponseEntity<Object> getSubToppingList(@RequestParam("toppingNo") Integer toppingNo) {
+        Topping topping = new Topping();
+        topping.setToppingNo(toppingNo);
+
+        return ResponseEntity.ok().body(subToppingRepository.findAllByTopping(topping));
+    }
 }

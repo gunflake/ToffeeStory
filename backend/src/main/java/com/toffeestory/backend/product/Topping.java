@@ -31,6 +31,7 @@ public class Topping {
 
     @ManyToOne
     @JoinColumn(name = "quantityTypeNo")
+    @JsonBackReference("quantityType")
     private QuantityType quantityType;
 
     @Column

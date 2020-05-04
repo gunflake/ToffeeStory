@@ -7,4 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ToppingRepository extends JpaRepository<Topping, Integer> {
+    List<ToppingSummary> findAllByUseStateCode(ProductStatus productStatus);
 }
