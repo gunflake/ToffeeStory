@@ -2,10 +2,7 @@ package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountRepository;
-import com.toffeestory.backend.exception.InvalidImageException;
-import com.toffeestory.backend.exception.MaxUploadSizeExceededException;
-import com.toffeestory.backend.exception.NotFoundPostException;
-import com.toffeestory.backend.exception.RestApiError;
+import com.toffeestory.backend.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +56,7 @@ public class PostController {
     public ResponseEntity relatedPostList(@PathVariable("postNo") Integer postNo) {
         List<Post> posts = new ArrayList<>();
 
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
         //해당 게시글이 가지고 있는 토핑, 상품 조회
         List<PostDtl> postDtls = postDtlRepository.findByPost(post);
 
@@ -82,7 +79,7 @@ public class PostController {
     -------------------------------*/
     @GetMapping("/account/{accountId}")
     public ResponseEntity accountPostList(@PathVariable("accountId") String accountId) {
-        Account  account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException());
+        Account  account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new NotFoundAccountException(accountId));
         List<Post> posts = postRepository.findAllByAccount(account);
 
         return ok(posts);
@@ -188,7 +185,7 @@ public class PostController {
     @GetMapping(path = "/{postNo}")
     public ResponseEntity selectPost(@PathVariable("postNo") Integer postNo,
                                      @AuthenticationPrincipal Account account) {
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
         List<String>  tagNames = new ArrayList<>();
         List<PostDtl> postDtls = postDtlRepository.findByPost(post);
 
@@ -202,7 +199,7 @@ public class PostController {
         int bookmarkState = 0;
 
         if(account != null && interestPostRepository.findAllByPostAndAccount(post, account).isPresent()) {
-            InterestPost interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new RuntimeException());
+            InterestPost interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new NotFoundPostException());
 
             likeState     = interestPost.getLikeState().ordinal();
             bookmarkState = interestPost.getBookmarkState().ordinal();
@@ -222,7 +219,8 @@ public class PostController {
         List<PostDtl> post = postDtlRepository.findByTagName(tagName);
 
         for (int i = 0; i < post.size(); i++) {
-            posts.add(postRepository.findByPostNo(post.get(i).getPost().getPostNo()).orElseThrow(() -> new RuntimeException()));
+            int postNo = post.get(i).getPost().getPostNo();
+            posts.add(postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo)));
         }
 
         return posts;
@@ -237,7 +235,7 @@ public class PostController {
                                          @RequestParam("useFlag") Boolean useState,
                                          @AuthenticationPrincipal Account account) {
 
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
 
         // set InterestPost
         postService.updateInterest(post, account, valueCode, useState);
