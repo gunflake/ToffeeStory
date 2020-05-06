@@ -15,10 +15,14 @@
           <div class="flex justify-between">
             <div class="flex">
               <!-- Account Info -->
-              <img class="h-10 w-10 rounded-full inline mr-4"
-                   src="https://randomuser.me/api/portraits/women/21.jpg"
-                   alt="https://randomuser.me/api/portraits/women/21.jpg">
-              <span class="flex items-center text-xl">{{ accountId }}</span>
+              <router-link :to="'/@' + accountId">
+                <a href="#" rel="home" class="flex items-center mx-4">
+                  <img class="h-10 w-10 rounded-full inline mr-4"
+                       src="https://randomuser.me/api/portraits/women/21.jpg"
+                       alt="http://localhost:8098/api/images/defaultProfile.png"/>
+                  <span class="flex items-center text-xl">{{ accountId }}</span>
+                </a>
+              </router-link>
               <!-- Modify & Delete -->
               <div v-if="accessPossible" class="flex">
                 <span class="flex items-center text-gray-600 font-bold text-base ml-4" @click="modifyPost"

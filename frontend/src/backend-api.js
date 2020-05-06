@@ -35,7 +35,7 @@ export default {
   getAccount (token) {
     return AXIOS.get('/accounts/secured/getAccount', token)
   },
-  getPostList (flag) {
+  getPostList () {
     return AXIOS.get('/posts')
   },
   getPostInfo (postNo, token) {
@@ -44,6 +44,9 @@ export default {
   getRelatedPostList (postNo) {
     return AXIOS.get('/posts/' + postNo + '/relatedPost')
   },
+  getAccountPostList (accountId) {
+    return AXIOS.get('/posts/account/' + accountId)
+  },
   modifyInterest (postNo, data, token) {
     return AXIOS.put('/posts/' + postNo + '/interest', data, token)
   },
@@ -51,7 +54,11 @@ export default {
     return AXIOS.get('/accounts/me/myMenu/' + valueCode, token)
   },
   searchPostList (keyword) {
-    return AXIOS.get('/posts/search/' + keyword)
+    return AXIOS.get('/posts/', {
+      params: {
+        'keyword': keyword
+      }
+    })
   },
   sendEmailForResetPassword (email) {
     return AXIOS.get('/accounts/' + email + '/reset-password-token')

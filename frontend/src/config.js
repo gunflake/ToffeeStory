@@ -7,10 +7,6 @@ export default {
     SEARCH: 4
   },
 
-  AccountMethods: {
-    LIKE: 0
-  },
-
   ProfileMethods: {
     INSTAGRAM_URL: 'https://www.instagram.com/',
     TWITTER_URL: 'https://www.twitter.com/',

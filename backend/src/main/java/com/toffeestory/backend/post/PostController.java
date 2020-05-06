@@ -44,13 +44,48 @@ public class PostController {
        -select Post List
      -------------------------------*/
     @GetMapping(path = "")
-    public List<Post> initPage() {
-        return postRepository.findAll();
+    public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword) {
+        if(keyword != null) {
+            return postRepository.findAllSearchKeywordPost(keyword);
+        } else {
+            return postRepository.findAll();
+        }
     }
 
-    @GetMapping(path = "/search/{keyword}")
-    public List<Post> searchKeyword(@PathVariable("keyword") String keyword) {
-        return postRepository.findAllSearchKeywordPost(keyword);
+    /*-------------------------------
+      -select Related Post List
+    -------------------------------*/
+    @GetMapping("/{postNo}/relatedPost")
+    public ResponseEntity relatedPostList(@PathVariable("postNo") Integer postNo) {
+        List<Post> posts = new ArrayList<>();
+
+        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        //해당 게시글이 가지고 있는 토핑, 상품 조회
+        List<PostDtl> postDtls = postDtlRepository.findByPost(post);
+
+        for (int i = 0; i < postDtls.size(); i++) {
+            // 토핑, 상품을 가지고 있는 게시글 넘버 가져옴
+            List<PostDtl> setPost = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
+
+            for (int j = 0; j < setPost.size(); j++) {
+                if(!posts.contains(setPost.get(j).getPost()) && post != setPost.get(j).getPost()) {
+                    posts.add(setPost.get(j).getPost());
+                }
+            }
+        }
+
+        return ok(posts);
+    }
+
+    /*-------------------------------
+      -select account Post List
+    -------------------------------*/
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity accountPostList(@PathVariable("accountId") String accountId) {
+        Account  account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new RuntimeException());
+        List<Post> posts = postRepository.findAllByAccount(account);
+
+        return ok(posts);
     }
 
 	@PostMapping("")
@@ -176,31 +211,6 @@ public class PostController {
         ResponsePost responsePost = new ResponsePost(post, post.getAccount().getAccountId(), post.getAccount().getSrc(), likeState, bookmarkState);
 
         return ok(responsePost);
-    }
-
-    /*-------------------------------
-      -select Related Post List
-    -------------------------------*/
-    @GetMapping("/{postNo}/relatedPost")
-    public ResponseEntity relatedPostList(@PathVariable("postNo") Integer postNo) {
-        List<Post> posts = new ArrayList<>();
-
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
-        //해당 게시글이 가지고 있는 토핑, 상품 조회
-        List<PostDtl> postDtls = postDtlRepository.findByPost(post);
-
-        for (int i = 0; i < postDtls.size(); i++) {
-            // 토핑, 상품을 가지고 있는 게시글 넘버 가져옴
-            List<PostDtl> setPost = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
-
-            for (int j = 0; j < setPost.size(); j++) {
-                if(!posts.contains(setPost.get(j).getPost()) && post != setPost.get(j).getPost()) {
-                    posts.add(setPost.get(j).getPost());
-                }
-            }
-        }
-
-        return ok(posts);
     }
 
     /*-------------------------------
