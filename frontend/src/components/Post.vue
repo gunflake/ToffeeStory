@@ -66,7 +66,7 @@
           </div>
           <div class="mt-2 flex flex-wrap">
             <div class="mr-3" v-for="(tag,index) of post.tags" :key="index">
-              <button class="rounded px-2 py-1" style="background: #cdd0d4">{{ tag }}</button>
+              <button class="rounded px-2 py-1" style="background: #cdd0d4" @click="getTag(tag)">{{ tag }}</button>
             </div>
           </div>
           <!-- Related Post -->
@@ -198,6 +198,9 @@
         } else {
           this.showModal = true
         }
+      },
+      getTag (tag) {
+        location.href = '/search?keyword=' + tag
       }
     },
     watch: {
