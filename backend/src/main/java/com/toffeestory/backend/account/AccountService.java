@@ -5,6 +5,7 @@ import com.toffeestory.backend.exception.NotFoundAccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -29,10 +31,13 @@ public class AccountService implements UserDetailsService {
     private AccountKeyRepository accountKeyRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private JavaMailSender javaMailSender;
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private  PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private MessageSource messageSource;
 
     @Value("${baseUrl}")
     private String baseUrl;
@@ -80,7 +85,7 @@ public class AccountService implements UserDetailsService {
     }
 
     // 이메일 전송
-    public void sendEmail(Account account){
+    public void sendEmail(Account account, Locale locale){
         try{
             SimpleMailMessage msg = new SimpleMailMessage();
 
@@ -93,14 +98,15 @@ public class AccountService implements UserDetailsService {
 
             String resetURL = baseUrl + "/reset/password/" + token;
 
-            stringBuilder.append("You're receiving this e-mail because you or someone else has requested a password reset for your user account at . \n\n")
-                    .append("Click the link below to reset your password: \n")
-                    .append(resetURL)
-                    .append("\n\nIf you did not request a password reset you can safely ignore this email.");
+            String content = messageSource.getMessage("emailContent", null, locale);
+
+            stringBuilder.append(content)
+                    .append(resetURL);
             msg.setText(stringBuilder.toString());
 
             javaMailSender.send(msg);
         }catch (Exception ex){
+            log.error(ex.toString());
             throw new EmailSendException();
         }
     }
