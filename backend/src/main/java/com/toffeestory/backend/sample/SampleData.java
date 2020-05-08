@@ -93,7 +93,7 @@ public class SampleData implements ApplicationRunner {
                     beverageTopping.setTopping(toppingRepository.getOne((int)row.getCell(2).getNumericCellValue()));
                     beverageTopping.setSubTopping(row.getCell(3) != null ? subToppingRepository.getOne((int)row.getCell(3).getNumericCellValue()) : null);
                     beverageTopping.setQuantityCode(row.getCell(4) != null ? quantityCodeRepository.getOne((int)row.getCell(4).getNumericCellValue()) : null);
-                    beverageTopping.setValue(row.getCell(5) != null ? (int)row.getCell(5).getNumericCellValue() : null);
+                    beverageTopping.setToppingValue(row.getCell(5) != null ? (int)row.getCell(5).getNumericCellValue() : null);
                     beverageTopping.setOptionType(row.getCell(6) != null ? (int)row.getCell(6).getNumericCellValue() : null);
                     beverageToppingList.add(beverageTopping);
 
