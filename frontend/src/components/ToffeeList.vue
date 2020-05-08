@@ -11,21 +11,21 @@
       <!-- Our Database Images -->
       <div class="doc w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
-          <a @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
-        </div>
-        <div class="links">
-          <p><i class="fa fa-heart"></i><span>{{ image.likeCnt }}</span></p>
+          <a @mouseenter="links = 1" @mouseleave="links = null" @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
+          <div v-show="links == 1" class="links">
+            <a href="#"><i class="fa fa-heart"></i><span>{{ image.likeCnt }}</span></a>
+          </div>
         </div>
       </div>
       <!-- Unsplash Starbucks Images -->
       <div class="doc w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
-        <img class="w-full h-image object-cover" :src="image.urls.small">
-        <div class="links">
-          <p><i class="fa fa-heart"></i><span>{{ image.likes }}</span></p>
+        <img @mouseenter="links = 1" @mouseleave="links = null" class="w-full h-image object-cover" :src="image.urls.small">
+        <div v-show="links == 1" class="links">
+          <a href="#"><i class="fa fa-heart"></i><span>{{ image.likes }}</span></a>
         </div>
       </div>
     </div>
-    <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
+    <Post @mouseenter="links = 1" @mouseleave="links = null" v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
     <div class="flex flex-wrap lg:px-10 xl:px-20">
     </div>
     <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore" loader-color="rgba(102,102,102,.5)">
@@ -55,7 +55,8 @@
         images: [],
         posts: [],
         sortOrder: 'NEW',
-        orderByKey: 'postNo'
+        orderByKey: 'postNo',
+        links: null
       }
     },
     computed: {
@@ -140,6 +141,12 @@
       setPostNo (postNo) {
         this.posts.postNo = postNo
         this.showModal = true
+      },
+      mouseover: function () {
+
+      },
+      mouseleave: function () {
+
       }
     },
     watch: {
@@ -188,5 +195,23 @@
   .sort-list a.active {
     color: red;
     font-weight: bold;
+  }
+  .links {
+    background: gray;
+    text-align:center;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    overflow:hidden;
+    opacity:0;
+    transition:.2s;
+  }
+  .links i{
+    font-size:35px;
+    margin:0 auto;
+    position:relative;
+    padding:15px;
+
   }
 </style>
