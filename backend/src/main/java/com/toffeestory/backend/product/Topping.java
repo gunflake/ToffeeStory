@@ -30,7 +30,6 @@ public class Topping {
     private String toppingName;
 
     @ManyToOne
-    @JsonBackReference(value = "quantityType")
     @JoinColumn(name = "quantityTypeNo")
     @JsonBackReference("quantityType")
     private QuantityType quantityType;
