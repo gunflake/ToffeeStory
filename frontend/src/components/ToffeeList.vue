@@ -19,10 +19,8 @@
       </div>
       <!-- Unsplash Starbucks Images -->
       <div class="doc w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
-        <img @mouseenter="links = 1" @mouseleave="links = null" class="w-full h-image object-cover" :src="image.urls.small">
-        <div v-show="links == 1" class="links">
-          <a href="#"><i class="fa fa-heart"></i><span>{{ image.likes }}</span></a>
-        </div>
+        <img @mouseenter="links = 1" @mouseleave="links = null" class="w-full h-image object-cover" style="z-index: 2" :src="image.urls.small">
+        <a class="relative links" href="#"><i class="fa fa-heart"></i><span>{{ image.likes }}</span></a>
       </div>
     </div>
     <Post @mouseenter="links = 1" @mouseleave="links = null" v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
@@ -195,23 +193,5 @@
   .sort-list a.active {
     color: red;
     font-weight: bold;
-  }
-  .links {
-    background: gray;
-    text-align:center;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    overflow:hidden;
-    opacity:0;
-    transition:.2s;
-  }
-  .links i{
-    font-size:35px;
-    margin:0 auto;
-    position:relative;
-    padding:15px;
-
   }
 </style>
