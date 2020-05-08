@@ -1,7 +1,7 @@
 <template>
   <div @click="closeSearchList">
     <table class="table-fixed table border w-full">
-      <tbody>
+      <tbody v-if="isLoaded">
       <tr class="border">
         <td class="flex items-center px-2 py-2">
           <!--   filter area   -->
@@ -104,7 +104,8 @@
         selectedToppingCategoryNo: 1,
         filter: '',
         searchQuery: '',
-        isSearching: false
+        isSearching: false,
+        isLoaded: false
       }
     },
     created () {
@@ -134,6 +135,8 @@
       }).catch(e => {
         console.log(e)
       })
+
+      this.isLoaded = true // render error 방지
     },
     computed: {
       // 검색 결과 리스트
@@ -189,7 +192,6 @@
         const params = new URLSearchParams()
         params.append('beverageNo', beverage.beverageNo)
 
-        // toppingCategoryList, toppingList 세팅
         axios.post(`/api/products/toppings`, params).then(response => {
           if (response.status === 200) {
             this.beverageToppingList = response.data

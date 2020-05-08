@@ -8,19 +8,19 @@
         </span>
       </div>
       <!--  subTopping area : Sub Toppings  -->
-      <div v-if="topping.quantityType.quantityTypeNo == 0 && subToppingList != null" class="flex items-center w-4/5">
+      <div v-if="topping.quantityType.quantityTypeNo == 0 && subToppingList.length != 0" class="flex items-center w-4/5">
         <radio-button v-for="subTopping in subToppingList" :key="subTopping.subToppingNo" :name="topping.toppingName + 'Radio'" @clickEvent="selectRadio"
-                      :title="subTopping.subToppingName" :value="subTopping.subToppingNo" :checked="subTopping.subToppingNo === beverageTopping.subTopping.subToppingNo ? true : false"></radio-button>
+                      :title="subTopping.subToppingName" :value="subTopping.subToppingNo" :checked="beverageTopping.subTopping != null && subTopping.subToppingNo == beverageTopping.subTopping.subToppingNo ? true : false"></radio-button>
       </div>
       <!--  quantity area : Number Counter  -->
       <div v-else-if="topping.quantityType.quantityTypeNo == 1" class="w-4/5">
-        <number-counter :defaultValue="beverageTopping.toppingValue"></number-counter>
+        <number-counter :defaultValue="beverageTopping.toppingValue" :minValue="beverageTopping.optionType == 0 ? 1 : 0" :maxValue="9"></number-counter>
       </div>
       <!--  quantity area : Quantity Code  -->
       <div v-else class="flex items-center w-4/5">
         <div v-for="quantityCode in quantityCodeList" :key="quantityCode.quantityCodeNo">
           <radio-button v-if="quantityCode.quantityType.indexOf(topping.quantityType.quantityTypeNo) != -1" :name="topping.toppingName + 'Radio'" @clickEvent="selectRadio"
-                        :title="quantityCode.quantityName" :value="quantityCode.quantityCodeNo" :checked="quantityCode.quantityCodeNo === beverageTopping.quantityCode.quantityCodeNo ? true : false"></radio-button>
+                        :title="quantityCode.quantityName" :value="quantityCode.quantityCodeNo" :checked="beverageTopping.quantityCode != null && quantityCode.quantityCodeNo == beverageTopping.quantityCode.quantityCodeNo ? true : false"></radio-button>
         </div>
       </div>
     </div>
@@ -29,7 +29,6 @@
 <script>
   import NumberCounter from './NumberCounter'
   import RadioButton from './RadioButton'
-  import axios from 'axios'
   export default {
     name: 'Topping',
     components: { NumberCounter, RadioButton },
@@ -50,21 +49,10 @@
         }
       }
     },
-    mounted () {
+    created () {
       this.topping = this.beverageTopping.topping
+      this.subToppingList = this.topping.subToppingList
       this.selectedValue = this.beverageTopping.toppingValue
-
-      // subToppings 세팅
-      const params = new URLSearchParams()
-      params.append('toppingNo', this.topping.toppingNo)
-
-      axios.post(`/api/products/subToppings`, params).then(response => {
-        if (response.status === 200) {
-          this.subToppingList = response.data
-        }
-      }).catch(e => {
-        console.log(e)
-      })
     },
     methods: {
       deleteButton () {
@@ -81,7 +69,7 @@
         }
 
         if (this.beverageTopping.optionType === 1 && eventTarget.value === this.selectedValue) {
-          // 추가옵션 : 재선택시 체크 해제
+          // 1 추가옵션 : 재선택시 체크 해제
           eventTarget.checked = false
           this.selectedValue = null
         } else {
