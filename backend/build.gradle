@@ -24,9 +24,13 @@ dependencies {
     // SMTP gmail
     compile("org.springframework.boot:spring-boot-starter-mail")
 
+    // Java Simplified Encryption
+    compile group: 'org.jasypt', name: 'jasypt', version: '1.9.3'
+
     // Apache Excel read API
     compile group: 'org.apache.poi', name: 'poi', version: '4.1.1', classifier: 'javadoc'
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.1'
+
     // Test settings
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude module: 'junit'
@@ -35,6 +39,8 @@ dependencies {
     testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.2.1.RELEASE'
     testRuntimeOnly('com.h2database:h2')
     testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+
+    testCompile group: 'org.jasypt', name: 'jasypt', version: '1.9.3'
 
     //lombock
     compileOnly 'org.projectlombok:lombok:1.18.10'
