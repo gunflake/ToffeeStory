@@ -33,10 +33,6 @@ class JasyptConfigTest {
         catch (EncryptionOperationNotPossibleException e){
             System.out.println("복호화에 실패했습니다. 암호화 text를 확인해주세요");
         }
-
-        System.out.println(textEncryptor.encrypt("toffeestudy3"));
-        System.out.println(textEncryptor.encrypt("xhvltmxjel123"));
-
     }
 
 }

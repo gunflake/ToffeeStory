@@ -1,5 +1,6 @@
 package com.toffeestory.backend.common;
 
+import com.toffeestory.backend.exception.InvalidEncryptTextException;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class JasyptConfig {
             decryptText = textEncryptor.decrypt(encryptText);
         }
         catch (EncryptionOperationNotPossibleException e){
-            System.out.println("복호화에 실패했습니다. 암호화 text를 확인해주세요");
+            throw new InvalidEncryptTextException();
         }
         return decryptText;
     }
