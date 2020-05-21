@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.springframework.http.ResponseEntity.*;
 
@@ -95,15 +96,12 @@ public class AccountController {
     }
 
     @GetMapping(path = "/{email}/reset-password-token")
-    public ResponseEntity checkEmailAndSendRestPasswordEmail(@PathVariable("email") String email){
+    public ResponseEntity checkEmailAndSendRestPasswordEmail(@PathVariable("email") String email, Locale locale){
         // check email
         try {
-            // 회원정보 확인하지 않고 보낼 때...
-            // accountRepository.findByEmail(email).ifPresent(accountService::sendEmail);
-
             // 회원 정보 확인하고 보낼때
             Account getAccount = accountRepository.findByEmail(email).orElseThrow(() -> new NotfoundEmailException(email));
-            accountService.sendEmail(getAccount);
+            accountService.sendEmail(getAccount, locale);
         } catch (Exception ex) {
             throw new EmailSendException();
         }

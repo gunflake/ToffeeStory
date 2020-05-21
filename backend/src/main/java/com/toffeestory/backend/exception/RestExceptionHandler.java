@@ -81,4 +81,10 @@ public class RestExceptionHandler {
         return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
+    @ExceptionHandler(value = {InvalidEncryptTextException.class})
+    public ResponseEntity invalidEncryptTextException(InvalidEncryptTextException ex){
+        log.error(ex.getMessage());
+        return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
 }

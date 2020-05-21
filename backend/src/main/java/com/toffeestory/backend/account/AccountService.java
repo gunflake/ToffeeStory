@@ -5,17 +5,16 @@ import com.toffeestory.backend.exception.NotFoundAccountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Properties;
+import java.util.Locale;
 import java.util.UUID;
 
 @Slf4j
@@ -29,15 +28,16 @@ public class AccountService implements UserDetailsService {
     private AccountKeyRepository accountKeyRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private JavaMailSender javaMailSender;
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private  PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Value("${baseUrl}")
     private String baseUrl;
-
-    private static final String mailSubject = "[ToffeeStudy] Password Reset";
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -80,27 +80,28 @@ public class AccountService implements UserDetailsService {
     }
 
     // 이메일 전송
-    public void sendEmail(Account account){
+    public void sendEmail(Account account, Locale locale){
         try{
             SimpleMailMessage msg = new SimpleMailMessage();
 
             StringBuilder stringBuilder = new StringBuilder();
 
             msg.setTo(account.getEmail());
-            msg.setSubject(mailSubject);
+            msg.setSubject(messageSource.getMessage("emailSubject", null, locale));
 
             String token = createResetPasswordToken(account);
 
             String resetURL = baseUrl + "/reset/password/" + token;
 
-            stringBuilder.append("You're receiving this e-mail because you or someone else has requested a password reset for your user account at . \n\n")
-                    .append("Click the link below to reset your password: \n")
-                    .append(resetURL)
-                    .append("\n\nIf you did not request a password reset you can safely ignore this email.");
+            String content = messageSource.getMessage("emailContent", null, locale);
+
+            stringBuilder.append(content)
+                    .append(resetURL);
             msg.setText(stringBuilder.toString());
 
             javaMailSender.send(msg);
         }catch (Exception ex){
+            log.error(ex.toString());
             throw new EmailSendException();
         }
     }
@@ -115,28 +116,5 @@ public class AccountService implements UserDetailsService {
         accountKey.setToken(randomToken);
         accountKeyRepository.save(accountKey);
         return randomToken;
-    }
-
-    @Bean
-    public JavaMailSender getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-
-        // TODO : mail ID & 비밀번호 외부주입으로 하도록 설정해야하나...
-
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-
-        mailSender.setUsername("toffeestudy3");
-        mailSender.setPassword("xhvltmxjel123");
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.connectiontimeout", 5000);
-        props.put("mail.smtp.timeout", 5000);
-        props.put("mail.smtp.writetimeout", 5000);
-
-        return mailSender;
     }
 }
