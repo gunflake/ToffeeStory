@@ -41,7 +41,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = {InvalidJwtAuthenticationException.class})
     public ResponseEntity invalidJwtAuthentication(InvalidJwtAuthenticationException ex, WebRequest request){
-        log.error("handling InvalidJwtAuthenticationException...");
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestApiError(HttpStatus.UNAUTHORIZED, "로그인 세션이 만료되었습니다. 다시 로그인 해주세요."));
     }
 

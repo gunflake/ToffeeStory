@@ -142,6 +142,9 @@ public class AccountController {
 
     @GetMapping(path = "/me")
     public ResponseEntity<AccountInfo> getAccountInfo(@AuthenticationPrincipal Account account){
+        if(account == null){
+            throw new InvalidJwtAuthenticationException();
+        }
         return ok(new AccountInfo(account.getAccountId(), account.getEmail(), account.getSrc()));
     }
 
