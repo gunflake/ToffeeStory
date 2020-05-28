@@ -11,12 +11,12 @@
       <!-- Our Database Images -->
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
-          <a @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
+          <a @click="setPostNo(image.postNo)"><img v-lazyload class="w-full h-image object-cover" :data-src="image.src" ></a>
         </div>
       </div>
       <!-- Unsplash Starbucks Images -->
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
-        <img class="w-full h-image object-cover" :src="image.urls.small">
+        <img v-lazyload class="w-full h-image object-cover" :data-src="image.urls.small" >
       </div>
     </div>
     <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
@@ -33,6 +33,7 @@
   import { mapGetters } from 'vuex'
   import _ from 'lodash'
   import config from '../config'
+  import lazyload from '@/assets/js/lazyload'
 
   export default {
     name: 'ToffeeList',
@@ -51,6 +52,9 @@
         sortOrder: 'NEW',
         orderByKey: 'postNo'
       }
+    },
+    directives: {
+      lazyload
     },
     computed: {
       ...mapGetters(['getToken']),
