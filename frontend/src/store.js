@@ -207,6 +207,15 @@ export default new Vuex.Store({
     logoutProcess ({ commit }) {
       commit('logout')
       localStorage.clear()
+    },
+    removeAlarmMessage (seqNo) {
+      console.log('removeALarmmessage')
+      const removedAlarm = this.alarmMessageList.find(function (alarm) {
+        return alarm.alarmSeqNo === seqNo
+      })
+      console.log(removedAlarm)
+      const idx = this.alarmMessageList.indexOf(removedAlarm)
+      if (idx > -1) this.alarmMessageList.splice(idx, 1)
     }
   }
 })

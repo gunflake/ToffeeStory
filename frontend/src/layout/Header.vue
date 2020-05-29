@@ -90,7 +90,7 @@
         <div class="ml-4">
           <div class="relative">
             <img src="@/assets/image/bell.png" class="w-10 h-10 rounded-full cursor-pointer rel" v-on:click="showAndHideAlarmList"/>
-            <div v-if="getAlarmMessageList.length > 0" class="alarmCount text-center text-white">{{getAlarmMessageList.length}}</div>
+            <div v-if="getAlarmMessageList != null && getAlarmMessageList.length > 0" class="alarmCount text-center text-white">{{getAlarmMessageList.length}}</div>
           </div>
           <div v-if="alarmVisible">
             <div class="bg-white mt-2 alarm-rotateSquare"></div>
@@ -99,9 +99,12 @@
                 <div v-for="(alarmMessage, index ) in getAlarmMessageList" :key="index">
                   <!-- TODO: 알림 메세지 스타일 및 데이터 넣기 -->
                   <div class="flex p-2 border-b-2 border-gray-300">
-                    <img :src="alarmMessage.image" class="w-10 h-10" alt="" style="margin: auto;"/>
-                    <div class="ml-2 my-auto">{{alarmMessage.message}}</div>
+                    <img :src="alarmMessage.image" class="w-10 h-10 my-auto cursor-pointer" alt="" v-on:click="goProfilePage(alarmMessage.accountId)"/>
+                    <div class="ml-2 my-auto cursor-pointer" v-on:click="readAlarmMessage(alarmMessage.alarmSeqNo)">{{alarmMessage.message}}</div>
                   </div>
+                </div>
+                <div v-if="getAlarmMessageList == null || getAlarmMessageList.length == 0"
+                     class="p-2 text-2xl text-center">알림 메시지가 없습니다.
                 </div>
               </div>
             </div>
@@ -135,8 +138,9 @@
 <script>
   import '@/assets/css/unsplash.css'
   import '@/assets/css/searchComplete.css'
+  import api from '@/backend-api'
   import UploadModal from '@/components/UploadModal'
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions, mapGetters, mapMutations } from 'vuex'
 
   export default {
     name: 'Header',
@@ -164,10 +168,11 @@
       UploadModal
     },
     computed: {
-      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserSrc', 'getAutocompleteList', 'getAlarmMessageList'])
+      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserSrc', 'getAutocompleteList', 'getAlarmMessageList', 'getToken'])
     },
     methods: {
-      ...mapActions(['settingAlertMsg']),
+      ...mapActions(['settingAlertMsg', 'removeAlarmMessage']),
+      ...mapMutations(['setAlarmMessageList']),
       goHomePage () {
         this.$router.push('/')
       },
@@ -181,14 +186,18 @@
           this.showModal = true
         }
       },
-      goProfilePage () {
+      goProfilePage (accountId) {
         if (!this.isLoggedIn) {
           this.alert.message = '프로필을 보기 위해서는 로그인이 필요합니다.'
           this.alert.type = 'gray'
           this.settingAlertMsg(this.alert)
           this.$router.push('/login')
         } else {
-          this.$router.push('/@' + this.getUserName)
+          if (accountId == null) {
+            this.$router.push('/@' + this.getUserName)
+          } else {
+            this.$router.push('/@' + accountId)
+          }
         }
       },
       goMobileSearchPage () {
@@ -223,10 +232,6 @@
 
         this.matchingList = list
       },
-      setAlarmMessageList () {
-        let messageList = this.getAlarmMessageList
-        console.log(messageList)
-      },
       hideAutoComplete () {
         const sleep = (milliseconds) => {
           return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -237,6 +242,17 @@
       },
       showAndHideAlarmList () {
         this.alarmVisible = !this.alarmVisible
+      },
+      readAlarmMessage (alarmNo) {
+        console.log(alarmNo)
+        api.readAlarmMessage(alarmNo, this.getToken)
+          .then((response) => {
+            console.log(response)
+            this.setAlarmMessageList(response.data)
+          })
+          .catch(() => {
+            // 알람 지우는거 실패 처리 하기
+          })
       }
     }
   }
