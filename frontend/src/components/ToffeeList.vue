@@ -15,7 +15,7 @@
         </div>
       </div>
       <!-- Unsplash Starbucks Images -->
-      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
+      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index+orderedList.length">
         <img v-lazyload class="w-full h-image object-cover" :data-src="image.urls.small" >
       </div>
     </div>
