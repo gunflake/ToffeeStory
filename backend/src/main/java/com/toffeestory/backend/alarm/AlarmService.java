@@ -57,7 +57,7 @@ public class AlarmService {
 
             if(account != null){
                 sb.append(account.getAccountName()).append("님이 회원님의 게시물을 좋아합니다.");
-                alarmMessage = new AlarmMessage(account.getSrc(), sb.toString());
+                alarmMessage = new AlarmMessage(account.getAccountId(), account.getSrc(), sb.toString(), alarm.getSeqNo());
             }
 
         }
