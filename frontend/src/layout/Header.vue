@@ -252,29 +252,6 @@
     border-left: solid 1px;
   }
 
-  .alarm-rotateSquare {
-    margin-left: 0.8rem;
-    position: absolute;
-    transform: rotate(45deg);
-    width: 16px;
-    z-index: 2;
-    height: 16px;
-    background-color: white;
-    border-top: solid 1px;
-    border-left: solid 1px;
-  }
-
-  .alarmCount {
-    height: 1.5rem;
-    width: 1.5rem;
-    border-radius: 50%;
-    position: absolute;
-    border: solid 1px;
-    background-color: red;
-    left: 1.5rem;
-    bottom: 1.5rem;
-  }
-
   .completeBox {
     border: solid 1px;
     box-shadow: 0 0 5px;
