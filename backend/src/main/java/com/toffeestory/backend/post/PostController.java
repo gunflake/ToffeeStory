@@ -79,7 +79,7 @@ public class PostController {
             post.setSrc(defaultUrl+fileName);
 
             double percent = 0.25;
-            postService.resize(fileNameAndPath.toString(), rootPath +"/images/" + compressFileName + suffix, percent);
+            postService.resize(fileNameAndPath.toString(), rootPath +"/images/" + compressFileName, percent);
 
         }catch (IOException e){
             throw new InvalidImageException("이미지 업로드에 실패했습니다. 작성한 글 내용을 확인해주세요.");
