@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.http.ResponseEntity.*;
 
@@ -65,14 +63,24 @@ public class PostController {
         try{
             if(multipartFile.getSize() > 5120000) throw new MaxUploadSizeExceededException();
 
+
+
+            int lastIndex = Objects.requireNonNull(multipartFile.getOriginalFilename()).lastIndexOf('.');
+            String suffix = multipartFile.getOriginalFilename().substring(lastIndex);
+
             UUID uuid = UUID.randomUUID();
-            String fileName = uuid.toString();
+            String fileName = uuid.toString() + suffix;
+            String compressFileName = uuid.toString() + "-compress" + suffix;
 
             String rootPath = Paths.get("").toAbsolutePath().toString();
             rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
             Path fileNameAndPath = Paths.get(rootPath +"/images/", fileName);
             Files.write(fileNameAndPath, multipartFile.getBytes());
             post.setSrc(defaultUrl+fileName);
+
+            double percent = 0.25;
+            postService.resize(fileNameAndPath.toString(), rootPath +"/images/" + compressFileName + suffix, percent);
+
         }catch (IOException e){
             throw new InvalidImageException("이미지 업로드에 실패했습니다. 작성한 글 내용을 확인해주세요.");
         }
