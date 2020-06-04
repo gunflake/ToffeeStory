@@ -6,13 +6,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.toffeestory.backend.account.Account;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.hibernate.annotations.*;
 
 @Getter
 @Setter
@@ -66,6 +65,9 @@ public class Post {
     @JsonManagedReference(value = "post")
     private List<InterestPost> interestPostList  = new ArrayList<>();
 
+	@Transient
+    private String compressSrc;
+
     public void setAccount(Account account) {
         if(this.account != null){
             this.account.getPosts().remove(this);
@@ -83,5 +85,19 @@ public class Post {
     }
     public enum UseType {
         USE, UNUSED;
+    }
+
+    public String getCompressSrc() {
+        if(src == null)
+            return null;
+        else{
+            int index = src.lastIndexOf('.');
+
+            if(index == -1) {
+                return null;
+            }else{
+                return src.substring(0, index).concat("-compress").concat(src.substring(index));
+            }
+        }
     }
 }
