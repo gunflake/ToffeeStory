@@ -3,7 +3,7 @@
     <!-- Mobile -->
     <div class="flex w-full md:hidden py-2">
       <div class="w-1/4 ">
-          <div class="flex justify-center fa fa-home fa-2x" style="cursor: pointer" @click="goHomePage()"></div>
+        <div class="flex justify-center fa fa-home fa-2x" style="cursor: pointer" @click="goHomePage()"></div>
       </div>
       <div class="w-1/4 ">
         <div class="flex justify-center fa fa-search fa-2x" style="cursor: pointer" @click="goMobileSearchPage()"></div>
@@ -20,26 +20,32 @@
       <!-- Logo -->
       <img src="../assets/image/logo.png" class="h-12 w-12" @click="goHomePage()" style="cursor: pointer"/>
       <div class="hidden lg:block ml-6" style="margin-left: 1%;">
-        <div class="font-sans pt-1" style="white-space: nowrap; font-family: 'Roboto Slab', serif; font-size: larger; color:#1f845b;">TOFFEE STORY</div>
-        <div class="text-sm font-sans" style="white-space: nowrap;font-family: 'Special Elite', cursive; color: gray;">Toppings for everyone</div>
+        <div class="font-sans pt-1"
+             style="white-space: nowrap; font-family: 'Roboto Slab', serif; font-size: larger; color:#1f845b;">TOFFEE
+          STORY
+        </div>
+        <div class="text-sm font-sans" style="white-space: nowrap;font-family: 'Special Elite', cursive; color: gray;">
+          Toppings for everyone
+        </div>
       </div>
       <!-- Search -->
       <div class="w-full items-center ml-3 pt-1">
         <div class="relative">
           <span>
-            <input class="transition-colors duration-100 ease-in-out focus:outline-none border border-transparent focus:bg-white focus:border-gray-900 placeholder-gray-600 rounded-lg bg-search py-2 pr-4 pl-10 block w-full appearance-none leading-normal ds-input"
-                   type="text" placeholder="Search desired topping" autocomplete="off"
-                   spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
-                   aria-label="search input"  dir="auto"
-                   v-on:keyup.enter="search"
-                   v-on:keyup="setAutocompleteList"
-                   v-model="searchTag"
-                   v-on:focus="autoCompleteView = true"
-                   v-on:blur="hideAutoComplete">
+            <input
+              class="transition-colors duration-100 ease-in-out focus:outline-none border border-transparent focus:bg-white focus:border-gray-900 placeholder-gray-600 rounded-lg bg-search py-2 pr-4 pl-10 block w-full appearance-none leading-normal ds-input"
+              type="text" placeholder="Search desired topping" autocomplete="off"
+              spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false"
+              aria-label="search input" dir="auto"
+              v-on:keyup.enter="search"
+              v-on:keyup="setAutocompleteList"
+              v-model="searchTag"
+              v-on:focus="autoCompleteView = true"
+              v-on:blur="hideAutoComplete">
           </span>
           <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
             <svg class="fill-current pointer-events-none text-gray-600 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 20 20" >
+                 viewBox="0 0 20 20">
               <path
                 d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"></path>
             </svg>
@@ -62,7 +68,9 @@
                   <div class="ml-2 my-auto">{{topping}}</div>
                 </a>
               </div>
-              <div v-if="matchingList.beverage.length == 0 && matchingList.topping.length == 0" class="p-2 text-2xl text-center">"{{searchTag}}" 에 관한 정보가 없습니다.</div>
+              <div v-if="matchingList.beverage.length == 0 && matchingList.topping.length == 0"
+                   class="p-2 text-2xl text-center">"{{searchTag}}" 에 관한 정보가 없습니다.
+              </div>
             </div>
           </div>
         </div>
@@ -78,12 +86,12 @@
       <!-- Image Upload Modal-->
       <!-- Login 상태에 따라 프로필 / 로그인 버튼  -->
       <div v-if="isLoggedIn" class="flex">
-        <a href="#" class="ml-4">
-          <img src="@/assets/image/bell.png" class="w-10 h-10 rounded-full"/>
-        </a>
+        <!-- 알람 메시지 -->
+        <AlarmMessage/>
         <router-link :to="'/@' + getUserName">
           <a href="#" rel="home" class="flex items-center mx-4">
-            <img :src="getUserSrc" alt="http://localhost:8098/api/images/defaultProfile.png" class="w-10 h-10 rounded-full"/>
+            <img :src="getUserSrc" alt="http://localhost:8098/api/images/defaultProfile.png"
+                 class="w-10 h-10 rounded-full"/>
             <span class="text-base pl-2">{{ getUserName }}</span>
           </a>
         </router-link>
@@ -108,8 +116,10 @@
 <script>
   import '@/assets/css/unsplash.css'
   import '@/assets/css/searchComplete.css'
+  import api from '@/backend-api'
   import UploadModal from '@/components/UploadModal'
-  import { mapActions, mapGetters } from 'vuex'
+  import AlarmMessage from '@/components/AlarmMessage'
+  import { mapActions, mapGetters, mapMutations } from 'vuex'
 
   export default {
     name: 'Header',
@@ -125,7 +135,8 @@
         alert: {
           message: null,
           type: null
-        }
+        },
+        alarmVisible: false
       }
     },
     props: {
@@ -133,13 +144,15 @@
       userId: String
     },
     components: {
+      AlarmMessage,
       UploadModal
     },
     computed: {
-      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserSrc', 'getAutocompleteList'])
+      ...mapGetters(['isLoggedIn', 'getUserName', 'getUserSrc', 'getAutocompleteList', 'getAlarmMessageList', 'getToken'])
     },
     methods: {
       ...mapActions(['settingAlertMsg']),
+      ...mapMutations(['setAlarmMessageList']),
       goHomePage () {
         this.$router.push('/')
       },
@@ -153,14 +166,18 @@
           this.showModal = true
         }
       },
-      goProfilePage () {
+      goProfilePage (accountId) {
         if (!this.isLoggedIn) {
           this.alert.message = '프로필을 보기 위해서는 로그인이 필요합니다.'
           this.alert.type = 'gray'
           this.settingAlertMsg(this.alert)
           this.$router.push('/login')
         } else {
-          this.$router.push('/@' + this.getUserName)
+          if (accountId == null) {
+            this.$router.push('/@' + this.getUserName)
+          } else {
+            this.$router.push('/@' + accountId)
+          }
         }
       },
       goMobileSearchPage () {
@@ -177,7 +194,9 @@
         let product = this.getAutocompleteList
         let keyword = this.searchTag
 
-        if (keyword.length < 1) { return }
+        if (keyword.length < 1) {
+          return
+        }
 
         product.beverage.forEach(function (item) {
           if (item.includes(keyword)) {
@@ -191,10 +210,6 @@
           }
         })
 
-        // 최대 5개만 보여주기 선택 1
-        // list.beverage = list.beverage.slice(0, 5)
-        // list.topping = list.topping.slice(0, 5)
-
         this.matchingList = list
       },
       hideAutoComplete () {
@@ -204,13 +219,28 @@
         sleep(100).then(() => {
           this.autoCompleteView = false
         })
+      },
+      showAndHideAlarmList () {
+        this.alarmVisible = !this.alarmVisible
+      },
+      readAlarmMessage (alarmNo) {
+        console.log(alarmNo)
+        api.readAlarmMessage(alarmNo, this.getToken)
+          .then((response) => {
+            console.log(response)
+            this.setAlarmMessageList(response.data)
+          })
+          .catch(() => {
+            // 알람 지우는거 실패 처리 하기
+          })
       }
     }
   }
 </script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
-  .rotateSquare{
+
+  .rotateSquare {
     margin-left: 6.5rem;
     position: absolute;
     transform: rotate(45deg);
@@ -221,11 +251,13 @@
     border-top: solid 1px;
     border-left: solid 1px;
   }
-  .completeBox{
+
+  .completeBox {
     border: solid 1px;
     box-shadow: 0 0 5px;
   }
-  .fontDoHyeon{
+
+  .fontDoHyeon {
     font-family: 'Do Hyeon', sans-serif;
   }
 </style>

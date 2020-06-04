@@ -2,10 +2,8 @@ package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
 import com.toffeestory.backend.account.AccountRepository;
-import com.toffeestory.backend.exception.InvalidImageException;
-import com.toffeestory.backend.exception.MaxUploadSizeExceededException;
-import com.toffeestory.backend.exception.NotFoundPostException;
-import com.toffeestory.backend.exception.RestApiError;
+import com.toffeestory.backend.alarm.AlarmService;
+import com.toffeestory.backend.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.http.ResponseEntity.*;
 
@@ -36,6 +32,7 @@ public class PostController {
     final PostDtlRepository postDtlRepository;
     final InterestPostRepository interestPostRepository;
     final PostService postService;
+    final AlarmService alarmService;
 
     @Value("${url}")
     String defaultUrl;
@@ -66,14 +63,24 @@ public class PostController {
         try{
             if(multipartFile.getSize() > 5120000) throw new MaxUploadSizeExceededException();
 
+
+
+            int lastIndex = Objects.requireNonNull(multipartFile.getOriginalFilename()).lastIndexOf('.');
+            String suffix = multipartFile.getOriginalFilename().substring(lastIndex);
+
             UUID uuid = UUID.randomUUID();
-            String fileName = uuid.toString();
+            String fileName = uuid.toString() + suffix;
+            String compressFileName = uuid.toString() + "-compress" + suffix;
 
             String rootPath = Paths.get("").toAbsolutePath().toString();
             rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
             Path fileNameAndPath = Paths.get(rootPath +"/images/", fileName);
             Files.write(fileNameAndPath, multipartFile.getBytes());
             post.setSrc(defaultUrl+fileName);
+
+            double percent = 0.25;
+            postService.resize(fileNameAndPath.toString(), rootPath +"/images/" + compressFileName, percent);
+
         }catch (IOException e){
             throw new InvalidImageException("이미지 업로드에 실패했습니다. 작성한 글 내용을 확인해주세요.");
         }
@@ -227,14 +234,23 @@ public class PostController {
                                          @RequestParam("useFlag") Boolean useState,
                                          @AuthenticationPrincipal Account account) {
 
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
+
+
 
         // set InterestPost
         postService.updateInterest(post, account, valueCode, useState);
 
+
         if(valueCode == 0) {
             if(!useState) {
                 post.setLikeCnt(post.getLikeCnt() + 1);
+
+                // set Alarm & 내 게시글이 아닐 경우에만 알람 등록
+                if(!post.getAccount().getAccountNo().equals(account.getAccountNo())){
+                    alarmService.enrollLikeAlarm(post.getAccount(), account.getAccountNo(), post).orElseThrow(FailEnrollAlarmException::new);
+                }
+
             } else {
                 post.setLikeCnt(post.getLikeCnt() - 1);
             }

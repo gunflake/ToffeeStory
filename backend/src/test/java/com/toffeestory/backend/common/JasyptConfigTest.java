@@ -1,4 +1,4 @@
-package com.toffeestory.backend.security;
+package com.toffeestory.backend.common;
 
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.StrongTextEncryptor;

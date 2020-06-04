@@ -16,7 +16,8 @@ export default new Vuex.Store({
     alertType: null,
     token: null,
     headerVisible: true,
-    autocompleteList: null
+    autocompleteList: null,
+    alarmMessageList: null
   },
   getters: {
     isLoggedIn: state => state.loginSuccess,
@@ -29,7 +30,8 @@ export default new Vuex.Store({
     getToken: state => state.token,
     getUserSrc: state => state.userSrc,
     getHeaderVisible: state => state.headerVisible,
-    getAutocompleteList: state => state.autocompleteList
+    getAutocompleteList: state => state.autocompleteList,
+    getAlarmMessageList: state => state.alarmMessageList
   },
   mutations: {
     login_success (state, payload) {
@@ -72,6 +74,12 @@ export default new Vuex.Store({
     },
     setAutocompleteList (state, product) {
       state.autocompleteList = product
+    },
+    setAlarmMessageList (state, alarmList) {
+      state.alarmMessageList = alarmList
+    },
+    initAlarmMessageList (state) {
+      state.alarmMessageList = null
     }
   },
   actions: {
@@ -142,9 +150,11 @@ export default new Vuex.Store({
             userSrc: userObj.src
           })
           commit('tokenSetting', config)
+          commit('setAlarmMessageList', userObj.alarmMessageList)
         } else {
           commit('tokenInit')
           commit('logout')
+          commit('initAlarmMessageList')
           localStorage.clear()
         }
       })
@@ -157,6 +167,7 @@ export default new Vuex.Store({
         dispatch('settingAlertMsg', data)
         commit('tokenInit')
         commit('logout')
+        commit('initAlarmMessageList')
       })
     },
     setAutocompleteList ({ commit }) {

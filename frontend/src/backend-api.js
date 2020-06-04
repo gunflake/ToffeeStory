@@ -67,5 +67,8 @@ export default {
   },
   resetAccountPassword (resetToken, data) {
     return AXIOS.patch('/accounts/reset-password-token/' + resetToken, data)
+  },
+  readAlarmMessage (alarmNo, token) {
+    return AXIOS.patch('/alarms/message/' + alarmNo, null, token)
   }
 }

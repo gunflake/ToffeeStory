@@ -1,5 +1,7 @@
 package com.toffeestory.backend.account;
 
+import com.toffeestory.backend.alarm.AlarmMessage;
+import com.toffeestory.backend.alarm.AlarmService;
 import com.toffeestory.backend.exception.*;
 import com.toffeestory.backend.post.InterestPost;
 import com.toffeestory.backend.post.InterestPostRepository;
@@ -47,6 +49,7 @@ public class AccountController {
     private final PostRepository postRepository;
     private final InterestPostRepository interestPostRepository;
     private final AccountKeyRepository accountKeyRepository;
+    private final AlarmService alarmService;
 
     @Value("${url}")
     String defaultUrl;
@@ -142,7 +145,14 @@ public class AccountController {
 
     @GetMapping(path = "/me")
     public ResponseEntity<AccountInfo> getAccountInfo(@AuthenticationPrincipal Account account){
-        return ok(new AccountInfo(account.getAccountId(), account.getEmail(), account.getSrc()));
+        if(account == null){
+            throw new InvalidJwtAuthenticationException();
+        }
+
+        // 알람 형식을 메세지로 처리해서 넘겨주기
+        List<AlarmMessage> alarmMessageList = alarmService.getAlarmMessageList(account);
+
+        return ok(new AccountInfo(account.getAccountId(), account.getEmail(), account.getSrc(), alarmMessageList));
     }
 
     // Profile 페이지 세팅
