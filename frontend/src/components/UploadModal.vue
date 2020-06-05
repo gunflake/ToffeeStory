@@ -217,7 +217,6 @@
               this.alert.message = error.response.data.message
               this.alert.type = 'red'
               this.settingAlertMsg(this.alert)
-              this.$emit('close')
             })
         } else if (this.mode === 'modify') {
           api.modifyPost(this.postNo, formData, this.getToken)
@@ -228,11 +227,10 @@
               this.$emit('close')
               this.$emit('reload', this.postNo)
             })
-            .catch(() => {
-              this.alert.message = '글 수정에 실패했습니다. 작성한 글 내용을 확인해주세요.'
+            .catch(error => {
+              this.alert.message = error.response.data.message
               this.alert.type = 'red'
               this.settingAlertMsg(this.alert)
-              this.$emit('close')
             })
         } else {
           this.alert.message = '글 수정에 실패했습니다. 다시 시도해주세요.'
