@@ -7,23 +7,19 @@
         <a v-for="sortkey in Object.keys(sortList)" :key="sortkey" v-on:click="sortOrder = sortkey" v-bind:class="{active: sortOrder === sortkey}"> {{ sortkey }} <span style="color: black;font-weight: normal;">|</span></a>
       </div>
     </div>
-    <div class="flex flex-wrap lg:px-10 xl:px-20">
+    <div class="images-container flex flex-wrap lg:px-10 xl:px-20">
       <!-- Our Database Images -->
       <div class="doc w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
-          <a @mouseenter="links = 1" @mouseleave="links = null" @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
-          <div v-show="links == 1" class="links">
-            <a href="#"><i class="fa fa-heart"></i><span>{{ image.likeCnt }}</span></a>
-          </div>
+          <a @click="setPostNo(image.postNo)"><img class="w-full h-image object-cover" :src="image.src"></a>
         </div>
       </div>
       <!-- Unsplash Starbucks Images -->
-      <div class="doc w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index">
-        <img @mouseenter="links = 1" @mouseleave="links = null" class="w-full h-image object-cover" style="z-index: 2" :src="image.urls.small">
-        <a class="relative links" href="#"><i class="fa fa-heart"></i><span>{{ image.likes }}</span></a>
+      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index1) of images" :key="'A' + index1">
+        <img class="w-full h-image object-cover" :src="image.urls.small">
       </div>
     </div>
-    <Post @mouseenter="links = 1" @mouseleave="links = null" v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
+    <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
     <div class="flex flex-wrap lg:px-10 xl:px-20">
     </div>
     <scroll-loader :loader-method="getImagesInfo" :loader-enable="loadMore" loader-color="rgba(102,102,102,.5)">
@@ -139,12 +135,6 @@
       setPostNo (postNo) {
         this.posts.postNo = postNo
         this.showModal = true
-      },
-      mouseover: function () {
-
-      },
-      mouseleave: function () {
-
       }
     },
     watch: {
@@ -168,30 +158,3 @@
     }
   }
 </script>
-<style>
-  .doc .links{
-    text-align:center;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    overflow:hidden;
-    opacity:0;
-    transition:.2s;
-  }
-  .doc .links i{
-    font-size:35px;
-    margin:0 auto;
-    position:relative;
-    padding:15px;
-
-  }
-  .sort-list a {
-    color: black;
-    cursor: pointer;
-  }
-  .sort-list a.active {
-    color: red;
-    font-weight: bold;
-  }
-</style>

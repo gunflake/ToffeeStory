@@ -1,5 +1,8 @@
 # ToffeeStory
 
+## 개요
+스타벅스의 음료를 다양한 토핑으로 커스터마이징 하여 만든 음료에 대한 정보를 공유하는 웹 서비스
+
 ## Member
 - 남혁민
 - 이세라
@@ -45,6 +48,18 @@
         
 - FrontEnd
     - FrontEnd 폴더에서 npm run serve 실행
+
+##주요 기능
+- <Header>
+    - <Join>
+    - <UploadModal>
+    - <Profile>
+- <Home>
+    - <ToffeeList> : 게시글 목록 컴포넌트
+        - unsplash API로 스타벅스 데이터 가져옴
+        - sort 기능
+    - <SearchList> : 태그 검색 리스트 조회
+- <Login>
 
 
 ## Spring Security & JWT를 활용한 REST API Secure 설정

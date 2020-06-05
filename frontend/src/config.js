@@ -7,14 +7,6 @@ export default {
     SEARCH: 4
   },
 
-  ProfileMethods: {
-    INSTAGRAM_URL: 'https://www.instagram.com/',
-    TWITTER_URL: 'https://www.twitter.com/',
-    CODE_MY_MENU: 3,
-    CODE_LIKES: 0,
-    CODE_BOOKMARKS: 1
-  },
-
   AccSettingsMethods: {
     MAX_SIZE: 5 * 1024 * 1024,
     CONFIRM_MSG: 'Are you sure?',
