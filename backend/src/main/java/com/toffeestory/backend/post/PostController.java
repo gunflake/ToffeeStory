@@ -184,7 +184,9 @@ public class PostController {
             return badRequest().body(new RestApiError(HttpStatus.BAD_REQUEST, "본인이 작성한 글만 수정할 수 있습니다."));
         }
 
-        postRepository.delete(post);
+        post.setUseStateCode(Post.UseType.UNUSED);
+
+        postRepository.save(post);
 
         return noContent().build();
     }
