@@ -2,6 +2,7 @@ package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
 import lombok.extern.slf4j.Slf4j;
+import com.toffeestory.backend.exception.NotFoundPostException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class PostService {
 
         //해당 정보가 있으면 찾아서 상태 값 변경
         if(interestPostRepository.findAllByPostAndAccount(post, account).isPresent()) {
-            interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new RuntimeException());
+            interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new NotFoundPostException());
 
             if(valueCode == 0) {
                 interestPost.setLikeState(useType);

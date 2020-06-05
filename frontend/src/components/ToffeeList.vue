@@ -7,16 +7,16 @@
         <a v-for="sortkey in Object.keys(sortList)" :key="sortkey" v-on:click="sortOrder = sortkey" v-bind:class="{active: sortOrder === sortkey}"> {{ sortkey }} <span style="color: black;font-weight: normal;">|</span></a>
       </div>
     </div>
-    <div class="flex flex-wrap lg:px-10 xl:px-20">
+    <div class="images-container flex flex-wrap lg:px-10 xl:px-20">
       <!-- Our Database Images -->
-      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
+      <div class="doc w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
           <a @click="setPostNo(image.postNo)"><img v-lazyload class="w-full h-image object-cover" :data-src="image.src" ></a>
         </div>
       </div>
       <!-- Unsplash Starbucks Images -->
-      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of images" :key="index+orderedList.length">
-        <img v-lazyload class="w-full h-image object-cover" :data-src="image.urls.small" >
+      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index1) of images" :key="'A' + index1">
+        <img class="w-full h-image object-cover" :src="image.urls.small">
       </div>
     </div>
     <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
@@ -37,7 +37,7 @@
 
   export default {
     name: 'ToffeeList',
-    props: ['sortFlag', 'valueCode', 'keyword'],
+    props: ['sortFlag', 'valueCode', 'keyword', 'accountId'],
     components: {
       Post
     },
@@ -50,14 +50,15 @@
         images: [],
         posts: [],
         sortOrder: 'NEW',
-        orderByKey: 'postNo'
+        orderByKey: 'postNo',
+        links: null
       }
     },
     directives: {
       lazyload
     },
     computed: {
-      ...mapGetters(['getToken']),
+      ...mapGetters(['getToken', 'isLoggedIn', 'getUserName']),
       sortList: function () {
         return {
           'NEW': 'postNo',
@@ -85,7 +86,6 @@
         else this.orderByKey = 'score'
       },
       searchPosts (keyword) {
-        console.log(keyword)
         api.searchPostList(keyword)
           .then(response => {
             this.posts = response.data
@@ -94,13 +94,31 @@
             console.log(e)
           })
       },
-      getInterestPost (valueCode) {
-        api.getInterestPosts(valueCode, this.getToken).then(response => {
-          this.posts = response.data
-        })
-          .catch(e => {
-            console.log(e)
+      getInterestPost (valueCode, accountId) {
+        if (this.isLoggedIn) {
+          if (this.getUserName === accountId) {
+            api.getInterestPosts(valueCode, this.getToken).then(response => {
+              this.posts = response.data
+            })
+              .catch(e => {
+                console.log(e)
+              })
+          } else {
+            api.getAccountPostList(accountId).then(response => {
+              this.posts = response.data
+            })
+              .catch(e => {
+                console.log(e)
+              })
+          }
+        } else {
+          api.getAccountPostList(accountId).then(response => {
+            this.posts = response.data
           })
+            .catch(e => {
+              console.log(e)
+            })
+        }
       },
       getImagesInfo () {
         axios.get('https://api.unsplash.com/search/photos/', {
@@ -137,19 +155,10 @@
       } else if (this.valueCode === config.PostMethods.SEARCH) {
         this.searchPosts(this.keyword)
       } else {
-        this.getInterestPost(this.valueCode)
+        this.getInterestPost(this.valueCode, this.accountId)
       }
+
       this.getImagesInfo()
     }
   }
 </script>
-<style>
-  .sort-list a {
-    color: black;
-    cursor: pointer;
-  }
-  .sort-list a.active {
-    color: red;
-    font-weight: bold;
-  }
-</style>

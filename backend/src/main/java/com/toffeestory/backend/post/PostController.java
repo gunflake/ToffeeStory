@@ -41,13 +41,48 @@ public class PostController {
        -select Post List
      -------------------------------*/
     @GetMapping(path = "")
-    public List<Post> initPage() {
-        return postRepository.findAll();
+    public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword) {
+        if(keyword != null) {
+            return postRepository.findAllSearchKeywordPost(keyword);
+        } else {
+            return postRepository.findAll();
+        }
     }
 
-    @GetMapping(path = "/search/{keyword}")
-    public List<Post> searchKeyword(@PathVariable("keyword") String keyword) {
-        return postRepository.findAllSearchKeywordPost(keyword);
+    /*-------------------------------
+      -select Related Post List
+    -------------------------------*/
+    @GetMapping("/{postNo}/relatedPost")
+    public ResponseEntity relatedPostList(@PathVariable("postNo") Integer postNo) {
+        List<Post> posts = new ArrayList<>();
+
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
+        //해당 게시글이 가지고 있는 토핑, 상품 조회
+        List<PostDtl> postDtls = postDtlRepository.findByPost(post);
+
+        for (int i = 0; i < postDtls.size(); i++) {
+            // 토핑, 상품을 가지고 있는 게시글 넘버 가져옴
+            List<PostDtl> setPost = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
+
+            for (int j = 0; j < setPost.size(); j++) {
+                if(!posts.contains(setPost.get(j).getPost()) && post != setPost.get(j).getPost()) {
+                    posts.add(setPost.get(j).getPost());
+                }
+            }
+        }
+
+        return ok(posts);
+    }
+
+    /*-------------------------------
+      -select account Post List
+    -------------------------------*/
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity accountPostList(@PathVariable("accountId") String accountId) {
+        Account  account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new NotFoundAccountException(accountId));
+        List<Post> posts = postRepository.findAllByAccount(account);
+
+        return ok(posts);
     }
 
 	@PostMapping("")
@@ -160,7 +195,7 @@ public class PostController {
     @GetMapping(path = "/{postNo}")
     public ResponseEntity selectPost(@PathVariable("postNo") Integer postNo,
                                      @AuthenticationPrincipal Account account) {
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
         List<String>  tagNames = new ArrayList<>();
         List<PostDtl> postDtls = postDtlRepository.findByPost(post);
 
@@ -174,7 +209,7 @@ public class PostController {
         int bookmarkState = 0;
 
         if(account != null && interestPostRepository.findAllByPostAndAccount(post, account).isPresent()) {
-            InterestPost interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new RuntimeException());
+            InterestPost interestPost = interestPostRepository.findAllByPostAndAccount(post, account).orElseThrow(() -> new NotFoundPostException());
 
             likeState     = interestPost.getLikeState().ordinal();
             bookmarkState = interestPost.getBookmarkState().ordinal();
@@ -186,31 +221,6 @@ public class PostController {
     }
 
     /*-------------------------------
-      -select Related Post List
-    -------------------------------*/
-    @GetMapping("/{postNo}/relatedPost")
-    public ResponseEntity relatedPostList(@PathVariable("postNo") Integer postNo) {
-        List<Post> posts = new ArrayList<>();
-
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new RuntimeException());
-        //해당 게시글이 가지고 있는 토핑, 상품 조회
-        List<PostDtl> postDtls = postDtlRepository.findByPost(post);
-
-        for (int i = 0; i < postDtls.size(); i++) {
-            // 토핑, 상품을 가지고 있는 게시글 넘버 가져옴
-            List<PostDtl> setPost = postDtlRepository.findByTagName(postDtls.get(i).getTagName());
-
-            for (int j = 0; j < setPost.size(); j++) {
-                if(!posts.contains(setPost.get(j).getPost()) && post != setPost.get(j).getPost()) {
-                    posts.add(setPost.get(j).getPost());
-                }
-            }
-        }
-
-        return ok(posts);
-    }
-
-    /*-------------------------------
        - select Tag
      -------------------------------*/
     @GetMapping("/tag/{tagName}")
@@ -219,7 +229,8 @@ public class PostController {
         List<PostDtl> post = postDtlRepository.findByTagName(tagName);
 
         for (int i = 0; i < post.size(); i++) {
-            posts.add(postRepository.findByPostNo(post.get(i).getPost().getPostNo()).orElseThrow(() -> new RuntimeException()));
+            int postNo = post.get(i).getPost().getPostNo();
+            posts.add(postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo)));
         }
 
         return posts;
@@ -234,9 +245,7 @@ public class PostController {
                                          @RequestParam("useFlag") Boolean useState,
                                          @AuthenticationPrincipal Account account) {
 
-        Post post = postRepository.findByPostNo(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
-
-
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new NotFoundPostException(postNo));
 
         // set InterestPost
         postService.updateInterest(post, account, valueCode, useState);

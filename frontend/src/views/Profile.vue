@@ -41,23 +41,23 @@
     <!-- 네비게이션 -->
     <nav class="bg-white px-8 pt-2 shadow-md">
       <div class="-mb-px flex justify-left">
-        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(config.PostMethods.MYMENU)">
+        <a class="no-underline text-teal-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(myMenu)">
           My Menu
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(config.PostMethods.LIKE)">
+        <a v-if="isMyProfile" class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(like)">
           Likes
         </a>
-        <a class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(config.PostMethods.BOOKMARK)">
+        <a v-if="isMyProfile" class="no-underline text-grey-dark border-b-2 border-transparent hover:border-black tracking-wide font-bold text-xs py-3 mr-8" style="cursor: pointer" @click="setValueCode(bookmark)">
           Bookmarks
         </a>
       </div>
     </nav>
-    <ToffeeList v-bind:sortFlag = false :valueCode = this.valueCode></ToffeeList>
+    <ToffeeList v-bind:sortFlag = false :valueCode = this.valueCode :accountId = this.accountId></ToffeeList>
   </div>
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import axios from 'axios'
   import ToffeeList from '@/components/ToffeeList'
   import config from '../config.js'
@@ -73,12 +73,21 @@
         instagramLink: 'https://www.instagram.com/',
         twitterLink: 'https://www.twitter.com/',
         errors: [],
-        isMyProfile: true,
-        valueCode: config.PostMethods.MYMENU
+        isMyProfile: false,
+        valueCode: config.PostMethods.MYMENU,
+        myMenu: config.PostMethods.MYMENU,
+        like: config.PostMethods.LIKE,
+        bookmark: config.PostMethods.BOOKMARK,
+        accountId: this.$route.params.username
       }
+    },
+    computed: {
+      ...mapGetters(['isLoggedIn', 'getUserName'])
     },
     mounted () {
       let username = this.$route.params.username
+      this.accountId = username
+
       axios.get(`/api/accounts/` + username).then(response => {
         if (response.status === 200) {
           this.account = {
@@ -90,9 +99,15 @@
             src: response.data.src
           }
         }
-      }).catch(e => {
+      })
+      .catch(e => {
         console.log(e)
       })
+
+      if (this.isLoggedIn && this.getUserName === username) {
+        console.log(this.getUserName + ' & ' + username)
+        this.isMyProfile = true
+      }
     },
     methods: {
       ...mapActions(['logoutProcess']),
@@ -102,6 +117,9 @@
       },
       changeProfileImg () {
         this.account.src = 'http://localhost:8098/api/images/defaultProfile.png'
+      },
+      setValueCode (valueCode) {
+        this.valueCode = valueCode
       }
     }
   }
