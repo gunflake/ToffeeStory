@@ -7,9 +7,9 @@
         <a v-for="sortkey in Object.keys(sortList)" :key="sortkey" v-on:click="sortOrder = sortkey" v-bind:class="{active: sortOrder === sortkey}"> {{ sortkey }} <span style="color: black;font-weight: normal;">|</span></a>
       </div>
     </div>
-    <div class="images-container flex flex-wrap lg:px-10 xl:px-20">
+    <div class="flex flex-wrap lg:px-10 xl:px-20">
       <!-- Our Database Images -->
-      <div class="doc w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
+      <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
           <a @click="setPostNo(image.postNo)"><img v-lazyload class="w-full h-image object-cover" :data-src="image.src" ></a>
         </div>
