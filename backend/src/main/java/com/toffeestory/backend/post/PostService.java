@@ -1,16 +1,24 @@
 package com.toffeestory.backend.post;
 
 import com.toffeestory.backend.account.Account;
+import com.toffeestory.backend.exception.InvalidImageException;
+import com.toffeestory.backend.exception.MaxUploadSizeExceededException;
 import lombok.extern.slf4j.Slf4j;
 import com.toffeestory.backend.exception.NotFoundPostException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -86,5 +94,32 @@ public class PostService {
     }
 
 
+    public boolean saveImage(Post post, MultipartFile multipartFile, String defaultUrl) {
+        try{
+            if(multipartFile.getSize() > 5120000) throw new MaxUploadSizeExceededException();
 
+
+
+            int lastIndex = Objects.requireNonNull(multipartFile.getOriginalFilename()).lastIndexOf('.');
+            String suffix = multipartFile.getOriginalFilename().substring(lastIndex);
+
+            UUID uuid = UUID.randomUUID();
+            String fileName = uuid.toString() + suffix;
+            String compressFileName = uuid.toString() + "-compress" + suffix;
+
+            String rootPath = Paths.get("").toAbsolutePath().toString();
+            rootPath = rootPath.split("ToffeeStory")[0] + "ToffeeStory";
+            Path fileNameAndPath = Paths.get(rootPath +"/images/", fileName);
+            Files.write(fileNameAndPath, multipartFile.getBytes());
+            post.setSrc(defaultUrl+fileName);
+
+            double percent = 0.25;
+            resize(fileNameAndPath.toString(), rootPath +"/images/" + compressFileName, percent);
+
+        }catch (IOException e){
+            throw new InvalidImageException("이미지 업로드에 실패했습니다. 작성한 글 내용을 확인해주세요.");
+        }
+
+        return true;
+    }
 }
