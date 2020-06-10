@@ -43,9 +43,9 @@ public class PostController {
     @GetMapping(path = "")
     public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword) {
         if(keyword != null) {
-            return postRepository.findAllSearchKeywordPost(keyword);
+            return postRepository.findAllSearchKeywordPost(keyword, PostDtl.UseType.USE);
         } else {
-            return postRepository.findAll();
+            return postRepository.findAllByUseStateCode(Post.UseType.USE);
         }
     }
 
@@ -80,7 +80,7 @@ public class PostController {
     @GetMapping("/account/{accountId}")
     public ResponseEntity accountPostList(@PathVariable("accountId") String accountId) {
         Account  account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new NotFoundAccountException(accountId));
-        List<Post> posts = postRepository.findAllByAccount(account);
+        List<Post> posts = postRepository.findAllByAccountAndUseStateCode(account, Post.UseType.USE);
 
         return ok(posts);
     }
@@ -120,7 +120,7 @@ public class PostController {
             throw new InvalidImageException("이미지 업로드에 실패했습니다. 작성한 글 내용을 확인해주세요.");
         }
 
-        account.setPosts(postRepository.findAllByAccount(account));
+        account.setPosts(postRepository.findAllByAccountAndUseStateCode(account, Post.UseType.USE));
 
 
         post.setScore(score);
