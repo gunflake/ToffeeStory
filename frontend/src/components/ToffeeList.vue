@@ -11,12 +11,14 @@
       <!-- Our Database Images -->
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
-          <a @click="setPostNo(image.postNo)"><img v-lazyload class="w-full h-image object-cover" :data-src="image.src" ></a>
+          <a @click="setPostNo(image.postNo)"><img v-lazyload class="w-full h-image object-cover" :data-src="image.src" @load="masks.push(index)" ></a>
+          <div class="w-full h-image object-cover" :data-src="image.compressSrc" v-if="!masks.includes(index)"></div>
         </div>
       </div>
       <!-- Unsplash Starbucks Images -->
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index1) of images" :key="'A' + index1">
-        <img class="w-full h-image object-cover" :src="image.urls.small">
+        <img class="w-full h-image object-cover" :src="image.urls.small" @load="masks.push(index1)">
+        <div class="w-full h-image object-cover" :style="{'background-color':image.color}" v-if="!masks.includes(index1)"></div>
       </div>
     </div>
     <Post v-bind:postNo="posts.postNo" v-if="showModal" @close="showModal = false"></Post>
@@ -48,6 +50,7 @@
         page: 1,
         pageSize: 9,
         images: [],
+        masks: [],
         posts: [],
         sortOrder: 'NEW',
         orderByKey: 'postNo',
@@ -75,6 +78,7 @@
       getPosts () {
         api.getPostList().then(response => {
           this.posts = response.data
+          console.log(response.data)
         })
           .catch(e => {
             console.log(e)
@@ -131,6 +135,7 @@
         })
           .then(res => {
             res.data.results && res.data.results.length && (this.images = this.images.concat(res.data.results))
+            res.data.length < this.pageSize && (this.loadMore = false)
           })
           .catch(error => {
             console.log(error)
