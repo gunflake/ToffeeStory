@@ -253,8 +253,8 @@ public class AccountController {
                                        @AuthenticationPrincipal Account account) {
         List<Post> posts = new ArrayList<>();
 
-        if(valueCode == 3) {    //my menu
-            posts = postRepository.findAllByAccount(account);
+        if(valueCode == 3) {    // my menu
+            posts = postRepository.findAllByAccountAndUseStateCode(account, Post.UseType.USE);
         } else {
             List<InterestPost> interestPosts;
 

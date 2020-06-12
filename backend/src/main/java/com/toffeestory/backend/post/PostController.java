@@ -45,7 +45,7 @@ public class PostController {
         if(keyword != null) {
             return postRepository.findAllSearchKeywordPost(keyword);
         } else {
-            return postRepository.findAll();
+            return postRepository.findAllByUseStateCode(Post.UseType.USE);
         }
     }
 
@@ -80,7 +80,7 @@ public class PostController {
     @GetMapping("/account/{accountId}")
     public ResponseEntity accountPostList(@PathVariable("accountId") String accountId) {
         Account  account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new NotFoundAccountException(accountId));
-        List<Post> posts = postRepository.findAllByAccount(account);
+        List<Post> posts = postRepository.findAllByAccountAndUseStateCode(account, Post.UseType.USE);
 
         return ok(posts);
     }
@@ -97,7 +97,7 @@ public class PostController {
 
         postService.saveImage(post, multipartFile, defaultUrl);
 
-        account.setPosts(postRepository.findAllByAccount(account));
+        account.setPosts(postRepository.findAllByAccountAndUseStateCode(account, Post.UseType.USE));
 
         post.setScore(score);
         post.setContent(content);

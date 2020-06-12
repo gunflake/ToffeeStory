@@ -385,7 +385,7 @@ public class SampleData implements ApplicationRunner {
         accountService.saveAccount(account2);
 
         Post post = new Post();
-        account.setPosts(postRepository.findAllByAccount(account));
+        account.setPosts(postRepository.findAllByAccountAndUseStateCode(account, Post.UseType.USE));
         post.setAccount(account);
         post.setSrc(defaultUrl + "postpic1.jpg");
         post.setContent("content");
@@ -417,7 +417,7 @@ public class SampleData implements ApplicationRunner {
         postDtlRepository.save(postdtl1);
 
         Post post2 = new Post();
-        account.setPosts(postRepository.findAllByAccount(account));
+        account.setPosts(postRepository.findAllByAccountAndUseStateCode(account, Post.UseType.USE));
         post2.setAccount(account);
         post2.setSrc(defaultUrl + "postpic2.jpg");
         post2.setContent("content2");
@@ -441,7 +441,7 @@ public class SampleData implements ApplicationRunner {
 
         Post post3 = new Post();
 
-        account1.setPosts(postRepository.findAllByAccount(account1));
+        account1.setPosts(postRepository.findAllByAccountAndUseStateCode(account1, Post.UseType.USE));
         post3.setAccount(account1);
         post3.setSrc(defaultUrl + "postpic3.jpg");
         post3.setContent("content3");
@@ -474,7 +474,7 @@ public class SampleData implements ApplicationRunner {
         postDtlRepository.save(postdtl4);
 
         Post post4 = new Post();
-        account2.setPosts(postRepository.findAllByAccount(account2));
+        account2.setPosts(postRepository.findAllByAccountAndUseStateCode(account2, Post.UseType.USE));
         post4.setAccount(account2);
         post4.setSrc(defaultUrl + "postpic4.jpg");
         post4.setContent("content4");
@@ -518,7 +518,7 @@ public class SampleData implements ApplicationRunner {
         postDtlRepository.save(postdtl7);
 
         Post post5 = new Post();
-        account1.setPosts(postRepository.findAllByAccount(account1));
+        account1.setPosts(postRepository.findAllByAccountAndUseStateCode(account1, Post.UseType.USE));
         post5.setAccount(account1);
         post5.setSrc(defaultUrl + "postpic5.jpg");
         post5.setContent("content5");
@@ -551,7 +551,7 @@ public class SampleData implements ApplicationRunner {
         postDtlRepository.save(postdtl9);
 
         Post post6 = new Post();
-        account2.setPosts(postRepository.findAllByAccount(account2));
+        account2.setPosts(postRepository.findAllByAccountAndUseStateCode(account2, Post.UseType.USE));
         post6.setAccount(account2);
         post6.setSrc(defaultUrl + "postpic6.jpg");
         post6.setContent("content6");
