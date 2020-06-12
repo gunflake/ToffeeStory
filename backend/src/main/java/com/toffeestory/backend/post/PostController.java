@@ -43,7 +43,7 @@ public class PostController {
     @GetMapping(path = "")
     public List<Post> initPage(@RequestParam(required = false, name = "keyword") String keyword) {
         if(keyword != null) {
-            return postRepository.findAllSearchKeywordPost(keyword, PostDtl.UseType.USE);
+            return postRepository.findAllSearchKeywordPost(keyword);
         } else {
             return postRepository.findAllByUseStateCode(Post.UseType.USE);
         }

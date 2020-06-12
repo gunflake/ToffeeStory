@@ -47,18 +47,7 @@ public class PostDtl {
     @Column(nullable = false, length = 20)
     private String tagName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UseType useState;
-
-    public PostDtl() {
-        this.useState = UseType.USE;
-    }
-
     public enum ToffeeType {
         PRODUCT, TOPPING;
-    }
-    public enum UseType {
-        USE, UNUSED;
     }
 }

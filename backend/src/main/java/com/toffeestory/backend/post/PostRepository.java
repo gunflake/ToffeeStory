@@ -12,8 +12,8 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findAllByUseStateCode(Post.UseType useCode);
 
-    @Query("select distinct post from PostDtl where tagName like concat('%',:keyword,'%') and useStateCode = :useCode")
-    List<Post> findAllSearchKeywordPost(String keyword, PostDtl.UseType useCode);
+    @Query("select distinct post from PostDtl where tagName like concat('%',:keyword,'%')")
+    List<Post> findAllSearchKeywordPost(String keyword);
 
     List<Post> findAllByAccountAndUseStateCode(Account account, Post.UseType useCode);
 
