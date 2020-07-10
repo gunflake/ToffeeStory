@@ -12,7 +12,7 @@
       <div class="w-full md:w-1/2 lg:w-1/3 p-3" v-for="(image,index) of orderedList" :key="index">
         <div class="w-full h-image object-cover">
           <a @click="setPostNo(image.postNo)"><img v-lazyload class="w-full h-image object-cover" :data-src="image.src" @load="masks1.push(index)" ></a>
-          <div class="w-full h-image object-cover" :data-src="image.compressSrc" v-if="!masks1.includes(index)"></div>
+          <div class="w-full h-image object-cover" v-if="!masks1.includes(index)"><img v-lazyload :data-src="image.compressSrc" ></div>
         </div>
       </div>
       <!-- Unsplash Starbucks Images -->
