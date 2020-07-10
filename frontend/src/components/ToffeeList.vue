@@ -156,15 +156,25 @@
       }
     },
     mounted () {
-      if (this.valueCode === config.PostMethods.ALL) {
-        this.getPosts()
-      } else if (this.valueCode === config.PostMethods.SEARCH) {
-        this.searchPosts(this.keyword)
-      } else {
-        this.getInterestPost(this.valueCode, this.accountId)
-      }
+        if (this.valueCode === config.PostMethods.ALL) {
+            this.getPosts()
+        } else if (this.valueCode === config.PostMethods.SEARCH) {
+            this.searchPosts(this.keyword)
+        } else {
+            this.getInterestPost(this.valueCode, this.accountId)
+        }
 
-      this.getImagesInfo()
+        this.getImagesInfo()
     }
   }
-</script>
+  </script>
+  <style>
+    .sort-list a {
+      color: black;
+      cursor: pointer;
+    }
+   .sort-list a.active {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
